@@ -29,7 +29,10 @@ function getContent () {
         b.push(a.list[key]);
       });
 
-      // TODO: sort by date added
+      b.sort(function(x, y) {
+        return x.sort_id - y.sort_id;
+      });
+
       localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
 
       render();
