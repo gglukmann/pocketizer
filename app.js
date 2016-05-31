@@ -266,6 +266,7 @@ function toggleReadState (id, isRead) {
 /**
 * Toggles items favourited state
 */
+// TODO: fix list and archive
 function toggleFavouritedState (id, isFavourited) {
   document.getElementById("status").innerHTML = "Processing...";
 
@@ -328,6 +329,7 @@ function changePage (page) {
 
   switch (page) {
     case 'list':
+      document.getElementById("title").innerHTML = "My Pocket List";
       document.getElementById("status").innerHTML = "Synchronizing...";
       getContent('list');
 
@@ -335,6 +337,7 @@ function changePage (page) {
       document.getElementById('archive-list').style.display = 'none';
       break;
     case 'archive':
+      document.getElementById("title").innerHTML = "Archive";
       document.getElementById("status").innerHTML = "Synchronizing...";
       getContent('archive');
 
