@@ -31,10 +31,6 @@ function getContent () {
       }, 2000);
     } else {
       console.log(xmlhttp);
-
-      if (xmlhttp != 200) {
-        document.getElementById("status").innerHTML = "Synchronizing failed!";
-      }
     }
   }
 }
