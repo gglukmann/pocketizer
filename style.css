@@ -105,7 +105,7 @@ a {
   position: absolute;
   bottom: .7em;
   left: 1em;
-  right: 1em;
+  right: 90px;
   color: #999;
   font-size: 12px;
   text-decoration: none;
@@ -114,4 +114,17 @@ a {
   text-overflow: ellipsis;
   white-space: nowrap;
   z-index: 10;
+}
+
+.item__set-read {
+  z-index: 10;
+  position: absolute;
+  bottom: .7em;
+  right: 1em;
+  color: #999;
+  font-size: 12px;
+}
+.item__link:hover,
+.item__set-read:hover {
+  color: #313131;
 }

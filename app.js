@@ -25,10 +25,7 @@ function getContent () {
 
       render();
 
-      document.getElementById("status").innerHTML = "Synchronize successful!";
-      setTimeout(function () {
-        document.getElementById("status").innerHTML = "";
-      }, 2000);
+      showSuccessMessage('Synchronize');
     } else {
       console.log(xmlhttp);
     }
@@ -50,6 +47,7 @@ function render () {
     let titleElement = document.createElement('a');
     let linkElement = document.createElement('a');
     let fakeLinkElement = document.createElement('a');
+    let readButtonElement = document.createElement('a');
     let title;
 
     if (a[key].resolved_title == '' && a[key].given_title == '') {
@@ -63,6 +61,12 @@ function render () {
     let textNode = document.createTextNode(title);
     let excerptNode = document.createTextNode(a[key].excerpt);
     let linkNode = document.createTextNode(a[key].resolved_url);
+    let readNode = document.createTextNode('Mark as read');
+
+    readButtonElement.setAttribute('class', 'item__set-read js-markAsReadButton');
+    readButtonElement.setAttribute('href', '#0');
+    readButtonElement.setAttribute('data-id', a[key].item_id);
+    readButtonElement.appendChild(readNode);
 
     itemElement.setAttribute('class', 'item');
     contentElement.setAttribute('class', 'item__content');
@@ -84,6 +88,7 @@ function render () {
     contentElement.appendChild(titleElement);
     contentElement.appendChild(excerptElement);
     contentElement.appendChild(linkElement);
+    contentElement.appendChild(readButtonElement);
 
     listElement.appendChild(itemElement);
 
@@ -93,12 +98,65 @@ function render () {
     //     a.item__title
     //     div.item__excerpt
   });
+
+  bindReadClickEvents();
 }
 
-// TODO: mark as read
-// document.getElementById('js-markAsReadButton').addEventListener('click', function () {
-//
-// });
+/**
+* Binds click events for action buttons
+*/
+function bindReadClickEvents () {
+  var buttonClass = document.getElementsByClassName('js-markAsReadButton');
+  for (var i = 0; i < buttonClass.length; i++ ) {
+    buttonClass[i].addEventListener('click', function( ev ) {
+      ev.preventDefault();
+      let id = this.getAttribute('data-id');
+
+      markAsRead(id);
+    }, false);
+  }
+}
+
+/**
+* Marks items as read
+*/
+function markAsRead (id) {
+  document.getElementById("status").innerHTML = "Archiving..."
+
+  var actions = [{
+    "action": "archive",
+    "item_id": id,
+    "time": Math.floor(Date.now() / 1000)
+  }];
+
+  xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/send", true);
+  xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&actions=" + JSON.stringify(actions));
+
+  xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
+      let a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+
+      for (var i = 0; i < a.length; i++) {
+        if (a[i].item_id == id) {
+          a.splice(i, 1);
+        }
+      };
+
+      localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
+
+      render();
+
+      showSuccessMessage('Archiving');
+    }
+  }
+}
+
+function showSuccessMessage (message) {
+  document.getElementById("status").innerHTML = message + " successful!";
+  setTimeout(function () {
+    document.getElementById("status").innerHTML = "";
+  }, 2000);
+}
 
 function getRedirectUrl () {
   return chrome.identity.getRedirectURL();
