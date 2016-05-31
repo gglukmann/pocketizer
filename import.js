@@ -5,18 +5,33 @@ var __access_token_string;
 * Gets content from localStorage and from Pocket API to see if there are newer links
 */
 function getContent () {
-  xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true)
-  xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=newest&count=10&state=unread");
-  // &since=" + new Date().getTime()
+  xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true);
+  // check if time from last check exists, then update from that time, else update all
+  if (localStorage.getItem('timeFromLastCheck')) {
+    xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=oldest&state=unread&since=" + localStorage.getItem('timeFromLastCheck'));
+  } else {
+    xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=oldest&state=unread");
+  }
 
   xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
-      // TODO: check if new, then add, else do nothing
-      if (localStorage){
-        // TODO: create array and add only items to localstorage
-        localStorage.setItem('listFromLocalStorage', JSON.stringify(xmlhttp.response));
+      // set time from last check eq time now to localstorage
+      localStorage.setItem('timeFromLastCheck', Math.floor(Date.now() / 1000));
+
+      var a = JSON.parse(xmlhttp.response);
+      console.log(a);
+      var b = [];
+
+      if (localStorage.getItem('listFromLocalStorage')) {
+        b = JSON.parse(localStorage.getItem('listFromLocalStorage'));
       }
-      addToList(xmlhttp.response);
+
+      Object.keys(a.list).forEach(function(key) {
+        b.push(a.list[key]);
+      });
+      localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
+
+      render();
     } else {
       console.log(xmlhttp);
     }
@@ -29,25 +44,19 @@ function getContent () {
 }
 
 /**
-* Adds to list if new items exist
-*/
-function addToList (data) {
-  let rows = JSON.parse(localStorage.getItem('listFromLocalStorage')) || [];
-}
-
-/**
 * Renders from localStorage
 */
-function render (data) {
-  let a = JSON.parse(data);
+function render () {
+  let a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
   let listElement = document.getElementById('list');
+  listElement.innerHTML = "";
 
-  Object.keys(a.list).forEach(function(key) {
-    let nodeElement = document.createElement("LI");
+  Object.keys(a).forEach(function(key) {
+    let nodeElement = document.createElement("li");
     let linkElement = document.createElement('a');
-    let textNode = document.createTextNode(a.list[key].resolved_title);
+    let textNode = document.createTextNode(a[key].resolved_title);
 
-    linkElement.setAttribute('href', a.list[key].resolved_url);
+    linkElement.setAttribute('href', a[key].resolved_url);
     linkElement.appendChild(textNode);
     nodeElement.appendChild(linkElement);
     listElement.appendChild(nodeElement);
@@ -109,8 +118,8 @@ function lauchChromeWebAuthFlowAndReturnAccessToken (request_code) {
 }
 
 function importPocket () {
-  if (localStorage && localStorage.getItem('listFromLocalStorage')){
-    render(JSON.parse(localStorage.getItem('listFromLocalStorage')));
+  if (localStorage.getItem('listFromLocalStorage')){
+    render();
   }
 
   document.getElementById("status").innerHTML = "Updating..."
