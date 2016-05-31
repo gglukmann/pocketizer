@@ -4,16 +4,21 @@
   "description": "This extension shows all your unread Pocket links from new tab",
   "version": "0.1",
   "author": "Gert Glükmann @glukmann",
+  "icons": {
+    "16": "icon16.png",
+    "48": "icon48.png",
+    "128": "icon128.png"
+  },
   "browser_action": {
-    "default_icon": "icon.png"
+    "default_icon": "icon16.png"
   },
   "chrome_url_overrides" : {
     "newtab": "page.html"
   },
-  "content_scripts": [ {
+  "content_scripts": [{
     "js": [ "app.js" ],
     "matches": [ "https://*.getpocket.com/*"]
-    }],
+  }],
   "permissions": [
     "identity"
   ]

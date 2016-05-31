@@ -257,6 +257,13 @@ function getAccessToken () {
       access_token_string = xmlhttp.responseText.split('&')[0];
       __access_token_string = access_token_string;
 
+      let user_string = xmlhttp.responseText.split('&')[1];
+      let user_name = decodeURIComponent(user_string.split('=')[1]);
+      if (localStorage.getItem('username') != user_name) {
+        localStorage.setItem('username', user_name);
+        document.getElementById('user-name').innerHTML = user_name;
+      }
+
       // get content from pocket api
       getContent();
     }
@@ -274,6 +281,9 @@ function lauchChromeWebAuthFlowAndReturnAccessToken (request_code) {
 function importPocket () {
   if (localStorage.getItem('listFromLocalStorage')){
     render();
+  }
+  if (localStorage.getItem('username')) {
+    document.getElementById('user-name').innerHTML = localStorage.getItem('username');
   }
 
   document.getElementById("status").innerHTML = "Synchronizing..."

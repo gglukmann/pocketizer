@@ -147,3 +147,10 @@ a {
 .item__favourite:hover {
   box-shadow: 0 2px 1px rgba(0,0,0,.1);
 }
+
+.user-name {
+  float: right;
+  font-size: .5em;
+  color: #9f9f9f;
+  margin-top: 15px;
+}
