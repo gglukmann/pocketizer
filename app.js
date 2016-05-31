@@ -49,6 +49,7 @@ function render () {
     let fakeLinkElement = document.createElement('a');
     let readButtonElement = document.createElement('a');
     let favouriteElement = document.createElement('a');
+    let timeElement = document.createElement('div');
     let title;
 
     if (a[key].resolved_title == '' && a[key].given_title == '') {
@@ -73,7 +74,11 @@ function render () {
     let textNode = document.createTextNode(title);
     let excerptNode = document.createTextNode(a[key].excerpt);
     let linkNode = document.createTextNode(a[key].resolved_url);
+    let timeNode = document.createTextNode(timeConverter(a[key].time_added));
     let readNode = document.createTextNode('Mark as read');
+
+    timeElement.setAttribute('class', 'item__time');
+    timeElement.appendChild(timeNode);
 
     readButtonElement.setAttribute('class', 'item__set-read js-markAsReadButton');
     readButtonElement.setAttribute('href', '#0');
@@ -94,10 +99,12 @@ function render () {
     excerptElement.appendChild(excerptNode);
     linkElement.setAttribute('class', 'item__link');
     linkElement.setAttribute('href', a[key].resolved_url);
+    linkElement.setAttribute('title', a[key].resolved_url);
     linkElement.appendChild(linkNode);
 
     contentElement.appendChild(fakeLinkElement);
     contentElement.appendChild(titleElement);
+    contentElement.appendChild(timeElement);
     contentElement.appendChild(excerptElement);
     contentElement.appendChild(linkElement);
     contentElement.appendChild(readButtonElement);
@@ -112,6 +119,14 @@ function render () {
   });
 
   bindReadClickEvents();
+}
+
+function timeConverter(UNIX){
+  let d = new Date(UNIX * 1000);
+  let year = d.getFullYear();
+  let month = ('0' + (d.getMonth() + 1)).slice(-2);
+  let date = ('0' + d.getDate()).slice(-2);
+  return date + '.' + month + '.' + year;
 }
 
 /**

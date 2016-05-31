@@ -9,13 +9,23 @@
 <body>
   <div class="container">
     <div id="status" class="status"></div>
-    <h2 class="title">
-      <a href="https://getpocket.com" title="Pocket homepage">
-        <img src="logo.png" alt="Logo" class="logo" />
-      </a>
-      My Pocket List
-      <small id="user-name" class="pull-right user-name"></small>
-    </h2>
+    <div class="header">
+      <h2 class="title">
+        <a href="https://getpocket.com" title="Pocket homepage">
+          <img src="logo.png" alt="Logo" class="logo" />
+        </a>
+        My Pocket List
+      </h2>
+      <ul class="menu">
+        <li class="menu__item">
+          <a href="#" class="menu__link menu__link--active" data-page="list">My List</a>
+        </li>
+        <li class="menu__item">
+          <a href="#" class="menu__link" data-page="archive">Archive</a>
+        </li>
+      </ul>
+      <div id="user-name" class="user-name"></div>
+    </div>
     <ol id="list" class="list"></ol>
   </div>
 </body>
