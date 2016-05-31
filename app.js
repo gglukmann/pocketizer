@@ -48,6 +48,7 @@ function render () {
     let linkElement = document.createElement('a');
     let fakeLinkElement = document.createElement('a');
     let readButtonElement = document.createElement('a');
+    let favouriteElement = document.createElement('a');
     let title;
 
     if (a[key].resolved_title == '' && a[key].given_title == '') {
@@ -57,6 +58,17 @@ function render () {
     } else {
       title = a[key].resolved_title;
     }
+
+    if (a[key].favorite == 1) {
+      favouriteElement.setAttribute('data-favourite', 'true');
+    } else {
+      favouriteElement.setAttribute('data-favourite', 'false');
+    }
+    favouriteElement.setAttribute('class', 'item__favourite js-markAsFavouriteButton');
+    favouriteElement.setAttribute('href', '#0');
+    favouriteElement.setAttribute('title', 'Toggle favourited state');
+    favouriteElement.setAttribute('data-id', a[key].item_id);
+    contentElement.appendChild(favouriteElement);
 
     let textNode = document.createTextNode(title);
     let excerptNode = document.createTextNode(a[key].excerpt);
@@ -115,13 +127,24 @@ function bindReadClickEvents () {
       markAsRead(id);
     }, false);
   }
+
+  var favouriteButtonClass = document.getElementsByClassName('js-markAsFavouriteButton');
+  for (var i = 0; i < favouriteButtonClass.length; i++ ) {
+    favouriteButtonClass[i].addEventListener('click', function( ev ) {
+      ev.preventDefault();
+      let id = this.getAttribute('data-id');
+      let isFavourited = this.getAttribute('data-favourite');
+
+      toggleFavouritedState(id, isFavourited);
+    }, false);
+  }
 }
 
 /**
 * Marks items as read
 */
 function markAsRead (id) {
-  document.getElementById("status").innerHTML = "Archiving..."
+  document.getElementById("status").innerHTML = "Archiving...";
 
   var actions = [{
     "action": "archive",
@@ -147,6 +170,42 @@ function markAsRead (id) {
       render();
 
       showSuccessMessage('Archiving');
+    }
+  }
+}
+
+/**
+* Toggles items favourited state
+*/
+function toggleFavouritedState (id, isFavourited) {
+  document.getElementById("status").innerHTML = "Processing...";
+
+  var action = (isFavourited == "true" ? "unfavorite" : "favorite");
+
+  var actions = [{
+    "action": action,
+    "item_id": id,
+    "time": Math.floor(Date.now() / 1000)
+  }];
+
+  xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/send", true);
+  xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&actions=" + JSON.stringify(actions));
+
+  xmlhttp.onreadystatechange = function () {
+    if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
+      let a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+
+      for (var i = 0; i < a.length; i++) {
+        if (a[i].item_id == id) {
+          a[i].favorite = (isFavourited == "true" ? 0 : 1);
+        }
+      };
+
+      localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
+
+      render();
+
+      showSuccessMessage('Processing');
     }
   }
 }

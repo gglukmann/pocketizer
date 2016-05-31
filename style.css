@@ -77,6 +77,7 @@ a {
   padding: 0 0 40px;
   transition: opacity .2s ease-out;
   width: 100%;
+  overflow: hidden;
 }
 
 .item__title {
@@ -127,4 +128,22 @@ a {
 .item__link:hover,
 .item__set-read:hover {
   color: #313131;
+}
+
+.item__favourite {
+  position: absolute;
+  top: -20px;
+  right: -20px;
+  width: 40px;
+  height: 40px;
+  transform: rotate(45deg);
+  transition: box-shadow .1s linear;
+  box-shadow: 0 1px 1px rgba(0,0,0,.1);
+  z-index: 10;
+}
+.item__favourite[data-favourite="true"] {
+  background: yellow;
+}
+.item__favourite:hover {
+  box-shadow: 0 2px 1px rgba(0,0,0,.1);
 }
