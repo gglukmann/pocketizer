@@ -5,9 +5,19 @@ body {
   background: #f4f4f6;
 }
 
+a {
+  text-decoration: none;
+}
+
 .container {
   max-width: 1200px;
   margin: 0 auto;
+}
+
+.logo {
+  height: 30px;
+  width: 30px;
+  margin-right: 10px;
 }
 
 .status {
