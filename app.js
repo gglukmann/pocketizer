@@ -107,6 +107,11 @@ function render () {
   });
 }
 
+// TODO: mark as read
+document.getElementById('js-markAsReadButton').addEventListener('click', function () {
+
+});
+
 function getRedirectUrl () {
   return chrome.identity.getRedirectURL();
 }
