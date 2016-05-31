@@ -8,19 +8,18 @@ function getContent () {
   xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true);
   // check if time from last check exists, then update from that time, else update all
   if (localStorage.getItem('timeFromLastCheck')) {
-    xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=oldest&state=unread&since=" + localStorage.getItem('timeFromLastCheck'));
+    xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=newest&state=unread&since=" + localStorage.getItem('timeFromLastCheck'));
   } else {
-    xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=oldest&state=unread");
+    xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=newest&state=unread");
   }
 
   xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
-      // set time from last check eq time now to localstorage
+      // set time from last check eq time now to localstorage (unix timestamp)
       localStorage.setItem('timeFromLastCheck', Math.floor(Date.now() / 1000));
 
-      var a = JSON.parse(xmlhttp.response);
-      console.log(a);
-      var b = [];
+      let a = JSON.parse(xmlhttp.response);
+      let b = [];
 
       if (localStorage.getItem('listFromLocalStorage')) {
         b = JSON.parse(localStorage.getItem('listFromLocalStorage'));
@@ -29,6 +28,8 @@ function getContent () {
       Object.keys(a.list).forEach(function(key) {
         b.push(a.list[key]);
       });
+
+      // TODO: sort by date added
       localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
 
       render();
@@ -52,14 +53,54 @@ function render () {
   listElement.innerHTML = "";
 
   Object.keys(a).forEach(function(key) {
-    let nodeElement = document.createElement("li");
+    let itemElement = document.createElement('li');
+    let contentElement = document.createElement('div');
+    let excerptElement = document.createElement('div');
+    let titleElement = document.createElement('a');
     let linkElement = document.createElement('a');
-    let textNode = document.createTextNode(a[key].resolved_title);
+    let fakeLinkElement = document.createElement('a');
+    let title;
 
+    if (a[key].resolved_title == '' && a[key].given_title == '') {
+      title = a[key].resolved_url;
+    } else if (a[key].resolved_title == '' && a[key].given_title != '') {
+      title = a[key].given_title;
+    } else {
+      title = a[key].resolved_title;
+    }
+
+    let textNode = document.createTextNode(title);
+    let excerptNode = document.createTextNode(a[key].excerpt);
+    let linkNode = document.createTextNode(a[key].resolved_url);
+
+    itemElement.setAttribute('class', 'item');
+    contentElement.setAttribute('class', 'item__content');
+    itemElement.appendChild(contentElement);
+
+    fakeLinkElement.setAttribute('href', a[key].resolved_url);
+    fakeLinkElement.setAttribute('class', 'item__fake-link');
+
+    titleElement.setAttribute('href', a[key].resolved_url);
+    titleElement.setAttribute('class', 'item__title');
+    titleElement.appendChild(textNode);
+    excerptElement.setAttribute('class', 'item__excerpt');
+    excerptElement.appendChild(excerptNode);
+    linkElement.setAttribute('class', 'item__link');
     linkElement.setAttribute('href', a[key].resolved_url);
-    linkElement.appendChild(textNode);
-    nodeElement.appendChild(linkElement);
-    listElement.appendChild(nodeElement);
+    linkElement.appendChild(linkNode);
+
+    contentElement.appendChild(fakeLinkElement);
+    contentElement.appendChild(titleElement);
+    contentElement.appendChild(excerptElement);
+    contentElement.appendChild(linkElement);
+
+    listElement.appendChild(itemElement);
+
+    // li.item
+    //   div.item__content
+    //     a.item__fake-link
+    //     a.item__title
+    //     div.item__excerpt
   });
 }
 

@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Read Pocket from New Tab",
+  "name": "New Tab - Pocket",
   "description": "This extension shows all your unread Pocket links from new tab",
   "version": "0.1",
   "browser_action": {
