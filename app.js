@@ -6,24 +6,12 @@ var __access_token_string;
 */
 function getContent () {
   xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true);
-  // check if time from last check exists, then update from that time, else update all
-  if (localStorage.getItem('timeFromLastCheck')) {
-    xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=newest&state=unread&since=" + localStorage.getItem('timeFromLastCheck'));
-  } else {
-    xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=newest&state=unread");
-  }
+  xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&state=unread");
 
   xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
-      // set time from last check eq time now to localstorage (unix timestamp)
-      localStorage.setItem('timeFromLastCheck', Math.floor(Date.now() / 1000));
-
       let a = JSON.parse(xmlhttp.response);
       let b = [];
-
-      if (localStorage.getItem('listFromLocalStorage')) {
-        b = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-      }
 
       Object.keys(a.list).forEach(function(key) {
         b.push(a.list[key]);
@@ -36,15 +24,19 @@ function getContent () {
       localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
 
       render();
+
+      document.getElementById("status").innerHTML = "Synchronize successful!";
+      setTimeout(function () {
+        document.getElementById("status").innerHTML = "";
+      }, 2000);
     } else {
       console.log(xmlhttp);
+
+      if (xmlhttp != 200) {
+        document.getElementById("status").innerHTML = "Synchronizing failed!";
+      }
     }
   }
-
-  document.getElementById("status").innerHTML = "Update successful!";
-  setTimeout(function () {
-    document.getElementById("status").innerHTML = "";
-  }, 2000);
 }
 
 /**
@@ -171,7 +163,7 @@ function importPocket () {
     render();
   }
 
-  document.getElementById("status").innerHTML = "Updating..."
+  document.getElementById("status").innerHTML = "Synchronizing..."
   consumer_key = getPocketConsumerKey();
   getRequestCode(consumer_key);
 }
