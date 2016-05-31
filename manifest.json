@@ -1,10 +1,8 @@
 {
   "manifest_version": 2,
-
-  "name": "Getting started example",
-  "description": "This extension shows a Google Image search result for the current page",
+  "name": "Read Pocket from New Tab",
+  "description": "This extension shows all your unread Pocket links from new tab",
   "version": "0.1",
-
   "browser_action": {
     "default_icon": "icon.png"
   },
@@ -12,7 +10,7 @@
     "newtab": "page.html"
   },
   "content_scripts": [ {
-    "js": [ "get.js" ],
+    "js": [ "import.js" ],
     "matches": [ "https://*.getpocket.com/*"]
     }],
   "permissions": [

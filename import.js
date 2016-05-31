@@ -2,10 +2,10 @@ var __request_code;
 var __access_token_string;
 
 /**
-* Gets content from localStorage and Pocket API to see if there are newer links
+* Gets content from localStorage and from Pocket API to see if there are newer links
 */
-function get_content () {
-  xmlhttp = make_xmlhttprequest("POST", "https://getpocket.com/v3/get", true)
+function getContent () {
+  xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true)
   xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&sort=newest&count=10&state=unread");
   // &since=" + new Date().getTime()
 
@@ -16,7 +16,7 @@ function get_content () {
         // TODO: create array and add only items to localstorage
         localStorage.setItem('listFromLocalStorage', JSON.stringify(xmlhttp.response));
       }
-      add_to_list(xmlhttp.response);
+      addToList(xmlhttp.response);
     } else {
       console.log(xmlhttp);
     }
@@ -31,7 +31,7 @@ function get_content () {
 /**
 * Adds to list if new items exist
 */
-function add_to_list (data) {
+function addToList (data) {
   let rows = JSON.parse(localStorage.getItem('listFromLocalStorage')) || [];
 }
 
@@ -54,31 +54,31 @@ function render (data) {
   });
 }
 
-function get_redirect_url () {
+function getRedirectUrl () {
   return chrome.identity.getRedirectURL();
 }
 
-function get_pocket_consumer_key () {
+function getPocketConsumerKey () {
   return "55040-ed8b0dbe5ae62e1c6ed82f28";
 }
 
-function make_xmlhttprequest (method, url, flag) {
+function makeXmlhttprequest (method, url, flag) {
   xmlhttp = new XMLHttpRequest();
   xmlhttp.open(method, url, flag);
   xmlhttp.setRequestHeader( "Content-type","application/x-www-form-urlencoded" );
   return xmlhttp;
 }
 
-function get_request_code (consumer_key) {
-  redirect_url = get_redirect_url();
-  xmlhttp = make_xmlhttprequest ('POST', 'https://getpocket.com/v3/oauth/request', true)
+function getRequestCode (consumer_key) {
+  redirect_url = getRedirectUrl();
+  xmlhttp = makeXmlhttprequest ('POST', 'https://getpocket.com/v3/oauth/request', true)
   xmlhttp.onreadystatechange = function () {
     if ( xmlhttp.readyState === 4 ) {
 
       if (xmlhttp.status === 200) {
         request_code = xmlhttp.responseText.split('=')[1];
         __request_code = request_code;
-        lauch_chrome_webAuthFlow_and_return_access_token(request_code);
+        lauchChromeWebAuthFlowAndReturnAccessToken(request_code);
       } else {
         document.getElementById("status").innerHTML = "Authentication failed!"
       }
@@ -87,37 +87,37 @@ function get_request_code (consumer_key) {
   xmlhttp.send("consumer_key="+ consumer_key +"&redirect_uri="+ redirect_url)
 }
 
-function get_access_token () {
-  xmlhttp = make_xmlhttprequest('POST', 'https://getpocket.com/v3/oauth/authorize', true);
+function getAccessToken () {
+  xmlhttp = makeXmlhttprequest('POST', 'https://getpocket.com/v3/oauth/authorize', true);
   xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
       access_token_string = xmlhttp.responseText.split('&')[0];
       __access_token_string = access_token_string;
 
       // get content from pocket api
-      get_content();
+      getContent();
     }
   }
   xmlhttp.send( "consumer_key="+ consumer_key +"&code="+ request_code )
 }
 
-function lauch_chrome_webAuthFlow_and_return_access_token (request_code) {
-  redirect_url = get_redirect_url();
-  chrome.identity.launchWebAuthFlow ({'url': "https://getpocket.com/auth/authorize?request_token="+ request_code + "&redirect_uri="+ redirect_url, 'interactive': true}, function(redirect_url) {
-    get_access_token(consumer_key, request_code);
+function lauchChromeWebAuthFlowAndReturnAccessToken (request_code) {
+  redirect_url = getRedirectUrl();
+  chrome.identity.launchWebAuthFlow({'url': "https://getpocket.com/auth/authorize?request_token="+ request_code + "&redirect_uri="+ redirect_url, 'interactive': true}, function(redirect_url) {
+    getAccessToken(consumer_key, request_code);
   });
 }
 
-function import_pocket () {
+function importPocket () {
   if (localStorage && localStorage.getItem('listFromLocalStorage')){
     render(JSON.parse(localStorage.getItem('listFromLocalStorage')));
   }
 
   document.getElementById("status").innerHTML = "Updating..."
-  consumer_key = get_pocket_consumer_key();
-  get_request_code(consumer_key);
+  consumer_key = getPocketConsumerKey();
+  getRequestCode(consumer_key);
 }
 
 window.onload = function(){
-  import_pocket();
+  importPocket();
 };
