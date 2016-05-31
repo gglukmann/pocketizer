@@ -4,9 +4,18 @@ var __access_token_string;
 /**
 * Gets content from localStorage and from Pocket API to see if there are newer links
 */
-function getContent () {
+function getContent (page = 'list') {
+  let state;
+  switch (page) {
+    case 'list':
+      state = 'unread';
+      break;
+    case 'archive':
+      state = 'archive';
+      break;
+  }
   xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true);
-  xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&state=unread");
+  xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&state=" + state);
 
   xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
@@ -21,9 +30,16 @@ function getContent () {
         return x.sort_id - y.sort_id;
       });
 
-      localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
-
-      render();
+      switch (page) {
+        case 'list':
+          localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
+          render('list');
+          break;
+        case 'archive':
+          localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
+          render('archive');
+          break;
+      }
 
       showSuccessMessage('Synchronize');
     } else {
@@ -35,9 +51,20 @@ function getContent () {
 /**
 * Renders from localStorage
 */
-function render () {
-  let a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-  let listElement = document.getElementById('list');
+function render (page) {
+  let a;
+  let listElement;
+
+  switch (page) {
+    case 'list':
+      a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+      listElement = document.getElementById('list');
+      break;
+    case 'archive':
+      a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+      listElement = document.getElementById('archive-list');
+      break;
+  }
   listElement.innerHTML = "";
 
   Object.keys(a).forEach(function(key) {
@@ -65,7 +92,7 @@ function render () {
     } else {
       favouriteElement.setAttribute('data-favourite', 'false');
     }
-    favouriteElement.setAttribute('class', 'item__favourite js-markAsFavouriteButton');
+    favouriteElement.setAttribute('class', 'item__favourite js-toggleFavouriteButton');
     favouriteElement.setAttribute('href', '#0');
     favouriteElement.setAttribute('title', 'Toggle favourited state');
     favouriteElement.setAttribute('data-id', a[key].item_id);
@@ -75,14 +102,27 @@ function render () {
     let excerptNode = document.createTextNode(a[key].excerpt);
     let linkNode = document.createTextNode(a[key].resolved_url);
     let timeNode = document.createTextNode(timeConverter(a[key].time_added));
-    let readNode = document.createTextNode('Mark as read');
+    let readNode;
+    let isRead = false;
+    switch (page) {
+      case 'list':
+        readNode = document.createTextNode('Mark as read');
+        isRead = false;
+        break;
+      case 'archive':
+        readNode = document.createTextNode('Mark unread')
+        isRead = true;
+        break;
+    };
 
     timeElement.setAttribute('class', 'item__time');
+    timeElement.setAttribute('title', 'Date added');
     timeElement.appendChild(timeNode);
 
-    readButtonElement.setAttribute('class', 'item__set-read js-markAsReadButton');
+    readButtonElement.setAttribute('class', 'item__set-read js-toggleReadButton');
     readButtonElement.setAttribute('href', '#0');
     readButtonElement.setAttribute('data-id', a[key].item_id);
+    readButtonElement.setAttribute('data-read', isRead);
     readButtonElement.appendChild(readNode);
 
     itemElement.setAttribute('class', 'item');
@@ -113,14 +153,21 @@ function render () {
 
     // li.item
     //   div.item__content
+    //     a.item__favourite
     //     a.item__fake-link
     //     a.item__title
+    //     div.item__time
     //     div.item__excerpt
+    //     a.item__link
+    //     a.item__set-read
   });
 
-  bindReadClickEvents();
+  bindActionClickEvents();
 }
 
+/**
+* Convert unix time to datetime format dd.mm.yyyy
+*/
 function timeConverter(UNIX){
   let d = new Date(UNIX * 1000);
   let year = d.getFullYear();
@@ -132,18 +179,19 @@ function timeConverter(UNIX){
 /**
 * Binds click events for action buttons
 */
-function bindReadClickEvents () {
-  var buttonClass = document.getElementsByClassName('js-markAsReadButton');
+function bindActionClickEvents () {
+  var buttonClass = document.getElementsByClassName('js-toggleReadButton');
   for (var i = 0; i < buttonClass.length; i++ ) {
     buttonClass[i].addEventListener('click', function( ev ) {
       ev.preventDefault();
       let id = this.getAttribute('data-id');
+      let isRead = this.getAttribute('data-read');
 
-      markAsRead(id);
+      toggleReadState(id, isRead);
     }, false);
   }
 
-  var favouriteButtonClass = document.getElementsByClassName('js-markAsFavouriteButton');
+  var favouriteButtonClass = document.getElementsByClassName('js-toggleFavouriteButton');
   for (var i = 0; i < favouriteButtonClass.length; i++ ) {
     favouriteButtonClass[i].addEventListener('click', function( ev ) {
       ev.preventDefault();
@@ -156,13 +204,23 @@ function bindReadClickEvents () {
 }
 
 /**
-* Marks items as read
+* Toggle items read state
 */
-function markAsRead (id) {
-  document.getElementById("status").innerHTML = "Archiving...";
+function toggleReadState (id, isRead) {
+  let action;
+  switch (isRead) {
+    case 'true':
+      action = 'readd';
+      document.getElementById("status").innerHTML = "Unarchiving...";
+      break;
+    case 'false':
+      action = 'archive';
+      document.getElementById("status").innerHTML = "Archiving...";
+      break;
+  }
 
   var actions = [{
-    "action": "archive",
+    "action": action,
     "item_id": id,
     "time": Math.floor(Date.now() / 1000)
   }];
@@ -172,7 +230,16 @@ function markAsRead (id) {
 
   xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
-      let a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+      let a;
+
+      switch (isRead) {
+        case 'true':
+          a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+          break;
+        case 'false':
+          a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+          break;
+      }
 
       for (var i = 0; i < a.length; i++) {
         if (a[i].item_id == id) {
@@ -180,11 +247,18 @@ function markAsRead (id) {
         }
       };
 
-      localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
-
-      render();
-
-      showSuccessMessage('Archiving');
+      switch (isRead) {
+        case 'true':
+          localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
+          render('archive');
+          showSuccessMessage('Unarchiving');
+          break;
+        case 'false':
+          localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
+          render('list');
+          showSuccessMessage('Archiving');
+          break;
+      }
     }
   }
 }
@@ -218,13 +292,61 @@ function toggleFavouritedState (id, isFavourited) {
 
       localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
 
-      render();
+      render('list');
 
       showSuccessMessage('Processing');
     }
   }
 }
 
+/**
+* Bind menu change click events
+*/
+function bindMenuClickEvents () {
+  var changeMenuButtonClass = document.getElementsByClassName('js-changeMenu');
+  for (var i = 0; i < changeMenuButtonClass.length; i++ ) {
+    changeMenuButtonClass[i].addEventListener('click', function( ev ) {
+      ev.preventDefault();
+      let page = this.getAttribute('data-page');
+
+      changePage(page);
+    }, false);
+  }
+}
+
+/**
+* Change page from list to archive
+*/
+function changePage (page) {
+  let menuLinkElements = document.getElementsByClassName('menu__link');
+  for (var i = 0; i < menuLinkElements.length; i++ ) {
+    menuLinkElements[i].classList.remove('menu__link--active');
+    if (menuLinkElements[i].getAttribute('data-page') == page) {
+      menuLinkElements[i].classList.add('menu__link--active');
+    }
+  }
+
+  switch (page) {
+    case 'list':
+      document.getElementById("status").innerHTML = "Synchronizing...";
+      getContent('list');
+
+      document.getElementById('list').style.display = 'flex';
+      document.getElementById('archive-list').style.display = 'none';
+      break;
+    case 'archive':
+      document.getElementById("status").innerHTML = "Synchronizing...";
+      getContent('archive');
+
+      document.getElementById('archive-list').style.display = 'flex';
+      document.getElementById('list').style.display = 'none';
+      break;
+  }
+}
+
+/**
+* Shows success message
+*/
 function showSuccessMessage (message) {
   document.getElementById("status").innerHTML = message + " successful!";
   setTimeout(function () {
@@ -280,7 +402,7 @@ function getAccessToken () {
       }
 
       // get content from pocket api
-      getContent();
+      getContent('list');
     }
   }
   xmlhttp.send( "consumer_key="+ consumer_key +"&code="+ request_code )
@@ -294,14 +416,16 @@ function lauchChromeWebAuthFlowAndReturnAccessToken (request_code) {
 }
 
 function importPocket () {
+  bindMenuClickEvents();
+
   if (localStorage.getItem('listFromLocalStorage')){
-    render();
+    render('list');
   }
   if (localStorage.getItem('username')) {
     document.getElementById('user-name').innerHTML = localStorage.getItem('username');
   }
 
-  document.getElementById("status").innerHTML = "Synchronizing..."
+  document.getElementById("status").innerHTML = "Synchronizing...";
   consumer_key = getPocketConsumerKey();
   getRequestCode(consumer_key);
 }
