@@ -67,7 +67,11 @@ function render (page) {
     break;
   }
   listElement.innerHTML = "";
-  // TODO: if array turns zero elements, show message that you do not have anything saved to pocket yet
+  
+  if (a.length == 0) {
+    document.getElementById('empty-list-message').style.display = 'block';
+    return;
+  }
 
   Object.keys(a).forEach(function(key) {
     let itemElement = document.createElement('li');

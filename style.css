@@ -198,11 +198,11 @@ a {
   cursor: default;
 }
 
-.default-message {
+.message {
   margin-top: 5em;
   text-align: center;
 }
-.default-message__text {
+.message__text {
   font-size: 1.3em;
   padding: 1em;
 }
