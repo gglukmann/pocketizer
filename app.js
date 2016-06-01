@@ -8,11 +8,11 @@ function getContent (page = 'list') {
   let state;
   switch (page) {
     case 'list':
-      state = 'unread';
-      break;
+    state = 'unread';
+    break;
     case 'archive':
-      state = 'archive';
-      break;
+    state = 'archive';
+    break;
   }
   xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true);
   xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&state=" + state);
@@ -32,13 +32,13 @@ function getContent (page = 'list') {
 
       switch (page) {
         case 'list':
-          localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
-          render('list');
-          break;
+        localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
+        render('list');
+        break;
         case 'archive':
-          localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
-          render('archive');
-          break;
+        localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
+        render('archive');
+        break;
       }
 
       showSuccessMessage('Synchronize');
@@ -57,13 +57,13 @@ function render (page) {
 
   switch (page) {
     case 'list':
-      a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-      listElement = document.getElementById('list');
-      break;
+    a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+    listElement = document.getElementById('list');
+    break;
     case 'archive':
-      a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-      listElement = document.getElementById('archive-list');
-      break;
+    a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+    listElement = document.getElementById('archive-list');
+    break;
   }
   listElement.innerHTML = "";
 
@@ -106,13 +106,13 @@ function render (page) {
     let isRead = false;
     switch (page) {
       case 'list':
-        readNode = document.createTextNode('Mark as read');
-        isRead = false;
-        break;
+      readNode = document.createTextNode('Mark as read');
+      isRead = false;
+      break;
       case 'archive':
-        readNode = document.createTextNode('Mark unread')
-        isRead = true;
-        break;
+      readNode = document.createTextNode('Mark unread')
+      isRead = true;
+      break;
     };
 
     timeElement.setAttribute('class', 'item__time');
@@ -194,7 +194,7 @@ function bindActionClickEvents () {
       let id = this.getAttribute('data-id');
       let page = document.getElementById('page').value;
 
-      toggleReadState(id, page);
+      toggleActionState('read', id, page);
     }, false);
   }
 
@@ -206,80 +206,32 @@ function bindActionClickEvents () {
       let isFavourited = this.getAttribute('data-favourite');
       let page = document.getElementById('page').value;
 
-      toggleFavouritedState(id, isFavourited, page);
+      toggleActionState('favourite', id, page, isFavourited);
     }, false);
-  }
-}
-
-/**
-* Toggle items read state
-*/
-function toggleReadState (id, page) {
-  let action;
-  switch (page) {
-    case 'archive':
-      action = 'readd';
-      document.getElementById("status").innerHTML = "Unarchiving...";
-      break;
-    case 'list':
-      action = 'archive';
-      document.getElementById("status").innerHTML = "Archiving...";
-      break;
-  }
-
-  var actions = [{
-    "action": action,
-    "item_id": id,
-    "time": getCurrentUNIX()
-  }];
-
-  xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/send", true);
-  xmlhttp.send("consumer_key=" + consumer_key + "&" + __access_token_string + "&actions=" + JSON.stringify(actions));
-
-  xmlhttp.onreadystatechange = function () {
-    if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
-      let a;
-
-      switch (page) {
-        case 'archive':
-          a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-          break;
-        case 'list':
-          a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-          break;
-      }
-
-      for (var i = 0; i < a.length; i++) {
-        if (a[i].item_id == id) {
-          a.splice(i, 1);
-        }
-      };
-
-      switch (page) {
-        case 'archive':
-          localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
-          render('archive');
-          showSuccessMessage('Unarchiving');
-          break;
-        case 'list':
-          localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
-          render('list');
-          showSuccessMessage('Archiving');
-          break;
-      }
-    }
   }
 }
 
 /**
 * Toggles items favourited state
 */
-// TODO: merge with toggleReadState and make one function
-// TODO: fix list and archive
-function toggleFavouritedState (id, isFavourited, page) {
-  document.getElementById("status").innerHTML = "Processing...";
+function toggleActionState (state, id, page, isFavourited = false) {
+  let action;
 
-  var action = (isFavourited == "true" ? "unfavorite" : "favorite");
+  if (state == 'read') {
+    switch (page) {
+      case 'archive':
+        action = 'readd';
+        document.getElementById("status").innerHTML = "Unarchiving...";
+      break;
+      case 'list':
+        action = 'archive';
+        document.getElementById("status").innerHTML = "Archiving...";
+      break;
+    }
+  } else if (state == 'favourite') {
+    action = (isFavourited == "true" ? "unfavorite" : "favorite");
+    document.getElementById("status").innerHTML = "Processing...";
+  }
 
   var actions = [{
     "action": action,
@@ -296,16 +248,23 @@ function toggleFavouritedState (id, isFavourited, page) {
 
       switch (page) {
         case 'archive':
-          a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-          break;
+        a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+        break;
         case 'list':
-          a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-          break;
+        a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+        break;
       }
 
       for (var i = 0; i < a.length; i++) {
         if (a[i].item_id == id) {
-          a[i].favorite = (isFavourited == "true" ? 0 : 1);
+          switch (state) {
+            case 'read':
+                a.splice(i, 1);
+              break;
+            case 'favourite':
+                a[i].favorite = (isFavourited == "true" ? 0 : 1);
+              break;
+          }
         }
       };
 
@@ -313,14 +272,22 @@ function toggleFavouritedState (id, isFavourited, page) {
         case 'archive':
           localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
           render('archive');
-          break;
+          if (state == 'read') {
+            showSuccessMessage('Unarchiving');
+          } else if (state == 'favourite') {
+            showSuccessMessage('Processing');
+          }
+        break;
         case 'list':
           localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
           render('list');
-          break;
+          if (state == 'read') {
+            showSuccessMessage('Archiving');
+          } else if (state == 'favourite') {
+            showSuccessMessage('Processing');
+          }
+        break;
       }
-
-      showSuccessMessage('Processing');
     }
   }
 }
@@ -354,23 +321,23 @@ function changePage (page) {
 
   switch (page) {
     case 'list':
-      document.getElementById("page").value = "list";
-      document.getElementById("title").innerHTML = "My Pocket List";
-      document.getElementById("status").innerHTML = "Synchronizing...";
-      getContent('list');
+    document.getElementById("page").value = "list";
+    document.getElementById("title").innerHTML = "My Pocket List";
+    document.getElementById("status").innerHTML = "Synchronizing...";
+    getContent('list');
 
-      document.getElementById('list').style.display = 'flex';
-      document.getElementById('archive-list').style.display = 'none';
-      break;
+    document.getElementById('list').style.display = 'flex';
+    document.getElementById('archive-list').style.display = 'none';
+    break;
     case 'archive':
-      document.getElementById("page").value = "archive";
-      document.getElementById("title").innerHTML = "Archive";
-      document.getElementById("status").innerHTML = "Synchronizing...";
-      getContent('archive');
+    document.getElementById("page").value = "archive";
+    document.getElementById("title").innerHTML = "Archive";
+    document.getElementById("status").innerHTML = "Synchronizing...";
+    getContent('archive');
 
-      document.getElementById('archive-list').style.display = 'flex';
-      document.getElementById('list').style.display = 'none';
-      break;
+    document.getElementById('archive-list').style.display = 'flex';
+    document.getElementById('list').style.display = 'none';
+    break;
   }
 }
 
