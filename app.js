@@ -42,6 +42,7 @@ function getContent (page = 'list') {
       }
 
       showSuccessMessage('Synchronize');
+      document.getElementById('default-message').style.display = 'none';
     } else {
       console.log(xmlhttp);
     }
@@ -66,6 +67,7 @@ function render (page) {
     break;
   }
   listElement.innerHTML = "";
+  // TODO: if array turns zero elements, show message that you do not have anything saved to pocket yet
 
   Object.keys(a).forEach(function(key) {
     let itemElement = document.createElement('li');
@@ -427,6 +429,23 @@ function importPocket () {
   getRequestCode(consumer_key);
 }
 
-window.onload = function(){
-  importPocket();
+function bindLoginClickEvent () {
+  var loginButtonClass = document.getElementsByClassName('js-login');
+  for (var i = 0; i < loginButtonClass.length; i++ ) {
+    loginButtonClass[i].addEventListener('click', function( ev ) {
+      ev.preventDefault();
+
+      importPocket();
+    }, false);
+  }
+}
+
+window.onload = function () {
+  if (localStorage.getItem('username')) {
+    document.getElementById('default-message').style.display = 'none';
+    importPocket();
+  } else {
+    document.getElementById('default-message').style.display = 'block';
+    bindLoginClickEvent();
+  }
 };

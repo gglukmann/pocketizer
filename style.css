@@ -197,3 +197,47 @@ a {
   color: #50bcb6;
   cursor: default;
 }
+
+.default-message {
+  margin-top: 5em;
+  text-align: center;
+}
+.default-message__text {
+  font-size: 1.3em;
+  padding: 1em;
+}
+
+.btn {
+  background-repeat: repeat-x;
+  background-color: #d3505a;
+  background-image: linear-gradient(to bottom,#ee5f64 0,#d3505a 100%);
+  border: 1px solid #D13644;
+  border-radius: 4px;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.4);
+  color: #fff;
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1;
+  margin: 0;
+  padding: 11px 45px;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: 0 -1px 0 rgba(142,4,17,.5);
+  transition: background-position .1s linear;
+  width: auto;
+  cursor: pointer;
+  outline: none;
+}
+.btn:hover {
+  background-position: 0 -15px;
+  color: #fff;
+  text-decoration: none;
+}
+.btn--login {
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
+  min-width: 12.125em;
+  padding: .8em 1.625em;
+  box-sizing: content-box;
+}

@@ -11,12 +11,12 @@
     <input type="hidden" id="page" value="list">
     <div id="status" class="status"></div>
     <div class="header">
-      <h2 class="title">
+      <h1 class="title">
         <a href="https://getpocket.com" title="Pocket homepage">
           <img src="logo.png" alt="Logo" class="logo" />
         </a>
         <span id="title">My Pocket List</span>
-      </h2>
+      </h1>
       <ul class="menu">
         <li class="menu__item">
           <a href="#0" class="menu__link menu__link--active js-changeMenu" data-page="list">My List</a>
@@ -26,6 +26,10 @@
         </li>
       </ul>
       <div id="user-name" class="user-name"></div>
+    </div>
+    <div id="default-message" class="default-message" style="display: none;">
+      <h2 class="default-message__text">Hello, log in to get started!</h2>
+      <button type="button" class="btn btn--login js-login">Log in with Pocket</button>
     </div>
     <ol id="list" class="list"></ol>
     <ol id="archive-list" class="list" style="display: none;"></ol>
