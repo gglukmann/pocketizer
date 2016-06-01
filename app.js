@@ -1,6 +1,8 @@
 var __request_code;
 var __access_token_string;
 
+// TODO: logout
+// TODO: what happends when clicking small browser_action icon 
 /**
 * Gets content from localStorage and from Pocket API to see if there are newer links
 */
@@ -68,10 +70,10 @@ function render (page) {
   }
   listElement.innerHTML = "";
 
-  // TODO: check if works with new account
   if (a.length == 0) {
     document.getElementById('empty-list-message').style.display = 'block';
-    return;
+  } else {
+    document.getElementById('empty-list-message').style.display = 'none';
   }
 
   Object.keys(a).forEach(function(key) {

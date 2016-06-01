@@ -213,8 +213,12 @@ a {
   text-align: center;
 }
 .message__text {
-  font-size: 1.3em;
+  font-size: 1.8em;
+  color: #999;
   padding: 1em;
+}
+.message__text--text-color {
+  color: #313131;
 }
 
 .btn {
