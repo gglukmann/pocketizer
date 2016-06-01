@@ -168,12 +168,19 @@ function render (page) {
 /**
 * Convert unix time to datetime format dd.mm.yyyy
 */
-function timeConverter(UNIX){
+function timeConverter (UNIX){
   let d = new Date(UNIX * 1000);
   let year = d.getFullYear();
   let month = ('0' + (d.getMonth() + 1)).slice(-2);
   let date = ('0' + d.getDate()).slice(-2);
   return date + '.' + month + '.' + year;
+}
+
+/**
+* Returns current unix timestamp
+*/
+function getCurrentUNIX () {
+  return Math.floor(Date.now() / 1000);
 }
 
 /**
@@ -185,9 +192,9 @@ function bindActionClickEvents () {
     buttonClass[i].addEventListener('click', function( ev ) {
       ev.preventDefault();
       let id = this.getAttribute('data-id');
-      let isRead = this.getAttribute('data-read');
+      let page = document.getElementById('page').value;
 
-      toggleReadState(id, isRead);
+      toggleReadState(id, page);
     }, false);
   }
 
@@ -197,8 +204,9 @@ function bindActionClickEvents () {
       ev.preventDefault();
       let id = this.getAttribute('data-id');
       let isFavourited = this.getAttribute('data-favourite');
+      let page = document.getElementById('page').value;
 
-      toggleFavouritedState(id, isFavourited);
+      toggleFavouritedState(id, isFavourited, page);
     }, false);
   }
 }
@@ -206,14 +214,14 @@ function bindActionClickEvents () {
 /**
 * Toggle items read state
 */
-function toggleReadState (id, isRead) {
+function toggleReadState (id, page) {
   let action;
-  switch (isRead) {
-    case 'true':
+  switch (page) {
+    case 'archive':
       action = 'readd';
       document.getElementById("status").innerHTML = "Unarchiving...";
       break;
-    case 'false':
+    case 'list':
       action = 'archive';
       document.getElementById("status").innerHTML = "Archiving...";
       break;
@@ -222,7 +230,7 @@ function toggleReadState (id, isRead) {
   var actions = [{
     "action": action,
     "item_id": id,
-    "time": Math.floor(Date.now() / 1000)
+    "time": getCurrentUNIX()
   }];
 
   xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/send", true);
@@ -232,11 +240,11 @@ function toggleReadState (id, isRead) {
     if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
       let a;
 
-      switch (isRead) {
-        case 'true':
+      switch (page) {
+        case 'archive':
           a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
           break;
-        case 'false':
+        case 'list':
           a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
           break;
       }
@@ -247,13 +255,13 @@ function toggleReadState (id, isRead) {
         }
       };
 
-      switch (isRead) {
-        case 'true':
+      switch (page) {
+        case 'archive':
           localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
           render('archive');
           showSuccessMessage('Unarchiving');
           break;
-        case 'false':
+        case 'list':
           localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
           render('list');
           showSuccessMessage('Archiving');
@@ -266,8 +274,9 @@ function toggleReadState (id, isRead) {
 /**
 * Toggles items favourited state
 */
+// TODO: merge with toggleReadState and make one function
 // TODO: fix list and archive
-function toggleFavouritedState (id, isFavourited) {
+function toggleFavouritedState (id, isFavourited, page) {
   document.getElementById("status").innerHTML = "Processing...";
 
   var action = (isFavourited == "true" ? "unfavorite" : "favorite");
@@ -275,7 +284,7 @@ function toggleFavouritedState (id, isFavourited) {
   var actions = [{
     "action": action,
     "item_id": id,
-    "time": Math.floor(Date.now() / 1000)
+    "time": getCurrentUNIX()
   }];
 
   xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/send", true);
@@ -283,7 +292,16 @@ function toggleFavouritedState (id, isFavourited) {
 
   xmlhttp.onreadystatechange = function () {
     if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
-      let a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+      let a;
+
+      switch (page) {
+        case 'archive':
+          a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+          break;
+        case 'list':
+          a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+          break;
+      }
 
       for (var i = 0; i < a.length; i++) {
         if (a[i].item_id == id) {
@@ -291,9 +309,16 @@ function toggleFavouritedState (id, isFavourited) {
         }
       };
 
-      localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
-
-      render('list');
+      switch (page) {
+        case 'archive':
+          localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
+          render('archive');
+          break;
+        case 'list':
+          localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
+          render('list');
+          break;
+      }
 
       showSuccessMessage('Processing');
     }
@@ -329,6 +354,7 @@ function changePage (page) {
 
   switch (page) {
     case 'list':
+      document.getElementById("page").value = "list";
       document.getElementById("title").innerHTML = "My Pocket List";
       document.getElementById("status").innerHTML = "Synchronizing...";
       getContent('list');
@@ -337,6 +363,7 @@ function changePage (page) {
       document.getElementById('archive-list').style.display = 'none';
       break;
     case 'archive':
+      document.getElementById("page").value = "archive";
       document.getElementById("title").innerHTML = "Archive";
       document.getElementById("status").innerHTML = "Synchronizing...";
       getContent('archive');
