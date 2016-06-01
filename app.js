@@ -67,7 +67,8 @@ function render (page) {
     break;
   }
   listElement.innerHTML = "";
-  
+
+  // TODO: check if works with new account
   if (a.length == 0) {
     document.getElementById('empty-list-message').style.display = 'block';
     return;
@@ -81,6 +82,7 @@ function render (page) {
     let linkElement = document.createElement('a');
     let fakeLinkElement = document.createElement('a');
     let readButtonElement = document.createElement('a');
+    let deleteButtonElement = document.createElement('a');
     let favouriteElement = document.createElement('a');
     let timeElement = document.createElement('div');
     let title;
@@ -110,6 +112,7 @@ function render (page) {
     let timeNode = document.createTextNode(timeConverter(a[key].time_added));
     let readNode;
     let isRead = false;
+    let deleteNode = document.createTextNode('Delete');
     switch (page) {
       case 'list':
       readNode = document.createTextNode('Mark as read');
@@ -130,6 +133,11 @@ function render (page) {
     readButtonElement.setAttribute('data-id', a[key].item_id);
     readButtonElement.setAttribute('data-read', isRead);
     readButtonElement.appendChild(readNode);
+
+    deleteButtonElement.setAttribute('class', 'item__delete js-deleteButton');
+    deleteButtonElement.setAttribute('href', '#0');
+    deleteButtonElement.setAttribute('data-id', a[key].item_id);
+    deleteButtonElement.appendChild(deleteNode);
 
     itemElement.setAttribute('class', 'item');
     contentElement.setAttribute('class', 'item__content');
@@ -154,6 +162,7 @@ function render (page) {
     contentElement.appendChild(excerptElement);
     contentElement.appendChild(linkElement);
     contentElement.appendChild(readButtonElement);
+    contentElement.appendChild(deleteButtonElement);
 
     listElement.appendChild(itemElement);
 
@@ -166,6 +175,7 @@ function render (page) {
     //     div.item__excerpt
     //     a.item__link
     //     a.item__set-read
+    //     a.item__delete
   });
 
   bindActionClickEvents();
@@ -204,6 +214,17 @@ function bindActionClickEvents () {
     }, false);
   }
 
+  var deleteButtonClass = document.getElementsByClassName('js-deleteButton');
+  for (var i = 0; i < deleteButtonClass.length; i++ ) {
+    deleteButtonClass[i].addEventListener('click', function( ev ) {
+      ev.preventDefault();
+      let id = this.getAttribute('data-id');
+      let page = document.getElementById('page').value;
+
+      toggleActionState('delete', id, page);
+    }, false);
+  }
+
   var favouriteButtonClass = document.getElementsByClassName('js-toggleFavouriteButton');
   for (var i = 0; i < favouriteButtonClass.length; i++ ) {
     favouriteButtonClass[i].addEventListener('click', function( ev ) {
@@ -237,6 +258,9 @@ function toggleActionState (state, id, page, isFavourited = false) {
   } else if (state == 'favourite') {
     action = (isFavourited == "true" ? "unfavorite" : "favorite");
     document.getElementById("status").innerHTML = "Processing...";
+  } else if (state == 'delete') {
+    action = 'delete';
+    document.getElementById("status").innerHTML = "Deleting...";
   }
 
   var actions = [{
@@ -265,6 +289,7 @@ function toggleActionState (state, id, page, isFavourited = false) {
         if (a[i].item_id == id) {
           switch (state) {
             case 'read':
+            case 'delete':
                 a.splice(i, 1);
               break;
             case 'favourite':
@@ -282,6 +307,8 @@ function toggleActionState (state, id, page, isFavourited = false) {
             showSuccessMessage('Unarchiving');
           } else if (state == 'favourite') {
             showSuccessMessage('Processing');
+          } else if (state == 'delete') {
+            showSuccessMessage('Deleting');
           }
         break;
         case 'list':
@@ -291,6 +318,8 @@ function toggleActionState (state, id, page, isFavourited = false) {
             showSuccessMessage('Archiving');
           } else if (state == 'favourite') {
             showSuccessMessage('Processing');
+          } else if (state == 'delete') {
+            showSuccessMessage('Deleting');
           }
         break;
       }

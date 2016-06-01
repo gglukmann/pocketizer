@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "New Tab - Pocket",
-  "description": "This extension shows all your unread Pocket links from new tab",
+  "description": "New tab page for all your Pocket links",
   "version": "0.1",
   "author": "Gert Glükmann @glukmann",
   "icons": {

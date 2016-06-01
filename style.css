@@ -74,7 +74,7 @@ a {
 .item__content {
   display: block;
   position: relative;
-  padding: 0 0 40px;
+  padding: 0 0 3.5em;
   transition: opacity .2s ease-out;
   width: 100%;
   overflow: hidden;
@@ -130,10 +130,20 @@ a {
   right: 1em;
   color: #999;
   font-size: 12px;
+  padding-top: .7em;
 }
 .item__link:hover,
-.item__set-read:hover {
+.item__set-read:hover,
+.item__delete:hover {
   color: #313131;
+}
+.item__delete {
+  position: absolute;
+  bottom: 2.2em;
+  right: 1em;
+  color: #999;
+  font-size: 12px;
+  z-index: 10;
 }
 
 .item__favourite {
