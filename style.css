@@ -35,6 +35,10 @@ a {
   padding-left: 10px;
   padding-right: 10px;
 }
+.title__count {
+  font-size: .6em;
+  color: #999;
+}
 
 .list {
   display: flex;

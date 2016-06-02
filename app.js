@@ -2,7 +2,7 @@ var __request_code;
 var __access_token_string;
 
 // TODO: logout
-// TODO: what happends when clicking small browser_action icon 
+// TODO: what happends when clicking small browser_action icon
 /**
 * Gets content from localStorage and from Pocket API to see if there are newer links
 */
@@ -35,10 +35,12 @@ function getContent (page = 'list') {
       switch (page) {
         case 'list':
         localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
+        localStorage.setItem('listCount', b.length);
         render('list');
         break;
         case 'archive':
         localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
+        localStorage.setItem('archiveCount', b.length);
         render('archive');
         break;
       }
@@ -62,10 +64,12 @@ function render (page) {
     case 'list':
     a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
     listElement = document.getElementById('list');
+    document.getElementById('count').innerHTML = localStorage.getItem('listCount');
     break;
     case 'archive':
     a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
     listElement = document.getElementById('archive-list');
+    document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
     break;
   }
   listElement.innerHTML = "";
