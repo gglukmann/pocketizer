@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "New Tab - Pocket",
   "description": "New tab page for all your Pocket links",
-  "version": "0.2",
+  "version": "0.3",
   "author": "Gert Glükmann @glukmann",
   "icons": {
     "256": "icon256.png"

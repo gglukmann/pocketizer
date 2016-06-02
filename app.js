@@ -308,6 +308,8 @@ function toggleActionState (state, id, page, isFavourited = false) {
       switch (page) {
         case 'archive':
           localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
+          localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
+          document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
           render('archive');
           if (state == 'read') {
             showSuccessMessage('Unarchiving');
@@ -319,6 +321,8 @@ function toggleActionState (state, id, page, isFavourited = false) {
         break;
         case 'list':
           localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
+          localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
+          document.getElementById('count').innerHTML = localStorage.getItem('listCount');
           render('list');
           if (state == 'read') {
             showSuccessMessage('Archiving');
@@ -338,7 +342,7 @@ function toggleActionState (state, id, page, isFavourited = false) {
 */
 function bindMenuClickEvents () {
   var changeMenuButtonClass = document.getElementsByClassName('js-changeMenu');
-  for (var i = 0; i < changeMenuButtonClass.length; i++ ) {
+  for (var i = 0; i < changeMenuButtonClass.length; i++) {
     changeMenuButtonClass[i].addEventListener('click', function( ev ) {
       ev.preventDefault();
       let page = this.getAttribute('data-page');
@@ -353,7 +357,7 @@ function bindMenuClickEvents () {
 */
 function changePage (page) {
   let menuLinkElements = document.getElementsByClassName('menu__link');
-  for (var i = 0; i < menuLinkElements.length; i++ ) {
+  for (var i = 0; i < menuLinkElements.length; i++) {
     menuLinkElements[i].classList.remove('menu__link--active');
     if (menuLinkElements[i].getAttribute('data-page') == page) {
       menuLinkElements[i].classList.add('menu__link--active');
