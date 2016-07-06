@@ -2,7 +2,6 @@ var __request_code;
 var __access_token_string;
 
 // TODO: logout
-// TODO: what happends when clicking small browser_action icon
 /**
 * Gets content from localStorage and from Pocket API to see if there are newer links
 */
@@ -413,7 +412,7 @@ function makeXmlhttprequest (method, url, flag) {
 
 function getRequestCode (consumer_key) {
   redirect_url = getRedirectUrl();
-  xmlhttp = makeXmlhttprequest ('POST', 'https://getpocket.com/v3/oauth/request', true)
+  xmlhttp = makeXmlhttprequest('POST', 'https://getpocket.com/v3/oauth/request', true);
   xmlhttp.onreadystatechange = function () {
     if ( xmlhttp.readyState === 4 ) {
 
@@ -474,9 +473,9 @@ function importPocket () {
 
 function bindLoginClickEvent () {
   var loginButtonClass = document.getElementsByClassName('js-login');
-  for (var i = 0; i < loginButtonClass.length; i++ ) {
-    loginButtonClass[i].addEventListener('click', function( ev ) {
-      ev.preventDefault();
+  for (var i = 0; i < loginButtonClass.length; i++) {
+    loginButtonClass[i].addEventListener('click', function(e) {
+      e.preventDefault();
 
       importPocket();
     }, false);
@@ -492,3 +491,8 @@ window.onload = function () {
     bindLoginClickEvent();
   }
 };
+
+// browser icon click
+chrome.browserAction.onClicked.addListener(function(activeTab){
+  chrome.tabs.create({ url: 'page.html' });
+});

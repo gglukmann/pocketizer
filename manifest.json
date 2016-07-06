@@ -18,6 +18,7 @@
     "matches": [ "https://*.getpocket.com/*"]
   }],
   "permissions": [
-    "identity"
+    "identity",
+    "tabs"
   ]
 }
