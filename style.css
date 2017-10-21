@@ -253,11 +253,28 @@ a {
   text-decoration: none;
 }
 .btn--login {
-  -moz-box-sizing: content-box;
-  -webkit-box-sizing: content-box;
   min-width: 12.125em;
   padding: .8em 1.625em;
+  -moz-box-sizing: content-box;
+  -webkit-box-sizing: content-box;
   box-sizing: content-box;
+}
+.btn--link {
+    background: none;
+    padding: 0;
+    box-shadow: none;
+    border: 0;
+    vertical-align: middle;
+    color: #9f9f9f;
+}
+.btn--link:hover {
+    color: #313131;
+}
+
+.icon {
+    height: 1em;
+    width: 1em;
+    fill: currentColor;
 }
 
 .rainbow {
