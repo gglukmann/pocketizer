@@ -162,7 +162,7 @@ const pocketExtension = (() => {
 
             excerptElement.setAttribute('class', 'item__excerpt');
 
-            if (a[key].has_image == 1 || a[key].has_image == 2) {
+            if ((a[key].has_image == 1 || a[key].has_image == 2) && a[key].image) {
                 let imageElement = document.createElement('img');
                 imageElement.setAttribute('data-src', a[key].image.src);
                 imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
