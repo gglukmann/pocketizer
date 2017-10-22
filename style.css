@@ -111,6 +111,10 @@ a {
     display: block;
   }
 }
+.item__excerpt--image {
+    padding-left: 0;
+    padding-right: 0;
+}
 
 .item__link {
   position: absolute;
@@ -166,6 +170,11 @@ a {
 }
 .item__favourite:hover {
   box-shadow: 0 2px 1px rgba(0,0,0,.1);
+}
+
+.item__image {
+    width: 100%;
+    height: auto;
 }
 
 .header {

@@ -117,7 +117,6 @@ const pocketExtension = (() => {
             contentElement.appendChild(favouriteElement);
 
             let textNode = document.createTextNode(title);
-            let excerptNode = document.createTextNode(a[key].excerpt);
             let linkNode = document.createTextNode(a[key].resolved_url);
             let timeNode = document.createTextNode(timeConverter(a[key].time_added));
             let readNode;
@@ -160,8 +159,21 @@ const pocketExtension = (() => {
             titleElement.setAttribute('href', a[key].resolved_url);
             titleElement.setAttribute('class', 'item__title');
             titleElement.appendChild(textNode);
+
             excerptElement.setAttribute('class', 'item__excerpt');
-            excerptElement.appendChild(excerptNode);
+
+            if (a[key].has_image == 1 || a[key].has_image == 2) {
+                let imageElement = document.createElement('img');
+                imageElement.setAttribute('data-src', a[key].image.src);
+                imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+                imageElement.setAttribute('class', 'item__image lazyload');
+                excerptElement.className += ' item__excerpt--image';
+                excerptElement.appendChild(imageElement);
+            } else {
+                let excerptNode = document.createTextNode(a[key].excerpt);
+                excerptElement.appendChild(excerptNode);
+            }
+
             linkElement.setAttribute('class', 'item__link');
             linkElement.setAttribute('href', a[key].resolved_url);
             linkElement.setAttribute('title', a[key].resolved_url);
