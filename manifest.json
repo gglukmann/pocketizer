@@ -20,10 +20,10 @@
     "content_scripts": [{
         "js": [ "app.js" ],
         "matches": [ "https://*.getpocket.com/*"]
-        }],
-        "permissions": [
-            "identity",
-            "tabs",
-            "https://*.getpocket.com/*"
-        ]
-    }
+    }],
+    "permissions": [
+        "identity",
+        "tabs",
+        "https://*.getpocket.com/*"
+    ]
+}

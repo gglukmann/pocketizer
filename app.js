@@ -1,8 +1,6 @@
 'use strict';
 
 const pocketExtension = (() => {
-    const __redirect_url = "https://ikndkhohinloomoacdggllledgjehkcf.chromiumapp.org/provider_cb";
-    const __consumer_key = "55040-ed8b0dbe5ae62e1c6ed82f28";
     let __request_token;
     let __access_token;
 
@@ -22,7 +20,7 @@ const pocketExtension = (() => {
         }
 
         let xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true);
-        xmlhttp.send("consumer_key=" + __consumer_key + "&access_token=" + localStorage.getItem('token') + "&state=" + state);
+        xmlhttp.send("consumer_key=" + __consumer_key + "&access_token=" + localStorage.getItem('token') + "&state=" + state + "&detailType=complete");
 
         xmlhttp.onreadystatechange = () => {
             if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
@@ -458,13 +456,16 @@ const pocketExtension = (() => {
         }
     }
 
-    function loggedIn() {
-        document.getElementById('js-logout').style.display = 'inline-block';
+    function showLoggedInContent() {
         document.getElementById('default-message').style.display = 'none';
         document.getElementById('count-wrapper').style.display = 'inline-block';
         document.getElementById('menu').style.display = 'flex';
         document.getElementById('list').style.display = 'flex';
         document.getElementById('user-name').style.display = 'inline-block';
+    }
+
+    function loggedIn() {
+        showLoggedInContent();
 
         // get content from pocket api
         getContent('list');
@@ -476,11 +477,7 @@ const pocketExtension = (() => {
     function startSync() {
         document.getElementById('status').innerText = "Synchronizing...";
 
-        document.getElementById('default-message').style.display = 'none';
-        document.getElementById('count-wrapper').style.display = 'inline-block';
-        document.getElementById('menu').style.display = 'flex';
-        document.getElementById('list').style.display = 'flex';
-        document.getElementById('user-name').style.display = 'inline-block';
+        showLoggedInContent();
 
         if (localStorage.getItem('username')) {
             document.getElementById('user-name').innerText = localStorage.getItem('username');
