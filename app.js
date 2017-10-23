@@ -94,6 +94,7 @@ const pocketExtension = (() => {
             let readButtonElement = document.createElement('a');
             let deleteButtonElement = document.createElement('a');
             let favouriteElement = document.createElement('a');
+            let pocketLinkElement = document.createElement('a');
             let timeElement = document.createElement('div');
             let title;
 
@@ -118,6 +119,7 @@ const pocketExtension = (() => {
 
             let textNode = document.createTextNode(title);
             let linkNode = document.createTextNode(a[key].resolved_url);
+            let pocketLinkNode = document.createTextNode('Open in Pocket');
             let timeNode = document.createTextNode(timeConverter(a[key].time_added));
             let readNode;
             let isRead = false;
@@ -174,6 +176,11 @@ const pocketExtension = (() => {
                 excerptElement.appendChild(excerptNode);
             }
 
+            pocketLinkElement.setAttribute('class', 'item__pocket-link');
+            pocketLinkElement.setAttribute('href', 'https://getpocket.com/a/read/' + a[key].item_id);
+            pocketLinkElement.setAttribute('title', 'Open in Pocket');
+            pocketLinkElement.appendChild(pocketLinkNode);
+
             linkElement.setAttribute('class', 'item__link');
             linkElement.setAttribute('href', a[key].resolved_url);
             linkElement.setAttribute('title', a[key].resolved_url);
@@ -184,6 +191,7 @@ const pocketExtension = (() => {
             contentElement.appendChild(timeElement);
             contentElement.appendChild(excerptElement);
             contentElement.appendChild(linkElement);
+            contentElement.appendChild(pocketLinkElement);
             contentElement.appendChild(readButtonElement);
             contentElement.appendChild(deleteButtonElement);
 

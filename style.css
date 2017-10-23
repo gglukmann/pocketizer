@@ -123,8 +123,8 @@ a {
   right: 90px;
   color: #999;
   font-size: 12px;
+  padding-top: .7em;
   text-decoration: none;
-  display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -142,7 +142,8 @@ a {
 }
 .item__link:hover,
 .item__set-read:hover,
-.item__delete:hover {
+.item__delete:hover,
+.item__pocket-link:hover {
   color: #313131;
 }
 .item__delete {
@@ -175,6 +176,15 @@ a {
 .item__image {
     width: 100%;
     height: auto;
+}
+
+.item__pocket-link {
+    position: absolute;
+    left: 1em;
+    bottom: 2.2em;
+    color: #999;
+    font-size: 12px;
+    z-index: 10;
 }
 
 .header {
