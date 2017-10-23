@@ -5,8 +5,11 @@ const pocketExtension = (() => {
     let __access_token;
 
     /**
-    * Gets content from localStorage and from Pocket API to see if there are newer links
-    */
+     * Gets content from localStorage and from Pocket API to see if there are newer links
+     * @method getContent
+     * @param  {String} [page='list'] Default show 'my list' view
+     * @return {void}
+     */
     function getContent(page = 'list') {
         let state;
 
@@ -58,9 +61,12 @@ const pocketExtension = (() => {
     }
 
     /**
-    * Renders from localStorage
-    */
-    function render(page) {
+     * Renders from localStorage
+     * @method render
+     * @param  {String} [page='list'] Default render 'my list' view
+     * @return {void}
+     */
+    function render(page = 'list') {
         let a;
         let listElement;
 
@@ -211,8 +217,11 @@ const pocketExtension = (() => {
     }
 
     /**
-    * Convert unix time to datetime format dd.mm.yyyy
-    */
+     * Convert unix time to datetime format dd.mm.yyyy
+     * @method timeConverter
+     * @param  {Number} UNIX Unix timestamp
+     * @return {Number}      dd.mm.yyyy
+     */
     function timeConverter(UNIX){
         let d = new Date(UNIX * 1000);
         let year = d.getFullYear();
@@ -222,15 +231,19 @@ const pocketExtension = (() => {
     }
 
     /**
-    * Returns current unix timestamp
-    */
+     * Returns current unix timestamp
+     * @method getCurrentUNIX
+     * @return {Number} Current time unix timestamp
+     */
     function getCurrentUNIX() {
         return Math.floor(Date.now() / 1000);
     }
 
     /**
-    * Binds click events for action buttons
-    */
+     * Binds click events for action buttons
+     * @method bindActionClickEvents
+     * @return {void}
+     */
     function bindActionClickEvents() {
         document.body.addEventListener('click', function(e) {
             if (e.target.classList.contains('js-toggleFavouriteButton')) {
@@ -261,8 +274,41 @@ const pocketExtension = (() => {
     }
 
     /**
-    * Toggles items favourited state
-    */
+     * Bind menu change click events
+     * @method bindMenuClickEvents
+     * @return {void}
+     */
+    function bindMenuClickEvents() {
+        document.body.addEventListener('click', function(e) {
+            if (e.target.classList.contains('js-changeMenu')) {
+                e.preventDefault();
+                let page = e.target.dataset.page;
+
+                changePage(page);
+            }
+        });
+    }
+
+    /**
+     * Bind login button click event
+     * @method bindLoginClickEvent
+     * @return {void}
+     */
+    function bindLoginClickEvent() {
+        document.getElementById('js-login').addEventListener('click', () => {
+            startLogin();
+        }, false);
+    }
+
+    /**
+     * Toggles item state
+     * @method toggleActionState
+     * @param  {String}  state                Current state
+     * @param  {Number}  id                   Item id
+     * @param  {String}  page                 Page name
+     * @param  {Boolean} [isFavourited=false] If should be favourited
+     * @return {void}
+     */
     function toggleActionState(state, id, page, isFavourited = false) {
         let action;
 
@@ -358,22 +404,11 @@ const pocketExtension = (() => {
     }
 
     /**
-    * Bind menu change click events
-    */
-    function bindMenuClickEvents() {
-        document.body.addEventListener('click', function(e) {
-            if (e.target.classList.contains('js-changeMenu')) {
-                e.preventDefault();
-                let page = e.target.dataset.page;
-
-                changePage(page);
-            }
-        });
-    }
-
-    /**
-    * Change page from list to archive
-    */
+     * Change page between list and archive
+     * @method changePage
+     * @param  {String} page Page to change to
+     * @return {void}
+     */
     function changePage(page) {
         let menuLinkElements = document.getElementsByClassName('menu__link');
         for (var i = 0; i < menuLinkElements.length; i++) {
@@ -408,8 +443,11 @@ const pocketExtension = (() => {
     }
 
     /**
-    * Shows success message
-    */
+     * Shows success message
+     * @method showSuccessMessage
+     * @param  {String} message Message text first part
+     * @return {void}
+     */
     function showSuccessMessage(message) {
         document.getElementById('status').innerText = message + " successful!";
 
@@ -418,6 +456,14 @@ const pocketExtension = (() => {
         }, 2000);
     }
 
+    /**
+     * Make Xmlhttprequest
+     * @method makeXmlhttprequest
+     * @param  {String} method GET, POST method
+     * @param  {String} url    Url to make request
+     * @param  {Boolean} flag  Flag for request
+     * @return {Object}        Request
+     */
     function makeXmlhttprequest(method, url, flag) {
         let xmlhttp = new XMLHttpRequest();
         xmlhttp.open(method, url, flag);
@@ -425,6 +471,11 @@ const pocketExtension = (() => {
         return xmlhttp;
     }
 
+    /**
+     * Get access token from Pocket
+     * @method getAccessToken
+     * @return {void}
+     */
     function getAccessToken() {
         let xmlhttp = makeXmlhttprequest('POST', 'https://getpocket.com/v3/oauth/authorize', true);
         xmlhttp.send("consumer_key=" + __consumer_key + "&code=" + __request_token);
@@ -448,6 +499,11 @@ const pocketExtension = (() => {
         }
     }
 
+    /**
+     * Open Pocket auth view from Chrome launchWebAuthFlow
+     * @method launchChromeWebAuthFlow
+     * @return {void}
+     */
     function launchChromeWebAuthFlow() {
         chrome.identity.launchWebAuthFlow({'url': "https://getpocket.com/auth/authorize?request_token=" + __request_token + "&redirect_uri=" + __redirect_url, 'interactive': true}, () => {
             if (chrome.runtime.lastError) {
@@ -459,6 +515,11 @@ const pocketExtension = (() => {
         });
     }
 
+    /**
+     * Get Request token from Pocket
+     * @method getRequestToken
+     * @return {void}
+     */
     function getRequestToken() {
         let xmlhttp = makeXmlhttprequest('POST', 'https://getpocket.com/v3/oauth/request', true);
         xmlhttp.send("consumer_key="+ __consumer_key +"&redirect_uri="+ __redirect_url);
@@ -476,14 +537,25 @@ const pocketExtension = (() => {
         }
     }
 
+    /**
+     * Show right elements when coming to new tab or logging in
+     * @method showLoggedInContent
+     * @return {void}
+     */
     function showLoggedInContent() {
         document.getElementById('default-message').style.display = 'none';
         document.getElementById('count-wrapper').style.display = 'inline-block';
         document.getElementById('menu').style.display = 'flex';
         document.getElementById('list').style.display = 'flex';
         document.getElementById('user-name').style.display = 'inline-block';
+        document.getElementById('js-logout').style.display = 'inline-block';
     }
 
+    /**
+     * Show right content after loging in
+     * @method loggedIn
+     * @return {void}
+     */
     function loggedIn() {
         showLoggedInContent();
 
@@ -494,8 +566,15 @@ const pocketExtension = (() => {
         bindActionClickEvents();
     }
 
+    /**
+     * Show content from localStorage and start sync with Pocket
+     * @method startSync
+     * @return {void}
+     */
     function startSync() {
         document.getElementById('status').innerText = "Synchronizing...";
+
+        render('list');
 
         showLoggedInContent();
 
@@ -503,23 +582,26 @@ const pocketExtension = (() => {
             document.getElementById('user-name').innerText = localStorage.getItem('username');
         }
 
-        render('list');
-        getContent('list');
-
         bindMenuClickEvents();
         bindActionClickEvents();
+
+        getContent('list');
     }
 
+    /**
+     * Start login flow
+     * @method startLogin
+     * @return {void}
+     */
     function startLogin() {
         getRequestToken();
     }
 
-    function bindLoginClickEvent() {
-        document.getElementById('js-login').addEventListener('click', () => {
-            startLogin();
-        }, false);
-    }
-
+    /**
+     * Clear localStorage and show and hide right elements
+     * @method logout
+     * @return {void}
+     */
     function logout() {
         localStorage.clear();
 
@@ -539,8 +621,6 @@ const pocketExtension = (() => {
     return {
         onload: () => {
             if (localStorage.getItem('token')) {
-                document.getElementById('js-logout').style.display = 'inline-block';
-                document.getElementById('default-message').style.display = 'none';
                 startSync();
             } else {
                 document.getElementById('default-message').style.display = 'block';
