@@ -1,9 +1,9 @@
 {
     "name": "New Tab - Pocket",
-    "version": "1.1.2",
+    "version": "1.1.3",
     "manifest_version": 2,
     "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAi9dpMYpUQYOSGjoL0NQdsY31N76mROIDppJ4V7wrdOUp4/bMGy6A45/pHSfKbdpn4xMwoIaSoguyx7F1Nlq7nhJzPLNcDNzNogmrvzBrZmjc+T4bk7DITkn7lbTwAwxQt7pExwIu6jaI6kjz403vD0MZ/d0DtVrqEY9IyC0VuPMEXoLGYV+T1fFJxUzuXRVeelSg1DItWNTZnrFkdnajyOg9jbNWQ0D/GZCvRJ44qF8HMvtfGajCXYdMYqnSyWUWme1QItrctdE15mEcf726uAbv5vFDM5w6nDJR0eEiu5N6D0xwr73jM2MGlIn2tr+bJIZakpotYHftOkpvYOtagQIDAQAB",
-    "description": "New tab page for all your Pocket links",
+    "description": "Unofficial Pocket new tab extension for Chrome. See all your Pocket links right on new tab.",
     "author": "Gert Glükmann @glukmann",
     "homepage_url": "http://gglukmann.github.io/pocket",
     "icons": {
