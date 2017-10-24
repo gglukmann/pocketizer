@@ -628,6 +628,8 @@ const pocketExtension = (() => {
      * @return {void}
      */
     function loggedIn() {
+        document.getElementById('status').innerText = "Synchronizing...";
+        
         showLoggedInContent();
 
         // get content from pocket api
