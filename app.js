@@ -233,7 +233,7 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Craete HTMLElement
+     * Create HTMLElement
      * @method createNode
      * @param  {String} element Element type
      * @return {HTMLElement}         Created HTMLElement
@@ -246,7 +246,7 @@ const pocketExtension = (() => {
      * Create text node
      * @method createTextNode
      * @param  {String} element Text to add to HTMLElement
-     * @return {Object}         Craeted text node
+     * @return {Object}         Created text node
      */
     function createTextNode(element) {
         return document.createTextNode(element);
@@ -629,7 +629,7 @@ const pocketExtension = (() => {
      */
     function loggedIn() {
         document.getElementById('status').innerText = "Synchronizing...";
-        
+
         showLoggedInContent();
 
         // get content from pocket api
