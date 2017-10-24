@@ -342,8 +342,11 @@ const pocketExtension = (() => {
      * @return {void}
      */
     function bindLoginClickEvent() {
-        document.getElementById('js-login').addEventListener('click', () => {
+        let loginButton = document.getElementById('js-login');
+        loginButton.addEventListener('click', () => {
             startLogin();
+
+            loginButton.disabled = true;
         }, false);
     }
 
@@ -565,8 +568,11 @@ const pocketExtension = (() => {
         chrome.identity.launchWebAuthFlow({'url': __url_auth + '?request_token=' + __request_token + '&redirect_uri=' + __redirect_url, 'interactive': true}, (redirectUrl) => {
             if (chrome.runtime.lastError) {
                 console.log(new Error(chrome.runtime.lastError.message));
+                document.getElementById('js-login').disabled = false;
                 return;
             }
+
+            document.getElementById('js-login').disabled = false;
 
             getAccessToken();
         });

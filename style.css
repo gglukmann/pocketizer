@@ -271,6 +271,13 @@ a {
   color: #fff;
   text-decoration: none;
 }
+.btn:disabled {
+    opacity: .7;
+    cursor: default;
+}
+.btn:disabled:hover {
+    background-position: 0 0;
+}
 .btn--login {
   min-width: 12.125em;
   padding: .8em 1.625em;
