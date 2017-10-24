@@ -3,6 +3,12 @@
 const pocketExtension = (() => {
     let __request_token;
     let __access_token;
+    const __redirect_url = chrome.identity.getRedirectURL() + 'oauth';
+    const __url_request = 'https://getpocket.com/v3/oauth/request';
+    const __url_authorize = 'https://getpocket.com/v3/oauth/authorize';
+    const __url_auth = 'https://getpocket.com/auth/authorize';
+    const __url_get = 'https://getpocket.com/v3/get';
+    const __url_send = 'https://getpocket.com/v3/send';
 
     /**
      * Gets content from localStorage and from Pocket API to see if there are newer links
@@ -22,42 +28,63 @@ const pocketExtension = (() => {
             break;
         }
 
-        let xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/get", true);
-        xmlhttp.send("consumer_key=" + __consumer_key + "&access_token=" + localStorage.getItem('token') + "&state=" + state + "&detailType=complete");
-
-        xmlhttp.onreadystatechange = () => {
-            if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
-                let a = JSON.parse(xmlhttp.response);
-                let b = [];
-
-                Object.keys(a.list).forEach(key => {
-                    b.push(a.list[key]);
-                });
-
-                b.sort((x, y) => {
-                    return x.sort_id - y.sort_id;
-                });
-
-                switch (page) {
-                    case 'list':
-                        localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
-                        localStorage.setItem('listCount', b.length);
-
-                        render('list');
-                    break;
-                    case 'archive':
-                        localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
-                        localStorage.setItem('archiveCount', b.length);
-
-                        render('archive');
-                    break;
-                }
-
-                showSuccessMessage('Synchronize');
-            } else {
-                console.log(xmlhttp);
+        let fetchData = {
+            method: 'POST',
+            body: JSON.stringify({
+                access_token: localStorage.getItem('token'),
+                consumer_key: __consumer_key,
+                state: state,
+                detailType: 'complete'
+            }),
+            headers: {
+                'Content-Type': 'application/json; charset=UTF8'
             }
         }
+
+        fetch(__url_get, fetchData)
+            .then(response => response.json())
+            .then(response => {
+                sortGetResponse(response, page);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
+
+    /**
+     * Sort get response, add to localstorage and render page again
+     * @method sortGetResponse
+     * @param  {Object} response response from fetch
+     * @return {void}
+     */
+    function sortGetResponse(response, page) {
+        let b = [];
+        let items = response.list;
+
+        for (let key in items) {
+            b.push(items[key]);
+        }
+
+        b.sort((x, y) => {
+            return x.sort_id - y.sort_id;
+        });
+
+        switch (page) {
+            case 'list':
+                localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
+                localStorage.setItem('listCount', b.length);
+
+                render('list');
+            break;
+            case 'archive':
+                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
+                localStorage.setItem('archiveCount', b.length);
+
+                render('archive');
+            break;
+        }
+
+        showSuccessMessage('Synchronize');
     }
 
     /**
@@ -91,17 +118,17 @@ const pocketExtension = (() => {
         }
 
         Object.keys(a).forEach(key => {
-            let itemElement = document.createElement('li');
-            let contentElement = document.createElement('div');
-            let excerptElement = document.createElement('div');
-            let titleElement = document.createElement('a');
-            let linkElement = document.createElement('a');
-            let fakeLinkElement = document.createElement('a');
-            let readButtonElement = document.createElement('a');
-            let deleteButtonElement = document.createElement('a');
-            let favouriteElement = document.createElement('a');
-            let pocketLinkElement = document.createElement('a');
-            let timeElement = document.createElement('div');
+            let itemElement = createNode('li');
+            let contentElement = createNode('div');
+            let excerptElement = createNode('div');
+            let titleElement = createNode('a');
+            let linkElement = createNode('a');
+            let fakeLinkElement = createNode('a');
+            let readButtonElement = createNode('a');
+            let deleteButtonElement = createNode('a');
+            let favouriteElement = createNode('a');
+            let pocketLinkElement = createNode('a');
+            let timeElement = createNode('div');
             let title;
 
             if (a[key].resolved_title == '' && a[key].given_title == '') {
@@ -121,99 +148,119 @@ const pocketExtension = (() => {
             favouriteElement.setAttribute('href', '#0');
             favouriteElement.setAttribute('title', 'Toggle favourited state');
             favouriteElement.setAttribute('data-id', a[key].item_id);
-            contentElement.appendChild(favouriteElement);
+            append(contentElement, favouriteElement);
 
-            let textNode = document.createTextNode(title);
-            let linkNode = document.createTextNode(a[key].resolved_url);
-            let pocketLinkNode = document.createTextNode('Open in Pocket');
-            let timeNode = document.createTextNode(timeConverter(a[key].time_added));
+            let textNode = createTextNode(title);
+            let linkNode = createTextNode(a[key].resolved_url);
+            let pocketLinkNode = createTextNode('Open in Pocket');
+            let timeNode = createTextNode(timeConverter(a[key].time_added));
             let readNode;
             let isRead = false;
-            let deleteNode = document.createTextNode('Delete');
+            let deleteNode = createTextNode('Delete');
 
             switch (page) {
                 case 'list':
-                    readNode = document.createTextNode('Mark as read');
+                    readNode = createTextNode('Mark as read');
                     isRead = false;
                 break;
                 case 'archive':
-                    readNode = document.createTextNode('Mark unread')
+                    readNode = createTextNode('Mark unread')
                     isRead = true;
                 break;
             };
 
             timeElement.setAttribute('class', 'item__time');
             timeElement.setAttribute('title', 'Date added');
-            timeElement.appendChild(timeNode);
+            append(timeElement, timeNode);
 
             readButtonElement.setAttribute('class', 'item__set-read js-toggleReadButton');
             readButtonElement.setAttribute('href', '#0');
             readButtonElement.setAttribute('data-id', a[key].item_id);
             readButtonElement.setAttribute('data-read', isRead);
-            readButtonElement.appendChild(readNode);
+            append(readButtonElement, readNode);
 
             deleteButtonElement.setAttribute('class', 'item__delete js-deleteButton');
             deleteButtonElement.setAttribute('href', '#0');
             deleteButtonElement.setAttribute('data-id', a[key].item_id);
-            deleteButtonElement.appendChild(deleteNode);
+            append(deleteButtonElement, deleteNode);
 
             itemElement.setAttribute('class', 'item');
             contentElement.setAttribute('class', 'item__content');
-            itemElement.appendChild(contentElement);
+            append(itemElement, contentElement);
 
             fakeLinkElement.setAttribute('href', a[key].resolved_url);
             fakeLinkElement.setAttribute('class', 'item__fake-link');
 
             titleElement.setAttribute('href', a[key].resolved_url);
             titleElement.setAttribute('class', 'item__title');
-            titleElement.appendChild(textNode);
+            append(titleElement, textNode);
 
             excerptElement.setAttribute('class', 'item__excerpt');
 
             if ((a[key].has_image == 1 || a[key].has_image == 2) && a[key].image) {
-                let imageElement = document.createElement('img');
+                let imageElement = createNode('img');
                 imageElement.setAttribute('data-src', a[key].image.src);
                 imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
                 imageElement.setAttribute('class', 'item__image lazyload');
                 excerptElement.className += ' item__excerpt--image';
-                excerptElement.appendChild(imageElement);
+                append(excerptElement, imageElement);
             } else {
-                let excerptNode = document.createTextNode(a[key].excerpt);
-                excerptElement.appendChild(excerptNode);
+                let excerptNode = createTextNode(a[key].excerpt);
+                append(excerptElement, excerptNode);
             }
 
             pocketLinkElement.setAttribute('class', 'item__pocket-link');
             pocketLinkElement.setAttribute('href', 'https://getpocket.com/a/read/' + a[key].item_id);
             pocketLinkElement.setAttribute('title', 'Open in Pocket');
-            pocketLinkElement.appendChild(pocketLinkNode);
+            append(pocketLinkElement, pocketLinkNode);
 
             linkElement.setAttribute('class', 'item__link');
             linkElement.setAttribute('href', a[key].resolved_url);
             linkElement.setAttribute('title', a[key].resolved_url);
-            linkElement.appendChild(linkNode);
+            append(linkElement, linkNode);
 
-            contentElement.appendChild(fakeLinkElement);
-            contentElement.appendChild(titleElement);
-            contentElement.appendChild(timeElement);
-            contentElement.appendChild(excerptElement);
-            contentElement.appendChild(linkElement);
-            contentElement.appendChild(pocketLinkElement);
-            contentElement.appendChild(readButtonElement);
-            contentElement.appendChild(deleteButtonElement);
+            append(contentElement, fakeLinkElement);
+            append(contentElement, titleElement);
+            append(contentElement, timeElement);
+            append(contentElement, excerptElement);
+            append(contentElement, linkElement);
+            append(contentElement, pocketLinkElement);
+            append(contentElement, readButtonElement);
+            append(contentElement, deleteButtonElement);
 
-            listElement.appendChild(itemElement);
-
-            // li.item
-            //   div.item__content
-            //     a.item__favourite
-            //     a.item__fake-link
-            //     a.item__title
-            //     div.item__time
-            //     div.item__excerpt
-            //     a.item__link
-            //     a.item__set-read
-            //     a.item__delete
+            append(listElement, itemElement);
         });
+    }
+
+    /**
+     * Craete HTMLElement
+     * @method createNode
+     * @param  {String} element Element type
+     * @return {HTMLElement}         Created HTMLElement
+     */
+    function createNode(element) {
+        return document.createElement(element);
+    }
+
+    /**
+     * Create text node
+     * @method createTextNode
+     * @param  {String} element Text to add to HTMLElement
+     * @return {Object}         Craeted text node
+     */
+    function createTextNode(element) {
+        return document.createTextNode(element);
+    }
+
+    /**
+     * Append element to parent
+     * @method append
+     * @param  {HTMLElement} parent Parent element
+     * @param  {HTMLElement} el     Child element
+     * @return {HTMLElement}        Element with appended child
+     */
+    function append(parent, el) {
+        return parent.appendChild(el);
     }
 
     /**
@@ -331,29 +378,39 @@ const pocketExtension = (() => {
             document.getElementById("status").innerHTML = "Deleting...";
         }
 
-        var actions = [{
+        let actions = [{
             "action": action,
             "item_id": id,
             "time": getCurrentUNIX()
         }];
 
-        let xmlhttp = makeXmlhttprequest("POST", "https://getpocket.com/v3/send", true);
-        xmlhttp.send("consumer_key=" + __consumer_key + "&access_token=" + localStorage.getItem('token') + "&actions=" + JSON.stringify(actions));
+        let fetchData = {
+            method: 'POST',
+            body: JSON.stringify({
+                access_token: localStorage.getItem('token'),
+                consumer_key: __consumer_key,
+                actions: actions
+            }),
+            headers: {
+                'Content-Type': 'application/json; charset=UTF8'
+            }
+        }
 
-        xmlhttp.onreadystatechange = () => {
-            if (xmlhttp.readyState == 4 && xmlhttp.status === 200) {
+        fetch(__url_send, fetchData)
+            .then(response => response.json())
+            .then(response => {
                 let a;
 
                 switch (page) {
-                    case 'archive':
-                        a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-                    break;
                     case 'list':
                         a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
                     break;
+                    case 'archive':
+                        a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+                    break;
                 }
 
-                for (var i = 0; i < a.length; i++) {
+                for (let i = 0; i < a.length; i++) {
                     if (a[i].item_id == id) {
                         switch (state) {
                             case 'read':
@@ -368,21 +425,6 @@ const pocketExtension = (() => {
                 };
 
                 switch (page) {
-                    case 'archive':
-                        localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
-                        localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                        document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
-
-                        render('archive');
-
-                        if (state == 'read') {
-                            showSuccessMessage('Unarchiving');
-                        } else if (state == 'favourite') {
-                            showSuccessMessage('Processing');
-                        } else if (state == 'delete') {
-                            showSuccessMessage('Deleting');
-                        }
-                    break;
                     case 'list':
                         localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
                         localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
@@ -398,9 +440,26 @@ const pocketExtension = (() => {
                             showSuccessMessage('Deleting');
                         }
                     break;
+                    case 'archive':
+                        localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
+                        localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
+                        document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
+
+                        render('archive');
+
+                        if (state == 'read') {
+                            showSuccessMessage('Unarchiving');
+                        } else if (state == 'favourite') {
+                            showSuccessMessage('Processing');
+                        } else if (state == 'delete') {
+                            showSuccessMessage('Deleting');
+                        }
+                    break;
                 }
-            }
-        }
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     /**
@@ -411,7 +470,7 @@ const pocketExtension = (() => {
      */
     function changePage(page) {
         let menuLinkElements = document.getElementsByClassName('menu__link');
-        for (var i = 0; i < menuLinkElements.length; i++) {
+        for (let i = 0; i < menuLinkElements.length; i++) {
             menuLinkElements[i].classList.remove('menu__link--active');
             if (menuLinkElements[i].getAttribute('data-page') == page) {
                 menuLinkElements[i].classList.add('menu__link--active');
@@ -457,57 +516,55 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Make Xmlhttprequest
-     * @method makeXmlhttprequest
-     * @param  {String} method GET, POST method
-     * @param  {String} url    Url to make request
-     * @param  {Boolean} flag  Flag for request
-     * @return {Object}        Request
-     */
-    function makeXmlhttprequest(method, url, flag) {
-        let xmlhttp = new XMLHttpRequest();
-        xmlhttp.open(method, url, flag);
-        xmlhttp.setRequestHeader("Content-type","application/x-www-form-urlencoded");
-        return xmlhttp;
-    }
-
-    /**
      * Get access token from Pocket
      * @method getAccessToken
      * @return {void}
      */
     function getAccessToken() {
-        let xmlhttp = makeXmlhttprequest('POST', 'https://getpocket.com/v3/oauth/authorize', true);
-        xmlhttp.send("consumer_key=" + __consumer_key + "&code=" + __request_token);
+        let fetchData = {
+            method: 'POST',
+            body: JSON.stringify({
+                consumer_key: __consumer_key,
+                code: __request_token
+            }),
+            headers: {
+                'Content-Type': 'application/json; charset=UTF8',
+                'X-Accept': 'application/json'
+            }
+        }
 
-        xmlhttp.onreadystatechange = () => {
-            if (xmlhttp.readyState === 4 && xmlhttp.status === 200) {
-                let token_string = xmlhttp.responseText.split('&')[0];
-                __access_token = token_string.split('=')[1];
+        fetch(__url_authorize, fetchData)
+            .then(response => response.json())
+            .then(response => {
+                __access_token = response.access_token;
                 __request_token = __access_token;
 
                 localStorage.setItem('token', __access_token);
 
-                let user_string = xmlhttp.responseText.split('&')[1];
-                let user_name = decodeURIComponent(user_string.split('=')[1]);
+                let username = response.username;
 
-                localStorage.setItem('username', user_name);
-                document.getElementById('user-name').innerText = user_name;
+                localStorage.setItem('username', username);
+                document.getElementById('username').innerText = username;
 
                 loggedIn();
-            }
-        }
+            })
+            .catch(error => {
+                document.getElementById('status').innerText = "Authentication failed!";
+                console.log(error);
+            });
     }
+
 
     /**
      * Open Pocket auth view from Chrome launchWebAuthFlow
      * @method launchChromeWebAuthFlow
      * @return {void}
      */
+
     function launchChromeWebAuthFlow() {
-        chrome.identity.launchWebAuthFlow({'url': "https://getpocket.com/auth/authorize?request_token=" + __request_token + "&redirect_uri=" + __redirect_url, 'interactive': true}, () => {
+        chrome.identity.launchWebAuthFlow({'url': __url_auth + '?request_token=' + __request_token + '&redirect_uri=' + __redirect_url, 'interactive': true}, (redirectUrl) => {
             if (chrome.runtime.lastError) {
-                console.log(new Error(chrome.runtime.lastError));
+                console.log(new Error(chrome.runtime.lastError.message));
                 return;
             }
 
@@ -521,20 +578,28 @@ const pocketExtension = (() => {
      * @return {void}
      */
     function getRequestToken() {
-        let xmlhttp = makeXmlhttprequest('POST', 'https://getpocket.com/v3/oauth/request', true);
-        xmlhttp.send("consumer_key="+ __consumer_key +"&redirect_uri="+ __redirect_url);
-
-        xmlhttp.onreadystatechange = () => {
-            if (xmlhttp.readyState === 4) {
-                if (xmlhttp.status === 200) {
-                    __request_token = xmlhttp.responseText.split('=')[1];
-
-                    launchChromeWebAuthFlow();
-                } else {
-                    document.getElementById('status').innerText = "Authentication failed!"
-                }
+        let fetchData = {
+            method: 'POST',
+            body: JSON.stringify({
+                consumer_key: __consumer_key,
+                redirect_uri: __redirect_url
+            }),
+            headers: {
+                'Content-Type': 'application/json; charset=UTF8',
+                'X-Accept': 'application/json'
             }
         }
+
+        fetch(__url_request, fetchData)
+            .then(response => response.json())
+            .then(response => {
+                __request_token = response.code;
+
+                launchChromeWebAuthFlow();
+            })
+            .catch(error => {
+                console.log(error);
+            });
     }
 
     /**
@@ -547,7 +612,7 @@ const pocketExtension = (() => {
         document.getElementById('count-wrapper').style.display = 'inline-block';
         document.getElementById('menu').style.display = 'flex';
         document.getElementById('list').style.display = 'flex';
-        document.getElementById('user-name').style.display = 'inline-block';
+        document.getElementById('username').style.display = 'inline-block';
         document.getElementById('js-logout').style.display = 'inline-block';
     }
 
@@ -579,7 +644,7 @@ const pocketExtension = (() => {
         showLoggedInContent();
 
         if (localStorage.getItem('username')) {
-            document.getElementById('user-name').innerText = localStorage.getItem('username');
+            document.getElementById('username').innerText = localStorage.getItem('username');
         }
 
         bindMenuClickEvents();
@@ -609,7 +674,7 @@ const pocketExtension = (() => {
         document.getElementById('list').style.display = 'none';
         document.getElementById('archive-list').style.display = 'none';
         document.getElementById('menu').style.display = 'none';
-        document.getElementById('user-name').style.display = 'none';
+        document.getElementById('username').style.display = 'none';
         document.getElementById('js-logout').style.display = 'none';
         document.getElementById('count-wrapper').style.display = 'none';
 
