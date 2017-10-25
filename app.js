@@ -48,6 +48,7 @@ const pocketExtension = (() => {
             })
             .catch(error => {
                 console.log(error);
+                showMessage('Getting new content', false);
             });
     }
 
@@ -84,7 +85,7 @@ const pocketExtension = (() => {
             break;
         }
 
-        showSuccessMessage('Synchronize');
+        showMessage('Synchronizing');
     }
 
     /**
@@ -436,11 +437,11 @@ const pocketExtension = (() => {
                         render('list');
 
                         if (state == 'read') {
-                            showSuccessMessage('Archiving');
+                            showMessage('Archiving');
                         } else if (state == 'favourite') {
-                            showSuccessMessage('Processing');
+                            showMessage('Processing');
                         } else if (state == 'delete') {
-                            showSuccessMessage('Deleting');
+                            showMessage('Deleting');
                         }
                     break;
                     case 'archive':
@@ -451,17 +452,18 @@ const pocketExtension = (() => {
                         render('archive');
 
                         if (state == 'read') {
-                            showSuccessMessage('Unarchiving');
+                            showMessage('Unarchiving');
                         } else if (state == 'favourite') {
-                            showSuccessMessage('Processing');
+                            showMessage('Processing');
                         } else if (state == 'delete') {
-                            showSuccessMessage('Deleting');
+                            showMessage('Deleting');
                         }
                     break;
                 }
             })
             .catch(error => {
                 console.log(error);
+                showMessage('Action', false);
             });
     }
 
@@ -506,12 +508,19 @@ const pocketExtension = (() => {
 
     /**
      * Shows success message
-     * @method showSuccessMessage
+     * @method showMessage
      * @param  {String} message Message text first part
+     * @param {Boolean} isSuccess If is success or fail
      * @return {void}
      */
-    function showSuccessMessage(message) {
-        document.getElementById('status').innerText = message + " successful!";
+    function showMessage(message, isSuccess = true) {
+        if (isSuccess) {
+            message += " successful!";
+        } else {
+            message += " failed!";
+        }
+
+        document.getElementById('status').innerText = message;
 
         setTimeout(() => {
             document.getElementById('status').innerText = "";
@@ -552,8 +561,8 @@ const pocketExtension = (() => {
                 loggedIn();
             })
             .catch(error => {
-                document.getElementById('status').innerText = "Authentication failed!";
                 console.log(error);
+                showMessage('Authentication', false);
             });
     }
 
@@ -605,6 +614,7 @@ const pocketExtension = (() => {
             })
             .catch(error => {
                 console.log(error);
+                showMessage('Getting token', false);
             });
     }
 
@@ -688,7 +698,7 @@ const pocketExtension = (() => {
 
         bindLoginClickEvent();
 
-        showSuccessMessage('Logout');
+        showMessage('Logout');
     }
 
     return {

@@ -50,7 +50,7 @@ a {
 .item {
   display: flex;
   position: relative;
-  margin: 5px;
+  margin: 10px;
   border: 1px solid #ededf0;
   border-bottom: 1px solid #dcdce0;
   background-color: #fff;
@@ -58,7 +58,7 @@ a {
 }
 @media (min-width: 720px) {
   .item {
-    flex: 1 1 30%;
+    flex: 1 1 20%;
   }
 }
 
