@@ -24,6 +24,7 @@ Open links, mark as read ning delete links from your account right from new tab.
 - Rename env.example.js to env.js
 - Add consumer key to env.js
 - Install it [manually](https://stackoverflow.com/a/24577660/5762960)
+- Log in with your pocket account and you're done.
 
 
 ## Contribution
