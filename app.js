@@ -231,6 +231,12 @@ const pocketExtension = (() => {
 
             append(listElement, itemElement);
         });
+
+        for (var i = 0; i < 4; i++) {
+            let itemElement = createNode('li');
+            itemElement.setAttribute('class', 'item item--empty');
+            append(listElement, itemElement);
+        }
     }
 
     /**

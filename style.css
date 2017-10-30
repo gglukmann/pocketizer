@@ -62,6 +62,11 @@ a {
   }
 }
 
+.item--empty {
+    background: transparent;
+    border-color: transparent;
+}
+
 .item__fake-link {
   display: block;
   height: 100%;
