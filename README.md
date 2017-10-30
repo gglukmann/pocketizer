@@ -8,7 +8,7 @@ Get your Pocket list and archive right on your Chrome browsers new tab.
 
 Open links, mark as read ning delete links from your account right from new tab. And ofcourse add your favorite articles to favorites list.
 
-![New Tab](http://gglukmann.github.io/pocket/screenshot.png)
+![New Tab](http://gglukmann.github.io/pocket/screenshots/screenshot1280x800.jpg)
 
 
 ## Installation
