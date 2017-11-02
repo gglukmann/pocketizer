@@ -11,20 +11,20 @@ const pocketExtension = (() => {
     const __url_send = 'https://getpocket.com/v3/send';
 
     /**
-     * Gets content from localStorage and from Pocket API to see if there are newer links
-     * @method getContent
-     * @param  {String} [page='list'] Default show 'my list' view
-     * @return {void}
-     */
+    * Gets content from localStorage and from Pocket API to see if there are newer links
+    * @method getContent
+    * @param  {String} [page='list'] Default show 'my list' view
+    * @return {void}
+    */
     function getContent(page = 'list') {
         let state;
 
         switch (page) {
             case 'list':
-                state = 'unread';
+            state = 'unread';
             break;
             case 'archive':
-                state = 'archive';
+            state = 'archive';
             break;
         }
 
@@ -42,22 +42,22 @@ const pocketExtension = (() => {
         }
 
         fetch(__url_get, fetchData)
-            .then(response => response.json())
-            .then(response => {
-                sortGetResponse(response, page);
-            })
-            .catch(error => {
-                console.log(error);
-                showMessage('Getting new content', false);
-            });
+        .then(response => response.json())
+        .then(response => {
+            sortGetResponse(response, page);
+        })
+        .catch(error => {
+            console.log(error);
+            showMessage('Getting new content', false);
+        });
     }
 
     /**
-     * Sort get response, add to localstorage and render page again
-     * @method sortGetResponse
-     * @param  {Object} response response from fetch
-     * @return {void}
-     */
+    * Sort get response, add to localstorage and render page again
+    * @method sortGetResponse
+    * @param  {Object} response response from fetch
+    * @return {void}
+    */
     function sortGetResponse(response, page) {
         let b = [];
         let items = response.list;
@@ -72,16 +72,16 @@ const pocketExtension = (() => {
 
         switch (page) {
             case 'list':
-                localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
-                localStorage.setItem('listCount', b.length);
+            localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
+            localStorage.setItem('listCount', b.length);
 
-                render('list');
+            render('list');
             break;
             case 'archive':
-                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
-                localStorage.setItem('archiveCount', b.length);
+            localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
+            localStorage.setItem('archiveCount', b.length);
 
-                render('archive');
+            render('archive');
             break;
         }
 
@@ -89,25 +89,25 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Renders from localStorage
-     * @method render
-     * @param  {String} [page='list'] Default render 'my list' view
-     * @return {void}
-     */
+    * Renders from localStorage
+    * @method render
+    * @param  {String} [page='list'] Default render 'my list' view
+    * @return {void}
+    */
     function render(page = 'list') {
         let a;
         let listElement;
 
         switch (page) {
             case 'list':
-                a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                listElement = document.getElementById('list');
-                document.getElementById('count').innerHTML = localStorage.getItem('listCount');
+            a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+            listElement = document.getElementById('list');
+            document.getElementById('count').innerHTML = localStorage.getItem('listCount');
             break;
             case 'archive':
-                a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-                listElement = document.getElementById('archive-list');
-                document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
+            a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+            listElement = document.getElementById('archive-list');
+            document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
             break;
         }
         listElement.innerHTML = "";
@@ -161,12 +161,12 @@ const pocketExtension = (() => {
 
             switch (page) {
                 case 'list':
-                    readNode = createTextNode('Mark as read');
-                    isRead = false;
+                readNode = createTextNode('Mark as read');
+                isRead = false;
                 break;
                 case 'archive':
-                    readNode = createTextNode('Mark unread')
-                    isRead = true;
+                readNode = createTextNode('Mark unread')
+                isRead = true;
                 break;
             };
 
@@ -232,6 +232,7 @@ const pocketExtension = (() => {
             append(listElement, itemElement);
         });
 
+        // Add empty items to the end of list to prevent last items stretch
         for (var i = 0; i < 4; i++) {
             let itemElement = createNode('li');
             itemElement.setAttribute('class', 'item item--empty');
@@ -240,42 +241,42 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Create HTMLElement
-     * @method createNode
-     * @param  {String} element Element type
-     * @return {HTMLElement}         Created HTMLElement
-     */
+    * Create HTMLElement
+    * @method createNode
+    * @param  {String} element Element type
+    * @return {HTMLElement}         Created HTMLElement
+    */
     function createNode(element) {
         return document.createElement(element);
     }
 
     /**
-     * Create text node
-     * @method createTextNode
-     * @param  {String} element Text to add to HTMLElement
-     * @return {Object}         Created text node
-     */
+    * Create text node
+    * @method createTextNode
+    * @param  {String} element Text to add to HTMLElement
+    * @return {Object}         Created text node
+    */
     function createTextNode(element) {
         return document.createTextNode(element);
     }
 
     /**
-     * Append element to parent
-     * @method append
-     * @param  {HTMLElement} parent Parent element
-     * @param  {HTMLElement} el     Child element
-     * @return {HTMLElement}        Element with appended child
-     */
+    * Append element to parent
+    * @method append
+    * @param  {HTMLElement} parent Parent element
+    * @param  {HTMLElement} el     Child element
+    * @return {HTMLElement}        Element with appended child
+    */
     function append(parent, el) {
         return parent.appendChild(el);
     }
 
     /**
-     * Convert unix time to datetime format dd.mm.yyyy
-     * @method timeConverter
-     * @param  {Number} UNIX Unix timestamp
-     * @return {Number}      dd.mm.yyyy
-     */
+    * Convert unix time to datetime format dd.mm.yyyy
+    * @method timeConverter
+    * @param  {Number} UNIX Unix timestamp
+    * @return {Number}      dd.mm.yyyy
+    */
     function timeConverter(UNIX){
         let d = new Date(UNIX * 1000);
         let year = d.getFullYear();
@@ -285,19 +286,19 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Returns current unix timestamp
-     * @method getCurrentUNIX
-     * @return {Number} Current time unix timestamp
-     */
+    * Returns current unix timestamp
+    * @method getCurrentUNIX
+    * @return {Number} Current time unix timestamp
+    */
     function getCurrentUNIX() {
         return Math.floor(Date.now() / 1000);
     }
 
     /**
-     * Binds click events for action buttons
-     * @method bindActionClickEvents
-     * @return {void}
-     */
+    * Binds click events for action buttons
+    * @method bindActionClickEvents
+    * @return {void}
+    */
     function bindActionClickEvents() {
         document.body.addEventListener('click', function(e) {
             if (e.target.classList.contains('js-toggleFavouriteButton')) {
@@ -328,10 +329,10 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Bind menu change click events
-     * @method bindMenuClickEvents
-     * @return {void}
-     */
+    * Bind menu change click events
+    * @method bindMenuClickEvents
+    * @return {void}
+    */
     function bindMenuClickEvents() {
         document.body.addEventListener('click', function(e) {
             if (e.target.classList.contains('js-changeMenu')) {
@@ -344,10 +345,10 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Bind login button click event
-     * @method bindLoginClickEvent
-     * @return {void}
-     */
+    * Bind login button click event
+    * @method bindLoginClickEvent
+    * @return {void}
+    */
     function bindLoginClickEvent() {
         let loginButton = document.getElementById('js-login');
         loginButton.addEventListener('click', () => {
@@ -358,26 +359,26 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Toggles item state
-     * @method toggleActionState
-     * @param  {String}  state                Current state
-     * @param  {Number}  id                   Item id
-     * @param  {String}  page                 Page name
-     * @param  {Boolean} [isFavourited=false] If should be favourited
-     * @return {void}
-     */
+    * Toggles item state
+    * @method toggleActionState
+    * @param  {String}  state                Current state
+    * @param  {Number}  id                   Item id
+    * @param  {String}  page                 Page name
+    * @param  {Boolean} [isFavourited=false] If should be favourited
+    * @return {void}
+    */
     function toggleActionState(state, id, page, isFavourited = false) {
         let action;
 
         if (state == 'read') {
             switch (page) {
                 case 'archive':
-                    action = 'readd';
-                    document.getElementById("status").innerHTML = "Unarchiving...";
+                action = 'readd';
+                document.getElementById("status").innerHTML = "Unarchiving...";
                 break;
                 case 'list':
-                    action = 'archive';
-                    document.getElementById("status").innerHTML = "Archiving...";
+                action = 'archive';
+                document.getElementById("status").innerHTML = "Archiving...";
                 break;
             }
         } else if (state == 'favourite') {
@@ -407,78 +408,78 @@ const pocketExtension = (() => {
         }
 
         fetch(__url_send, fetchData)
-            .then(response => response.json())
-            .then(response => {
-                let a;
+        .then(response => response.json())
+        .then(response => {
+            let a;
 
-                switch (page) {
-                    case 'list':
-                        a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                    break;
-                    case 'archive':
-                        a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-                    break;
-                }
+            switch (page) {
+                case 'list':
+                a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                break;
+                case 'archive':
+                a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+                break;
+            }
 
-                for (let i = 0; i < a.length; i++) {
-                    if (a[i].item_id == id) {
-                        switch (state) {
-                            case 'read':
-                            case 'delete':
-                                a.splice(i, 1);
-                            break;
-                            case 'favourite':
-                                a[i].favorite = (isFavourited == "true" ? 0 : 1);
-                            break;
-                        }
+            for (let i = 0; i < a.length; i++) {
+                if (a[i].item_id == id) {
+                    switch (state) {
+                        case 'read':
+                        case 'delete':
+                        a.splice(i, 1);
+                        break;
+                        case 'favourite':
+                        a[i].favorite = (isFavourited == "true" ? 0 : 1);
+                        break;
                     }
-                };
-
-                switch (page) {
-                    case 'list':
-                        localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
-                        localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                        document.getElementById('count').innerHTML = localStorage.getItem('listCount');
-
-                        render('list');
-
-                        if (state == 'read') {
-                            showMessage('Archiving');
-                        } else if (state == 'favourite') {
-                            showMessage('Processing');
-                        } else if (state == 'delete') {
-                            showMessage('Deleting');
-                        }
-                    break;
-                    case 'archive':
-                        localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
-                        localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                        document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
-
-                        render('archive');
-
-                        if (state == 'read') {
-                            showMessage('Unarchiving');
-                        } else if (state == 'favourite') {
-                            showMessage('Processing');
-                        } else if (state == 'delete') {
-                            showMessage('Deleting');
-                        }
-                    break;
                 }
-            })
-            .catch(error => {
-                console.log(error);
-                showMessage('Action', false);
-            });
+            };
+
+            switch (page) {
+                case 'list':
+                localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
+                localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
+                document.getElementById('count').innerHTML = localStorage.getItem('listCount');
+
+                render('list');
+
+                if (state == 'read') {
+                    showMessage('Archiving');
+                } else if (state == 'favourite') {
+                    showMessage('Processing');
+                } else if (state == 'delete') {
+                    showMessage('Deleting');
+                }
+                break;
+                case 'archive':
+                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
+                localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
+                document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
+
+                render('archive');
+
+                if (state == 'read') {
+                    showMessage('Unarchiving');
+                } else if (state == 'favourite') {
+                    showMessage('Processing');
+                } else if (state == 'delete') {
+                    showMessage('Deleting');
+                }
+                break;
+            }
+        })
+        .catch(error => {
+            console.log(error);
+            showMessage('Action', false);
+        });
     }
 
     /**
-     * Change page between list and archive
-     * @method changePage
-     * @param  {String} page Page to change to
-     * @return {void}
-     */
+    * Change page between list and archive
+    * @method changePage
+    * @param  {String} page Page to change to
+    * @return {void}
+    */
     function changePage(page) {
         let menuLinkElements = document.getElementsByClassName('menu__link');
         for (let i = 0; i < menuLinkElements.length; i++) {
@@ -490,35 +491,35 @@ const pocketExtension = (() => {
 
         switch (page) {
             case 'list':
-                document.getElementById("page").value = "list";
-                document.getElementById("title").innerHTML = "My Pocket List";
-                document.getElementById("status").innerHTML = "Synchronizing...";
+            document.getElementById("page").value = "list";
+            document.getElementById("title").innerHTML = "My Pocket List";
+            document.getElementById("status").innerHTML = "Synchronizing...";
 
-                getContent('list');
+            getContent('list');
 
-                document.getElementById('list').style.display = 'flex';
-                document.getElementById('archive-list').style.display = 'none';
+            document.getElementById('list').style.display = 'flex';
+            document.getElementById('archive-list').style.display = 'none';
             break;
             case 'archive':
-                document.getElementById("page").value = "archive";
-                document.getElementById("title").innerHTML = "Archive";
-                document.getElementById("status").innerHTML = "Synchronizing...";
+            document.getElementById("page").value = "archive";
+            document.getElementById("title").innerHTML = "Archive";
+            document.getElementById("status").innerHTML = "Synchronizing...";
 
-                getContent('archive');
+            getContent('archive');
 
-                document.getElementById('archive-list').style.display = 'flex';
-                document.getElementById('list').style.display = 'none';
+            document.getElementById('archive-list').style.display = 'flex';
+            document.getElementById('list').style.display = 'none';
             break;
         }
     }
 
     /**
-     * Shows success message
-     * @method showMessage
-     * @param  {String} message Message text first part
-     * @param {Boolean} isSuccess If is success or fail
-     * @return {void}
-     */
+    * Shows success message
+    * @method showMessage
+    * @param  {String} message Message text first part
+    * @param {Boolean} isSuccess If is success or fail
+    * @return {void}
+    */
     function showMessage(message, isSuccess = true) {
         if (isSuccess) {
             message += " successful!";
@@ -534,10 +535,10 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Get access token from Pocket
-     * @method getAccessToken
-     * @return {void}
-     */
+    * Get access token from Pocket
+    * @method getAccessToken
+    * @return {void}
+    */
     function getAccessToken() {
         let fetchData = {
             method: 'POST',
@@ -552,32 +553,32 @@ const pocketExtension = (() => {
         }
 
         fetch(__url_authorize, fetchData)
-            .then(response => response.json())
-            .then(response => {
-                __access_token = response.access_token;
-                __request_token = __access_token;
+        .then(response => response.json())
+        .then(response => {
+            __access_token = response.access_token;
+            __request_token = __access_token;
 
-                localStorage.setItem('token', __access_token);
+            localStorage.setItem('token', __access_token);
 
-                let username = response.username;
+            let username = response.username;
 
-                localStorage.setItem('username', username);
-                document.getElementById('username').innerText = username;
+            localStorage.setItem('username', username);
+            document.getElementById('username').innerText = username;
 
-                loggedIn();
-            })
-            .catch(error => {
-                console.log(error);
-                showMessage('Authentication', false);
-            });
+            loggedIn();
+        })
+        .catch(error => {
+            console.log(error);
+            showMessage('Authentication', false);
+        });
     }
 
 
     /**
-     * Open Pocket auth view from Chrome launchWebAuthFlow
-     * @method launchChromeWebAuthFlow
-     * @return {void}
-     */
+    * Open Pocket auth view from Chrome launchWebAuthFlow
+    * @method launchChromeWebAuthFlow
+    * @return {void}
+    */
 
     function launchChromeWebAuthFlow() {
         chrome.identity.launchWebAuthFlow({'url': __url_auth + '?request_token=' + __request_token + '&redirect_uri=' + __redirect_url, 'interactive': true}, (redirectUrl) => {
@@ -594,10 +595,10 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Get Request token from Pocket
-     * @method getRequestToken
-     * @return {void}
-     */
+    * Get Request token from Pocket
+    * @method getRequestToken
+    * @return {void}
+    */
     function getRequestToken() {
         let fetchData = {
             method: 'POST',
@@ -612,23 +613,23 @@ const pocketExtension = (() => {
         }
 
         fetch(__url_request, fetchData)
-            .then(response => response.json())
-            .then(response => {
-                __request_token = response.code;
+        .then(response => response.json())
+        .then(response => {
+            __request_token = response.code;
 
-                launchChromeWebAuthFlow();
-            })
-            .catch(error => {
-                console.log(error);
-                showMessage('Getting token', false);
-            });
+            launchChromeWebAuthFlow();
+        })
+        .catch(error => {
+            console.log(error);
+            showMessage('Getting token', false);
+        });
     }
 
     /**
-     * Show right elements when coming to new tab or logging in
-     * @method showLoggedInContent
-     * @return {void}
-     */
+    * Show right elements when coming to new tab or logging in
+    * @method showLoggedInContent
+    * @return {void}
+    */
     function showLoggedInContent() {
         document.getElementById('default-message').style.display = 'none';
         document.getElementById('count-wrapper').style.display = 'inline-block';
@@ -639,10 +640,10 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Show right content after loging in
-     * @method loggedIn
-     * @return {void}
-     */
+    * Show right content after loging in
+    * @method loggedIn
+    * @return {void}
+    */
     function loggedIn() {
         document.getElementById('status').innerText = "Synchronizing...";
 
@@ -656,10 +657,10 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Show content from localStorage and start sync with Pocket
-     * @method startSync
-     * @return {void}
-     */
+    * Show content from localStorage and start sync with Pocket
+    * @method startSync
+    * @return {void}
+    */
     function startSync() {
         document.getElementById('status').innerText = "Synchronizing...";
 
@@ -678,19 +679,19 @@ const pocketExtension = (() => {
     }
 
     /**
-     * Start login flow
-     * @method startLogin
-     * @return {void}
-     */
+    * Start login flow
+    * @method startLogin
+    * @return {void}
+    */
     function startLogin() {
         getRequestToken();
     }
 
     /**
-     * Clear localStorage and show and hide right elements
-     * @method logout
-     * @return {void}
-     */
+    * Clear localStorage and show and hide right elements
+    * @method logout
+    * @return {void}
+    */
     function logout() {
         localStorage.clear();
 
@@ -720,8 +721,3 @@ const pocketExtension = (() => {
 })();
 
 window.onload = pocketExtension.onload;
-
-// Open new tab if action button is clicked
-chrome.browserAction.onClicked.addListener(tab => {
-    chrome.tabs.create({"url": "chrome://newtab/"});
-});

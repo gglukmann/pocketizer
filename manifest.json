@@ -18,9 +18,12 @@
         "newtab": "page.html"
     },
     "content_scripts": [{
-        "js": [ "app.js" ],
-        "matches": [ "https://*.getpocket.com/*"]
+        "js": [ "content.js" ],
+        "matches": ["<all_urls>"]
     }],
+    "background": {
+      "scripts": ["background.js"]
+    },
     "permissions": [
         "identity",
         "tabs",
