@@ -1,50 +1,62 @@
 'use strict';
 
 const pocketExtension = (() => {
+    const apiUrl = 'https://getpocket.com/';
+    const apiVersion = 'v3';
+
+    const __redirect_url = chrome.identity.getRedirectURL() + 'oauth';
+    const __url_request = apiUrl + apiVersion + '/oauth/request';
+    const __url_authorize = apiUrl + apiVersion + '/oauth/authorize';
+    const __url_auth = apiUrl + '/auth/authorize';
+    const __url_get = apiUrl + apiVersion + '/get';
+    const __url_send = apiUrl + apiVersion + '/send';
+
     let __request_token;
     let __access_token;
-    const __redirect_url = chrome.identity.getRedirectURL() + 'oauth';
-    const __url_request = 'https://getpocket.com/v3/oauth/request';
-    const __url_authorize = 'https://getpocket.com/v3/oauth/authorize';
-    const __url_auth = 'https://getpocket.com/auth/authorize';
-    const __url_get = 'https://getpocket.com/v3/get';
-    const __url_send = 'https://getpocket.com/v3/send';
 
     /**
     * Gets content from localStorage and from Pocket API to see if there are newer links
     * @method getContent
     * @param  {String} [page='list'] Default show 'my list' view
+    * @param  {Boolean} [retrieveFullList=true] Get all items from pocket or get only items since last sync
     * @return {void}
     */
-    function getContent(page = 'list') {
+    function getContent(page = 'list', retrieveFullList = true) {
         let state;
 
         switch (page) {
             case 'list':
-            state = 'unread';
+                state = 'unread';
             break;
             case 'archive':
-            state = 'archive';
+                state = 'archive';
             break;
         }
 
         let fetchData = {
             method: 'POST',
-            body: JSON.stringify({
+            body: {
                 access_token: localStorage.getItem('token'),
                 consumer_key: __consumer_key,
                 state: state,
+                sort: 'newest',
                 detailType: 'complete'
-            }),
+            },
             headers: {
                 'Content-Type': 'application/json; charset=UTF8'
             }
         }
 
+        if (!retrieveFullList) {
+            fetchData.body.since = localStorage.getItem('since');
+        }
+
+        fetchData.body = JSON.stringify(fetchData.body);
+
         fetch(__url_get, fetchData)
         .then(response => response.json())
         .then(response => {
-            sortGetResponse(response, page);
+            sortGetResponse(response, page, retrieveFullList);
         })
         .catch(error => {
             console.log(error);
@@ -55,33 +67,71 @@ const pocketExtension = (() => {
     /**
     * Sort get response, add to localstorage and render page again
     * @method sortGetResponse
-    * @param  {Object} response response from fetch
+    * @param  {Object} response Response from fetch
+    * @param  {String} page List or archive page
+    * @param  {Boolean} [isFullList] Are all items from pocket or get only items since last sync
     * @return {void}
     */
-    function sortGetResponse(response, page) {
+    function sortGetResponse(response, page, isFullList) {
         let b = [];
         let items = response.list;
+
+        localStorage.setItem('since', response.since);
 
         for (let key in items) {
             b.push(items[key]);
         }
 
         b.sort((x, y) => {
-            return x.sort_id - y.sort_id;
+            return y.time_added - x.time_added;
         });
 
         switch (page) {
             case 'list':
-            localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
-            localStorage.setItem('listCount', b.length);
+                if (isFullList) {
+                    localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
+                    localStorage.setItem('listCount', b.length);
+                } else {
+                    let listObject = JSON.parse(localStorage.getItem('listFromLocalStorage'));
 
-            render('list');
+                    if (b.length) {
+                        for (let key in b) {
+                            listObject.push(b[key]);
+                        }
+                    }
+
+                    listObject.sort((x, y) => {
+                        return y.time_added - x.time_added;
+                    });
+
+                    localStorage.setItem('listFromLocalStorage', JSON.stringify(listObject));
+                    localStorage.setItem('listCount', listObject.length);
+                }
+
+                render('list');
             break;
             case 'archive':
-            localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
-            localStorage.setItem('archiveCount', b.length);
+                if (isFullList) {
+                    localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
+                    localStorage.setItem('archiveCount', b.length);
+                } else {
+                    let archiveObject = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
 
-            render('archive');
+                    if (b.length) {
+                        for (let key in b) {
+                            archiveObject.push(b[key]);
+                        }
+                    }
+
+                    archiveObject.sort((x, y) => {
+                        return y.time_added - x.time_added;
+                    });
+
+                    localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(archiveObject));
+                    localStorage.setItem('archiveCount', archiveObject.length);
+                }
+
+                render('archive');
             break;
         }
 
@@ -100,14 +150,14 @@ const pocketExtension = (() => {
 
         switch (page) {
             case 'list':
-            a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-            listElement = document.getElementById('list');
-            document.getElementById('count').innerHTML = localStorage.getItem('listCount');
+                a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                listElement = document.getElementById('list');
+                document.getElementById('count').innerHTML = localStorage.getItem('listCount');
             break;
             case 'archive':
-            a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-            listElement = document.getElementById('archive-list');
-            document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
+                a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+                listElement = document.getElementById('archive-list');
+                document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
             break;
         }
         listElement.innerHTML = "";
@@ -161,12 +211,12 @@ const pocketExtension = (() => {
 
             switch (page) {
                 case 'list':
-                readNode = createTextNode('Mark as read');
-                isRead = false;
+                    readNode = createTextNode('Mark as read');
+                    isRead = false;
                 break;
                 case 'archive':
-                readNode = createTextNode('Mark unread')
-                isRead = true;
+                    readNode = createTextNode('Mark unread')
+                    isRead = true;
                 break;
             };
 
@@ -373,12 +423,12 @@ const pocketExtension = (() => {
         if (state == 'read') {
             switch (page) {
                 case 'archive':
-                action = 'readd';
-                document.getElementById("status").innerHTML = "Unarchiving...";
+                    action = 'readd';
+                    document.getElementById("status").innerHTML = "Unarchiving...";
                 break;
                 case 'list':
-                action = 'archive';
-                document.getElementById("status").innerHTML = "Archiving...";
+                    action = 'archive';
+                    document.getElementById("status").innerHTML = "Archiving...";
                 break;
             }
         } else if (state == 'favourite') {
@@ -414,10 +464,10 @@ const pocketExtension = (() => {
 
             switch (page) {
                 case 'list':
-                a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                    a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
                 break;
                 case 'archive':
-                a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+                    a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
                 break;
             }
 
@@ -426,10 +476,10 @@ const pocketExtension = (() => {
                     switch (state) {
                         case 'read':
                         case 'delete':
-                        a.splice(i, 1);
+                            a.splice(i, 1);
                         break;
                         case 'favourite':
-                        a[i].favorite = (isFavourited == "true" ? 0 : 1);
+                            a[i].favorite = (isFavourited == "true" ? 0 : 1);
                         break;
                     }
                 }
@@ -437,34 +487,34 @@ const pocketExtension = (() => {
 
             switch (page) {
                 case 'list':
-                localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
-                localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                document.getElementById('count').innerHTML = localStorage.getItem('listCount');
+                    localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
+                    localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
+                    document.getElementById('count').innerHTML = localStorage.getItem('listCount');
 
-                render('list');
+                    render('list');
 
-                if (state == 'read') {
-                    showMessage('Archiving');
-                } else if (state == 'favourite') {
-                    showMessage('Processing');
-                } else if (state == 'delete') {
-                    showMessage('Deleting');
-                }
+                    if (state == 'read') {
+                        showMessage('Archiving');
+                    } else if (state == 'favourite') {
+                        showMessage('Processing');
+                    } else if (state == 'delete') {
+                        showMessage('Deleting');
+                    }
                 break;
                 case 'archive':
-                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
-                localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
+                    localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
+                    localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
+                    document.getElementById('count').innerHTML = localStorage.getItem('archiveCount');
 
-                render('archive');
+                    render('archive');
 
-                if (state == 'read') {
-                    showMessage('Unarchiving');
-                } else if (state == 'favourite') {
-                    showMessage('Processing');
-                } else if (state == 'delete') {
-                    showMessage('Deleting');
-                }
+                    if (state == 'read') {
+                        showMessage('Unarchiving');
+                    } else if (state == 'favourite') {
+                        showMessage('Processing');
+                    } else if (state == 'delete') {
+                        showMessage('Deleting');
+                    }
                 break;
             }
         })
@@ -491,24 +541,26 @@ const pocketExtension = (() => {
 
         switch (page) {
             case 'list':
-            document.getElementById("page").value = "list";
-            document.getElementById("title").innerHTML = "My Pocket List";
-            document.getElementById("status").innerHTML = "Synchronizing...";
+                document.getElementById("page").value = "list";
+                document.getElementById("title").innerHTML = "My Pocket List";
+                document.getElementById("status").innerHTML = "Synchronizing...";
 
-            getContent('list');
+                getContent('list', false);
 
-            document.getElementById('list').style.display = 'flex';
-            document.getElementById('archive-list').style.display = 'none';
+                document.getElementById('list').style.display = 'flex';
+                document.getElementById('archive-list').style.display = 'none';
             break;
             case 'archive':
-            document.getElementById("page").value = "archive";
-            document.getElementById("title").innerHTML = "Archive";
-            document.getElementById("status").innerHTML = "Synchronizing...";
+                document.getElementById("page").value = "archive";
+                document.getElementById("title").innerHTML = "Archive";
+                document.getElementById("status").innerHTML = "Synchronizing...";
 
-            getContent('archive');
+                let retrieveFullList = localStorage.getItem('archiveCount') ? false : true;
 
-            document.getElementById('archive-list').style.display = 'flex';
-            document.getElementById('list').style.display = 'none';
+                getContent('archive', retrieveFullList);
+
+                document.getElementById('archive-list').style.display = 'flex';
+                document.getElementById('list').style.display = 'none';
             break;
         }
     }
@@ -675,7 +727,7 @@ const pocketExtension = (() => {
         bindMenuClickEvents();
         bindActionClickEvents();
 
-        getContent('list');
+        getContent('list', false);
     }
 
     /**
