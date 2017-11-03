@@ -1,14 +1,18 @@
 'use strict';
 
 const pocketExtension = (() => {
+    const apiUrl = 'https://getpocket.com/';
+    const apiVersion = 'v3';
+
+    const __redirect_url = chrome.identity.getRedirectURL() + 'oauth';
+    const __url_request = apiUrl + apiVersion + '/oauth/request';
+    const __url_authorize = apiUrl + apiVersion + '/oauth/authorize';
+    const __url_auth = apiUrl + '/auth/authorize';
+    const __url_get = apiUrl + apiVersion + '/get';
+    const __url_send = apiUrl + apiVersion + '/send';
+
     let __request_token;
     let __access_token;
-    const __redirect_url = chrome.identity.getRedirectURL() + 'oauth';
-    const __url_request = 'https://getpocket.com/v3/oauth/request';
-    const __url_authorize = 'https://getpocket.com/v3/oauth/authorize';
-    const __url_auth = 'https://getpocket.com/auth/authorize';
-    const __url_get = 'https://getpocket.com/v3/get';
-    const __url_send = 'https://getpocket.com/v3/send';
 
     /**
     * Gets content from localStorage and from Pocket API to see if there are newer links

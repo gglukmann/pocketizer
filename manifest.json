@@ -17,7 +17,7 @@
         "newtab": "page.html"
     },
     "content_scripts": [{
-        "js": [ "content.js" ],
+        "js": ["content.js"],
         "matches": ["<all_urls>"]
     }],
     "background": {
