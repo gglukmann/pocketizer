@@ -1,4 +1,4 @@
-[![alt text](http://fortis.planet.ee/pocket/icon64.png)](http://gglukmann.github.io/pocket/)
+[![alt text](http://gglukmann.github.io/pocket/icon64.png)](http://gglukmann.github.io/pocket/)
 
 # New tab - Pocket
 
