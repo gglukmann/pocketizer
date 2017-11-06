@@ -97,6 +97,7 @@ a {
   font-weight: 600;
   line-height: 1.2;
   transition: color .1s linear;
+  word-break: break-word;
 }
 
 .item__time {
