@@ -118,8 +118,12 @@ a {
   }
 }
 .item__excerpt--image {
+    position: relative;
     padding-left: 0;
     padding-right: 0;
+    padding-bottom: 72%;
+    max-height: 200px;
+    overflow: hidden;
 }
 
 .item__link {
@@ -180,6 +184,7 @@ a {
 }
 
 .item__image {
+    position: absolute;
     width: 100%;
     height: auto;
 }
