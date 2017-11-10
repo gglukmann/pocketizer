@@ -6,28 +6,28 @@
     "author": "Gert Glükmann @glukmann",
     "homepage_url": "http://gglukmann.github.io/pocket",
     "icons": {
-        "16": "icon16.png",
-        "32": "icon32.png",
-        "48": "icon48.png",
-        "64": "icon64.png",
-        "128": "icon128.png",
-        "256": "icon256.png"
+        "16": "assets/images/icon16.png",
+        "32": "assets/images/icon32.png",
+        "48": "assets/images/icon48.png",
+        "64": "assets/images/icon64.png",
+        "128": "assets/images/icon128.png",
+        "256": "assets/images/icon256.png"
     },
     "browser_action": {
         "default_icon": {
-            "16": "icon16.png",
-            "32": "icon32.png"
+            "16": "assets/images/icon16.png",
+            "32": "assets/images/icon32.png"
         }
     },
     "chrome_url_overrides" : {
-        "newtab": "page.html"
+        "newtab": "index.html"
     },
     "content_scripts": [{
-        "js": ["content.js"],
+        "js": ["assets/js/content.js"],
         "matches": ["<all_urls>"]
     }],
     "background": {
-      "scripts": ["background.js"]
+      "scripts": ["assets/js/background.js"]
     },
     "permissions": [
         "identity",
