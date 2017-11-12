@@ -2,9 +2,9 @@
 
 # New tab - Pocket
 
-> Chrome extension - Unofficial Pocket new tab extension for Chrome
+> Browser extension - Unofficial Pocket new tab extension for Chrome, Firefox or Opera
 
-Get your Pocket list and archive right on your Chrome browsers new tab.
+Get your Pocket list and archive right on your browsers new tab.
 
 Open links, mark as read ning delete links from your account right from new tab. And ofcourse add your favorite articles to favorites list.
 
@@ -16,6 +16,8 @@ Open links, mark as read ning delete links from your account right from new tab.
 ### For all users
 
 - Install it from [Chrome Webstore](https://chrome.google.com/webstore/detail/new-tab-pocket/ikndkhohinloomoacdggllledgjehkcf).
+- Install it from [Firefox Addons](https://addons.mozilla.org/en-GB/firefox/addon/new-tab-pocket/).
+- Install it from [Opera Addons](https://addons.opera.com) (coming soon).
 - Log in with your pocket account and you're done.
 
 ### For developers
@@ -24,7 +26,7 @@ Open links, mark as read ning delete links from your account right from new tab.
 - Rename env.example.js to env.js
 - Add consumer key to env.js
 - Install it [manually](https://stackoverflow.com/a/24577660/5762960)
-- Log in with your pocket account and you're done.
+- Start developing.
 
 
 ## Contribution
