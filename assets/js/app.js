@@ -7,7 +7,7 @@ const pocketExtension = (() => {
     const __redirect_url = chrome.identity.getRedirectURL() + 'oauth';
     const __url_request = apiUrl + apiVersion + '/oauth/request';
     const __url_authorize = apiUrl + apiVersion + '/oauth/authorize';
-    const __url_auth = apiUrl + '/auth/authorize';
+    const __url_auth = apiUrl + 'auth/authorize';
     const __url_get = apiUrl + apiVersion + '/get';
     const __url_send = apiUrl + apiVersion + '/send';
 
@@ -106,12 +106,12 @@ const pocketExtension = (() => {
             case 'list':
                 a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
                 listElement = document.getElementById('list');
-                document.getElementById('count').innerHTML = Sanitizer.escapeHTML`${localStorage.getItem('listCount')}`;
+                document.getElementById('count').innerText = localStorage.getItem('listCount');
             break;
             case 'archive':
                 a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
                 listElement = document.getElementById('archive-list');
-                document.getElementById('count').innerHTML = Sanitizer.escapeHTML`${localStorage.getItem('archiveCount')}`;
+                document.getElementById('count').innerText = localStorage.getItem('archiveCount');
             break;
         }
         listElement.innerHTML = "";
@@ -389,7 +389,7 @@ const pocketExtension = (() => {
                 case 'list':
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
                 localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                document.getElementById('count').innerHTML = Sanitizer.escapeHTML`${localStorage.getItem('listCount')}`;
+                document.getElementById('count').innerText = localStorage.getItem('listCount');
 
                 render('list');
 
@@ -404,7 +404,7 @@ const pocketExtension = (() => {
                 case 'archive':
                 localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
                 localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                document.getElementById('count').innerHTML = Sanitizer.escapeHTML`${localStorage.getItem('archiveCount')}`;
+                document.getElementById('count').innerText = localStorage.getItem('archiveCount');
 
                 render('archive');
 
@@ -523,7 +523,6 @@ const pocketExtension = (() => {
         });
     }
 
-
     /**
     * Open Pocket auth view from Chrome launchWebAuthFlow
     * @method launchChromeWebAuthFlow
@@ -531,14 +530,18 @@ const pocketExtension = (() => {
     */
 
     function launchChromeWebAuthFlow() {
-        chrome.identity.launchWebAuthFlow({'url': __url_auth + '?request_token=' + __request_token + '&redirect_uri=' + __redirect_url, 'interactive': true}, (redirectUrl) => {
+        let options = {
+            'url': `${__url_auth}?request_token=${__request_token}&redirect_uri=${__redirect_url}`,
+            'interactive': true
+        }
+
+        chrome.identity.launchWebAuthFlow(options, (redirectUrl) => {
+            document.getElementById('js-login').disabled = false;
+
             if (chrome.runtime.lastError) {
                 console.log(new Error(chrome.runtime.lastError.message));
-                document.getElementById('js-login').disabled = false;
                 return;
             }
-
-            document.getElementById('js-login').disabled = false;
 
             getAccessToken();
         });

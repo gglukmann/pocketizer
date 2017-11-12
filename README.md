@@ -2,7 +2,7 @@
 
 # New tab - Pocket
 
-> Browser extension - Unofficial Pocket new tab extension for Chrome, Firefox and Opera
+> Browser extension - Unofficial Pocket new tab extension for Chrome and Firefox
 
 Get your Pocket list and archive right on your browsers new tab.
 
@@ -17,7 +17,6 @@ Open links, mark as read ning delete links from your account right from new tab.
 
 - Install it from [Chrome Webstore](https://chrome.google.com/webstore/detail/new-tab-pocket/ikndkhohinloomoacdggllledgjehkcf).
 - Install it from [Firefox Addons](https://addons.mozilla.org/en-GB/firefox/addon/new-tab-pocket/).
-- Install it from [Opera Addons](https://addons.opera.com) (coming soon).
 - Log in with your pocket account and you're done.
 
 ### For developers

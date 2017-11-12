@@ -19,7 +19,7 @@
             "32": "assets/images/icon32.png"
         }
     },
-    "chrome_url_overrides" : {
+    "chrome_url_overrides": {
         "newtab": "index.html"
     },
     "content_scripts": [{
