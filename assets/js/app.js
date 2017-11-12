@@ -106,12 +106,12 @@ const pocketExtension = (() => {
             case 'list':
                 a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
                 listElement = document.getElementById('list');
-                document.getElementById('count').innerHTML = escapeHTML(localStorage.getItem('listCount'));
+                document.getElementById('count').innerHTML = Sanitizer.escapeHTML`${localStorage.getItem('listCount')}`;
             break;
             case 'archive':
                 a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
                 listElement = document.getElementById('archive-list');
-                document.getElementById('count').innerHTML = escapeHTML(localStorage.getItem('archiveCount'));
+                document.getElementById('count').innerHTML = Sanitizer.escapeHTML`${localStorage.getItem('archiveCount')}`;
             break;
         }
         listElement.innerHTML = "";
@@ -389,7 +389,7 @@ const pocketExtension = (() => {
                 case 'list':
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
                 localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                document.getElementById('count').innerHTML = escapeHTML(localStorage.getItem('listCount'));
+                document.getElementById('count').innerHTML = Sanitizer.escapeHTML`${localStorage.getItem('listCount')}`;
 
                 render('list');
 
@@ -404,7 +404,7 @@ const pocketExtension = (() => {
                 case 'archive':
                 localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
                 localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                document.getElementById('count').innerHTML = escapeHTML(localStorage.getItem('archiveCount'));
+                document.getElementById('count').innerHTML = Sanitizer.escapeHTML`${localStorage.getItem('archiveCount')}`;
 
                 render('archive');
 

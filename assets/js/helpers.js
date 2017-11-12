@@ -1,14 +1,4 @@
 /**
- * Escapse HTML
- * @method escapeHTML
- * @param  {String} str String to be escaped
- * @return {String}     Escaped string
- */
-function escapeHTML(str) {
-    return str.replace(/[&"'<>]/g, (m) => ({ "&": "&amp;", '"': "&quot;", "'": "&#39;", "<": "&lt;", ">": "&gt;" })[m]);
-}
-
-/**
 * Create HTMLElement
 * @method createNode
 * @param  {String} element Element type
