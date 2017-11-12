@@ -2,7 +2,7 @@
 
 # New tab - Pocket
 
-> Browser extension - Unofficial Pocket new tab extension for Chrome, Firefox or Opera
+> Browser extension - Unofficial Pocket new tab extension for Chrome, Firefox and Opera
 
 Get your Pocket list and archive right on your browsers new tab.
 
