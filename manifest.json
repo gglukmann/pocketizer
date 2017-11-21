@@ -1,8 +1,9 @@
 {
-    "name": "New Tab - Pocket",
+    "name": "__MSG_EXTENSION_NAME__",
     "version": "1.3.1",
     "manifest_version": 2,
-    "description": "Unofficial Pocket new tab extension for Chrome and Firefox. See all your Pocket links right on new tab.",
+    "default_locale": "en",
+    "description": "__MSG_EXTENSION_DESCRIPTION__",
     "author": "Gert Glükmann @glukmann",
     "homepage_url": "http://gglukmann.github.io/pocket",
     "icons": {

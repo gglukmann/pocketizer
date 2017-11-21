@@ -1,0 +1,76 @@
+{
+    "EXTENSION_NAME": {
+        "message": "New Tab - Pocket",
+        "description": "Name of the extension."
+    },
+    "EXTENSION_DESCRIPTION": {
+        "message": "Unofficial Pocket new tab extension for Chrome and Firefox. See all your Pocket links right on new tab.",
+        "description": "Description of the add-on."
+    },
+    "ERROR_GETTING_CONTENT": {
+        "message": "Error: Getting new content"
+    },
+    "SYNCHRONIZING": {
+        "message": "Synchronizing"
+    },
+    "TOGGLE_FAVOURITED_STATE": {
+        "message": "Toggle favourited state"
+    },
+    "OPEN_IN_POCKET": {
+        "message": "Open in Pocket"
+    },
+    "DELETE": {
+        "message": "Delete"
+    },
+    "MARK_READ": {
+        "message": "Mark as read"
+    },
+    "MARK_UNREAD": {
+        "message": "Mark unread"
+    },
+    "DATE_ADDED": {
+        "message": "Date added"
+    },
+    "UNARCHIVING": {
+        "message": "Unarchiving"
+    },
+    "ARCHIVING": {
+        "message": "Archiving"
+    },
+    "PROCESSING": {
+        "message": "Processing"
+    },
+    "DELETING": {
+        "message": "Deleting"
+    },
+    "ACTION": {
+        "message": "Action"
+    },
+    "MY_POCKET_LIST": {
+        "message": "My Pocket List"
+    },
+    "MY_LIST": {
+        "message": "My List"
+    },
+    "ARCHIVE": {
+        "message": "Archive"
+    },
+    "AUTHENTICATION": {
+        "message": "Authentication"
+    },
+    "GETTING_TOKEN": {
+        "message": "Getting token"
+    },
+    "LOG_IN_TEXT": {
+        "message": "Hello, log in to get started!"
+    },
+    "LOG_IN_WITH_POCKET": {
+        "message": "Log in with Pocket"
+    },
+    "EMPTY_MESSAGE": {
+        "message": "Looks like you haven't saved anything to Pocket yet!"
+    },
+    "POCKET_HOMEPAGE": {
+        "message": "Pocket homepage"
+    }
+}

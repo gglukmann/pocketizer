@@ -55,7 +55,7 @@ const pocketExtension = (() => {
             })
             .catch(error => {
                 console.log(error);
-                showMessage('Getting new content', false);
+                showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
             });
     }
 
@@ -90,7 +90,7 @@ const pocketExtension = (() => {
         }
 
         render();
-        showMessage('Synchronizing');
+        showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
     }
 
     /**
@@ -181,30 +181,30 @@ const pocketExtension = (() => {
             }
             favouriteElement.setAttribute('class', 'item__favourite js-toggleFavouriteButton');
             favouriteElement.setAttribute('href', '#0');
-            favouriteElement.setAttribute('title', 'Toggle favourited state');
+            favouriteElement.setAttribute('title', chrome.i18n.getMessage('TOGGLE_FAVOURITED_STATE'));
             favouriteElement.setAttribute('data-id', a[key].item_id);
             append(contentElement, favouriteElement);
 
             let textNode = createTextNode(title);
-            let pocketLinkNode = createTextNode('Open in Pocket');
+            let pocketLinkNode = createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
             let timeNode = createTextNode(timeConverter(a[key].time_added));
             let readNode;
             let isRead = false;
-            let deleteNode = createTextNode('Delete');
+            let deleteNode = createTextNode(chrome.i18n.getMessage('DELETE'));
 
             switch (__active_page) {
                 case 'list':
-                    readNode = createTextNode('Mark as read');
+                    readNode = createTextNode(chrome.i18n.getMessage('MARK_READ'));
                     isRead = false;
                 break;
                 case 'archive':
-                    readNode = createTextNode('Mark unread')
+                    readNode = createTextNode(chrome.i18n.getMessage('MARK_UNREAD'))
                     isRead = true;
                 break;
             };
 
             timeElement.setAttribute('class', 'item__time');
-            timeElement.setAttribute('title', 'Date added');
+            timeElement.setAttribute('title', chrome.i18n.getMessage('DATE_ADDED'));
             append(timeElement, timeNode);
 
             readButtonElement.setAttribute('class', 'item__set-read js-toggleReadButton');
@@ -245,7 +245,7 @@ const pocketExtension = (() => {
 
             pocketLinkElement.setAttribute('class', 'item__pocket-link');
             pocketLinkElement.setAttribute('href', 'https://getpocket.com/a/read/' + a[key].item_id);
-            pocketLinkElement.setAttribute('title', 'Open in Pocket');
+            pocketLinkElement.setAttribute('title', chrome.i18n.getMessage('OPEN_IN_POCKET'));
             append(pocketLinkElement, pocketLinkNode);
 
             linkElement.setAttribute('class', 'item__link');
@@ -389,19 +389,19 @@ const pocketExtension = (() => {
             switch (__active_page) {
                 case 'archive':
                     action = 'readd';
-                    document.getElementById('status').innerHTML = "Unarchiving...";
+                    document.getElementById('status').innerHTML = chrome.i18n.getMessage('UNARCHIVING') + '...';
                 break;
                 case 'list':
                     action = 'archive';
-                    document.getElementById('status').innerHTML = "Archiving...";
+                    document.getElementById('status').innerHTML = chrome.i18n.getMessage('ARCHIVING') + '...';
                 break;
             }
         } else if (state == 'favourite') {
             action = (isFavourited === true ? 'unfavorite' : 'favorite');
-            document.getElementById('status').innerHTML = 'Processing...';
+            document.getElementById('status').innerHTML = chrome.i18n.getMessage('PROCESSING') + '...';
         } else if (state == 'delete') {
             action = 'delete';
-            document.getElementById('status').innerHTML = 'Deleting...';
+            document.getElementById('status').innerHTML = chrome.i18n.getMessage('DELETING') + '...';
         }
 
         let actions = [{
@@ -471,16 +471,16 @@ const pocketExtension = (() => {
             }
 
             if (state == 'read') {
-                showMessage('Unarchiving');
+                showMessage(chrome.i18n.getMessage('UNARCHIVING'));
             } else if (state == 'favourite') {
-                showMessage('Processing');
+                showMessage(chrome.i18n.getMessage('PROCESSING'));
             } else if (state == 'delete') {
-                showMessage('Deleting');
+                showMessage(chrome.i18n.getMessage('DELETING'));
             }
         })
         .catch(error => {
             console.log(error);
-            showMessage('Action', false);
+            showMessage(chrome.i18n.getMessage('ACTION'), false);
         });
     }
 
@@ -507,8 +507,8 @@ const pocketExtension = (() => {
                 __active_page = 'list';
 
                 document.getElementById('count').innerText = localStorage.getItem('listCount');
-                document.getElementById('title').innerHTML = "My Pocket List";
-                document.getElementById('status').innerHTML = "Synchronizing...";
+                document.getElementById('title').innerHTML = chrome.i18n.getMessage('MY_POCKET_LIST');
+                document.getElementById('status').innerHTML = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
                 getContent();
 
@@ -519,8 +519,8 @@ const pocketExtension = (() => {
                 __active_page = 'archive';
 
                 document.getElementById('count').innerText = localStorage.getItem('archiveCount');
-                document.getElementById('title').innerHTML = "Archive";
-                document.getElementById('status').innerHTML = "Synchronizing...";
+                document.getElementById('title').innerHTML = chrome.i18n.getMessage('ARCHIVE');
+                document.getElementById('status').innerHTML = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
                 getContent();
 
@@ -528,28 +528,6 @@ const pocketExtension = (() => {
                 document.getElementById('list').style.display = 'none';
             break;
         }
-    }
-
-    /**
-     * Shows success message.
-     *
-     * @function showMessage
-     * @param  {String} message - Message text first part.
-     * @param {Boolean} isSuccess - If is success or fail.
-     * @return {void}
-     */
-    function showMessage(message, isSuccess = true) {
-        if (isSuccess) {
-            message += " successful!";
-        } else {
-            message += " failed!";
-        }
-
-        document.getElementById('status').innerText = message;
-
-        setTimeout(() => {
-            document.getElementById('status').innerText = "";
-        }, 2000);
     }
 
     /**
@@ -588,7 +566,7 @@ const pocketExtension = (() => {
         })
         .catch(error => {
             console.log(error);
-            showMessage('Authentication', false);
+            showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
         });
     }
 
@@ -644,7 +622,7 @@ const pocketExtension = (() => {
         })
         .catch(error => {
             console.log(error);
-            showMessage('Getting token', false);
+            showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
         });
     }
 
@@ -670,7 +648,7 @@ const pocketExtension = (() => {
      * @return {void}
      */
     function loggedIn() {
-        document.getElementById('status').innerText = "Synchronizing...";
+        document.getElementById('status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
         showLoggedInContent();
 
@@ -688,7 +666,7 @@ const pocketExtension = (() => {
      * @return {void}
      */
     function startSync() {
-        document.getElementById('status').innerText = "Synchronizing...";
+        document.getElementById('status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
         render();
 
@@ -738,6 +716,8 @@ const pocketExtension = (() => {
 
     return {
         onload: () => {
+            localizeHtml();
+
             if (localStorage.getItem('token')) {
                 startSync();
             } else {
