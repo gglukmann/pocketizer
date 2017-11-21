@@ -9,6 +9,6 @@ chrome.browserAction.onClicked.addListener((tab) => {
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.message === "open_new_tab") {
-        chrome.tabs.create({"url": "about:newtab"});
+        chrome.tabs.create({"url": "index.html"});
     }
 });
