@@ -389,19 +389,19 @@ const pocketExtension = (() => {
             switch (__active_page) {
                 case 'archive':
                     action = 'readd';
-                    document.getElementById('status').innerHTML = chrome.i18n.getMessage('UNARCHIVING') + '...';
+                    document.getElementById('status').innerText = chrome.i18n.getMessage('UNARCHIVING') + '...';
                 break;
                 case 'list':
                     action = 'archive';
-                    document.getElementById('status').innerHTML = chrome.i18n.getMessage('ARCHIVING') + '...';
+                    document.getElementById('status').innerText = chrome.i18n.getMessage('ARCHIVING') + '...';
                 break;
             }
         } else if (state == 'favourite') {
             action = (isFavourited === true ? 'unfavorite' : 'favorite');
-            document.getElementById('status').innerHTML = chrome.i18n.getMessage('PROCESSING') + '...';
+            document.getElementById('status').innerText = chrome.i18n.getMessage('PROCESSING') + '...';
         } else if (state == 'delete') {
             action = 'delete';
-            document.getElementById('status').innerHTML = chrome.i18n.getMessage('DELETING') + '...';
+            document.getElementById('status').innerText = chrome.i18n.getMessage('DELETING') + '...';
         }
 
         let actions = [{
@@ -507,8 +507,8 @@ const pocketExtension = (() => {
                 __active_page = 'list';
 
                 document.getElementById('count').innerText = localStorage.getItem('listCount');
-                document.getElementById('title').innerHTML = chrome.i18n.getMessage('MY_POCKET_LIST');
-                document.getElementById('status').innerHTML = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+                document.getElementById('title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
+                document.getElementById('status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
                 getContent();
 
@@ -519,8 +519,8 @@ const pocketExtension = (() => {
                 __active_page = 'archive';
 
                 document.getElementById('count').innerText = localStorage.getItem('archiveCount');
-                document.getElementById('title').innerHTML = chrome.i18n.getMessage('ARCHIVE');
-                document.getElementById('status').innerHTML = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+                document.getElementById('title').innerText = chrome.i18n.getMessage('ARCHIVE');
+                document.getElementById('status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
                 getContent();
 
