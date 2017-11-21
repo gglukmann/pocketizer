@@ -320,17 +320,19 @@ const pocketExtension = (() => {
      */
     function bindActionClickEvents() {
         document.body.addEventListener('click', (e) => {
-            e.preventDefault();
             let id = e.target.dataset.id;
 
             if (e.target.classList.contains('js-toggleFavouriteButton')) {
+                e.preventDefault();
                 let isFavourited = e.target.dataset.favourite;
                 isFavourited = (isFavourited == 'true'); // convert to boolean
 
                 toggleActionState(e, 'favourite', id, isFavourited);
             } else if (e.target.classList.contains('js-deleteButton')) {
+                e.preventDefault();
                 toggleActionState(e, 'delete', id, false);
             } else if (e.target.classList.contains('js-toggleReadButton')) {
+                e.preventDefault();
                 toggleActionState(e, 'read', id, false);
             }
         });
@@ -348,9 +350,9 @@ const pocketExtension = (() => {
      */
     function bindMenuClickEvents() {
         document.body.addEventListener('click', (e) => {
-            if (e.target.classList.contains('js-changeMenu')) {
+            if (e.target.parentNode.classList.contains('js-changeMenu')) {
                 e.preventDefault();
-                let page = e.target.dataset.page;
+                let page = e.target.parentNode.dataset.page;
 
                 changePage(page);
             }
@@ -430,15 +432,9 @@ const pocketExtension = (() => {
             switch (__active_page) {
                 case 'list':
                     a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-
-                    localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                    document.getElementById('count').innerText = localStorage.getItem('listCount');
                 break;
                 case 'archive':
                     a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-
-                    localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                    document.getElementById('count').innerText = localStorage.getItem('archiveCount');
                 break;
             }
 
@@ -450,6 +446,17 @@ const pocketExtension = (() => {
                             a.splice(i, 1);
 
                             e.target.parentNode.parentNode.remove();
+
+                            switch (__active_page) {
+                                case 'list':
+                                    localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
+                                    document.getElementById('count').innerText = localStorage.getItem('listCount');
+                                break;
+                                case 'archive':
+                                    localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
+                                    document.getElementById('count').innerText = localStorage.getItem('archiveCount');
+                                break;
+                            }
                         break;
                         case 'favourite':
                             a[i].favorite = (isFavourited === true ? 0 : 1);
