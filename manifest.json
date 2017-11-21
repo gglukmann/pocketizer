@@ -24,7 +24,7 @@
     },
     "content_scripts": [{
         "js": ["assets/js/content.js"],
-        "matches": ["<all_urls>"]
+        "matches": ["*://*/*"]
     }],
     "background": {
       "scripts": ["assets/js/background.js"]

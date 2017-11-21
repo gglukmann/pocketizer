@@ -24,7 +24,8 @@ Open links, mark as read ning delete links from your account right from new tab.
 - Get your [pocket consumer key](https://getpocket.com/developer/apps/new)
 - Rename env.example.js to env.js
 - Add consumer key to env.js
-- Install it [manually](https://stackoverflow.com/a/24577660/5762960)
+- Install it for Chrome [manually](https://stackoverflow.com/a/24577660/5762960)
+- Install it for Firefox [manually](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox)
 - Start developing.
 
 
