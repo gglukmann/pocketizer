@@ -478,7 +478,11 @@ const pocketExtension = (() => {
             }
 
             if (state == 'read') {
-                showMessage(chrome.i18n.getMessage('UNARCHIVING'));
+                if (__active_page === 'list') {
+                    showMessage(chrome.i18n.getMessage('ARCHIVING'));
+                } else if (__active_page === 'archive') {
+                    showMessage(chrome.i18n.getMessage('UNARCHIVING'));
+                }
             } else if (state == 'favourite') {
                 showMessage(chrome.i18n.getMessage('PROCESSING'));
             } else if (state == 'delete') {
