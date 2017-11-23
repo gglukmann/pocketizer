@@ -18,7 +18,7 @@ class ApiService {
             detailType: 'complete'
         });
 
-        let data = await makeFetch(API.url_get, fetchData)
+        let data = await makeFetch(API.url_get, this._fetchData)
             .then(response => {
                 return response;
             })
@@ -37,7 +37,7 @@ class ApiService {
             actions: actions
         });
 
-        let action = await makeFetch(API.url_send, fetchData)
+        let action = await makeFetch(API.url_send, this._fetchData)
             .then(response => {
                 return response;
             })
