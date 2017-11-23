@@ -521,7 +521,10 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
                 document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
-                this.render();
+                if (localStorage.getItem('archiveCount')) {
+                    this.render();
+                }
+
                 this.getContent();
             break;
         }
