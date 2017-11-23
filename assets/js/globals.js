@@ -9,11 +9,3 @@ const API = {
     url_get: API_URL + API_VERSION + '/get',
     url_send: API_URL + API_VERSION + '/send'
 }
-
-const ELEMENTS = {
-    status: document.querySelector('#js-status'),
-    title: document.querySelector('#js-title'),
-    loginButton: document.querySelector('#js-login'),
-    username: document.querySelector('#js-username'),
-    defaultMessage: document.querySelector('#js-default-message')
-}

@@ -1,6 +1,6 @@
 'use strict';
 
-class Auth {
+class AuthService {
     constructor() {
         this._fetchData = {
             method: 'POST',
@@ -11,20 +11,7 @@ class Auth {
         }
     }
 
-    async makeFetch(url, options) {
-        try {
-            let response = await fetch(url, options);
-            if (response.ok) {
-                return await response.json();
-            }
-        } catch (e) {
-            throw new Error(e);
-        }
-    }
-
     async authenticate() {
-        const that = this;
-
         try {
             let code = await this.getRequestToken();
             let auth = await this.launchChromeWebAuthFlow(code);
@@ -56,7 +43,7 @@ class Auth {
         const that = this;
 
         return new Promise((resolve, reject) => {
-            let code = that.makeFetch(API.url_request, that._fetchData)
+            let code = makeFetch(API.url_request, that._fetchData)
                 .then(response => {
                     return response.code;
                 })
@@ -111,13 +98,11 @@ class Auth {
         const that = this;
 
         return new Promise((resolve, reject) => {
-            let user = that.makeFetch(API.url_authorize, that._fetchData)
+            let user = makeFetch(API.url_authorize, that._fetchData)
                 .then(response => {
                     that.setToken(response.access_token);
 
                     localStorage.setItem('username', response.username);
-
-                    showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
 
                     return response.username;
                 })
@@ -151,4 +136,4 @@ class Auth {
     }
 }
 
-const auth = new Auth();
+const AuthService = new AuthService();

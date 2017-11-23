@@ -16,6 +16,26 @@ class Pocket {
     }
 
     /**
+     * Initialize Pocket.
+     *
+     * @function init
+     * @return {void}
+     */
+    init() {
+        localizeHtml();
+
+        if (AuthService.isLoggedIn()) {
+            this.startSync();
+        } else {
+            // TODO: user variabels for querySelector
+            document.querySelector('#js-default-message').style.display = 'block';
+            this.bindLoginClickEvent();
+        }
+
+        window.addEventListener('scroll', () => this.handleScroll());
+    }
+
+    /**
      * Gets content from localStorage and from Pocket API to see if there are newer links.
      *
      * @function getContent
@@ -36,7 +56,7 @@ class Pocket {
         let fetchData = {
             method: 'POST',
             body: JSON.stringify({
-                access_token: auth.getToken(),
+                access_token: AuthService.getToken(),
                 consumer_key: __consumer_key,
                 state: state,
                 detailType: 'complete'
@@ -46,8 +66,7 @@ class Pocket {
             }
         }
 
-        fetch(API.url_get, fetchData)
-            .then(response => response.json())
+        makeFetch(API.url_get, fetchData)
             .then(response => {
                 this.sortGetResponse(response);
             })
@@ -65,25 +84,25 @@ class Pocket {
      * @return {void}
      */
     sortGetResponse(response) {
-        let b = [];
+        let array = [];
         let items = response.list;
 
         for (let key in items) {
-            b.push(items[key]);
+            array.push(items[key]);
         }
 
-        b.sort((x, y) => {
+        array.sort((x, y) => {
             return x.sort_id - y.sort_id;
         });
 
         switch (this.active_page) {
             case 'list':
-                localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
-                localStorage.setItem('listCount', b.length);
+                localStorage.setItem('listFromLocalStorage', JSON.stringify(array));
+                localStorage.setItem('listCount', array.length);
             break;
             case 'archive':
-                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(b));
-                localStorage.setItem('archiveCount', b.length);
+                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(array));
+                localStorage.setItem('archiveCount', array.length);
             break;
         }
 
@@ -98,35 +117,33 @@ class Pocket {
      * @return {void}
      */
     render() {
-        let a;
+        let array;
         let listElement;
 
         switch (this.active_page) {
             case 'list':
-                a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                a = a.filter((i, index) => (index < this.load_count));
+                array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
 
-                listElement = document.querySelector('#js-list');
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
             break;
             case 'archive':
-                a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-                a = a.filter((i, index) => (index < this.load_count));
+                array = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
 
-                listElement = document.querySelector('#js-archive-list');
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
             break;
         }
 
         this.items_shown = this.load_count;
-        listElement.innerHTML = "";
 
-        if (a.length == 0) {
+        document.querySelector('#js-list').innerHTML = "";
+        array = array.filter((i, index) => (index < this.load_count));
+
+        if (array.length == 0) {
             document.querySelector('#js-empty-list-message').style.display = 'block';
         } else {
             document.querySelector('#js-empty-list-message').style.display = 'none';
 
-            this.createItems(a);
+            this.createItems(array);
         }
     }
 
@@ -138,16 +155,7 @@ class Pocket {
      * @return {void}
      */
     createItems(a) {
-        let listElement;
-
-        switch (this.active_page) {
-            case 'list':
-                listElement = document.querySelector('#js-list');
-            break;
-            case 'archive':
-                listElement = document.querySelector('#js-archive-list');
-            break;
-        }
+        let listElement = document.querySelector('#js-list');
 
         Object.keys(a).forEach(key => {
             let itemElement = createNode('li');
@@ -273,25 +281,37 @@ class Pocket {
         });
     }
 
+    /**
+     * Load more items.
+     *
+     * @function infiniteScroll
+     * @return {void}
+     */
     infiniteScroll() {
         let array;
 
         switch (this.active_page) {
             case 'list':
                 array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
             break;
             case 'archive':
                 array = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-                array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
             break;
         }
 
-        this.items_shown = this.items_shown + this.load_count;
+        array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
+
+        this.items_shown += this.load_count;
 
         this.createItems(array);
     }
 
+    /**
+     * Scrolling on page handler.
+     *
+     * @function handleScroll
+     * @return {void}
+     */
     handleScroll() {
         this.scroll.lastKnownScrollY = window.scrollY;
 
@@ -410,7 +430,7 @@ class Pocket {
         let fetchData = {
             method: 'POST',
             body: JSON.stringify({
-                access_token: auth.getToken(),
+                access_token: AuthService.getToken(),
                 consumer_key: __consumer_key,
                 actions: actions
             }),
@@ -419,8 +439,7 @@ class Pocket {
             }
         }
 
-        fetch(API.url_send, fetchData)
-        .then(response => response.json())
+        makeFetch(API.url_send, fetchData)
         .then(response => {
             let a;
 
@@ -507,6 +526,7 @@ class Pocket {
         }
 
         this.items_shown = 0;
+        document.querySelector('#js-list').innerHTML = "";
 
         switch (page) {
             case 'list':
@@ -516,10 +536,8 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
                 document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
+                this.render();
                 this.getContent();
-
-                document.querySelector('#js-list').style.display = 'flex';
-                document.querySelector('#js-archive-list').style.display = 'none';
             break;
             case 'archive':
                 this.active_page = 'archive';
@@ -528,10 +546,8 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
                 document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
+                this.render();
                 this.getContent();
-
-                document.querySelector('#js-archive-list').style.display = 'flex';
-                document.querySelector('#js-list').style.display = 'none';
             break;
         }
     }
@@ -601,11 +617,13 @@ class Pocket {
      * @return {void}
      */
     startLogin() {
-        auth.authenticate().then((response) => {
+        AuthService.authenticate().then((response) => {
             if (response.status !== 'authenticated') {
+                showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                 this.logout();
             }
 
+            showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
             this.loggedIn();
         });
     }
@@ -622,7 +640,6 @@ class Pocket {
 
         document.querySelector('#js-default-message').style.display = 'block';
         document.querySelector('#js-list').style.display = 'none';
-        document.querySelector('#js-archive-list').style.display = 'none';
         document.querySelector('#js-menu').style.display = 'none';
         document.querySelector('#js-username').style.display = 'none';
         document.querySelector('#js-logout').style.display = 'none';
@@ -632,23 +649,9 @@ class Pocket {
 
         showMessage('Logout');
     }
-
-    init() {
-        localizeHtml();
-
-        window.addEventListener('scroll', () => this.handleScroll());
-
-        if (auth.isLoggedIn()) {
-            this.startSync();
-        } else {
-            // TODO: user variabels for querySelector
-            document.querySelector('#js-default-message').style.display = 'block';
-            this.bindLoginClickEvent();
-        }
-    }
 };
 
 window.pocket = new Pocket();
-(() => {
+window.onload = (() => {
     window.pocket.init();
-})();
+});

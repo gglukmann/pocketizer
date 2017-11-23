@@ -127,3 +127,22 @@ function localizeHtml() {
         replace_i18n(obj, tag);
     }
 }
+
+/**
+ * Make async fetch.
+ *
+ * @function makeFetch
+ * @param  {String} url     Url to make fetch to.
+ * @param  {Object} options Fetch body.
+ * @return {JSON}         Fetch response in JSON.
+ */
+async function makeFetch(url, options) {
+    try {
+        let response = await fetch(url, options);
+        if (response.ok) {
+            return await response.json();
+        }
+    } catch (e) {
+        throw new Error(e);
+    }
+}
