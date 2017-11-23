@@ -42,7 +42,7 @@ class AuthService {
      * @return {void}
      */
     getRequestToken() {
-        document.querySelector('#js-status').innerText = chrome.i18n.getMessage('AUTHENTICATING') + "...";
+        showMessage(`${chrome.i18n.getMessage('AUTHENTICATING')}...`, true, false, false);
 
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,

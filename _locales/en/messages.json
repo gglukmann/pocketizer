@@ -78,5 +78,17 @@
     },
     "POCKET_HOMEPAGE": {
         "message": "Pocket homepage"
+    },
+    "LOADING": {
+        "message": "Loading"
+    },
+    "EVERYTING_LOADED": {
+        "message": "Everything loaded!"
+    },
+    "SUCCESSFUL": {
+        "message": "successful"
+    },
+    "FAILED": {
+        "message": "failed"
     }
 }

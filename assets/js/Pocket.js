@@ -275,6 +275,7 @@ class Pocket {
      * @return {void}
      */
     infiniteScroll() {
+        showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
         let array;
 
         switch (this.active_page) {
@@ -289,6 +290,12 @@ class Pocket {
         array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
 
         this.items_shown += this.load_count;
+
+        if (array.length === 0) {
+            showMessage(chrome.i18n.getMessage('EVERYTING_LOADED'), true, false, true);
+        } else {
+            showMessage(chrome.i18n.getMessage('LOADING'));
+        }
 
         this.createItems(array);
     }
@@ -393,19 +400,19 @@ class Pocket {
             switch (this.active_page) {
                 case 'archive':
                     action = 'readd';
-                    document.querySelector('#js-status').innerText = chrome.i18n.getMessage('UNARCHIVING') + '...';
+                    showMessage(`${chrome.i18n.getMessage('UNARCHIVING')}...`, true, false, false);
                 break;
                 case 'list':
                     action = 'archive';
-                    document.querySelector('#js-status').innerText = chrome.i18n.getMessage('ARCHIVING') + '...';
+                    showMessage(`${chrome.i18n.getMessage('ARCHIVING')}...`, true, false, false);
                 break;
             }
         } else if (state == 'favourite') {
             action = (isFavourited === true ? 'unfavorite' : 'favorite');
-            document.querySelector('#js-status').innerText = chrome.i18n.getMessage('PROCESSING') + '...';
+            showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
         } else if (state == 'delete') {
             action = 'delete';
-            document.querySelector('#js-status').innerText = chrome.i18n.getMessage('DELETING') + '...';
+            showMessage(`${chrome.i18n.getMessage('DELETING')}...`, true, false, false);
         }
 
         let actions = [{
@@ -509,7 +516,7 @@ class Pocket {
 
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
-                document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+                showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
                 this.render();
                 this.getContent();
@@ -519,7 +526,7 @@ class Pocket {
 
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
-                document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+                showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
                 if (localStorage.getItem('archiveCount')) {
                     this.render();
@@ -554,7 +561,7 @@ class Pocket {
     loggedIn() {
         document.querySelector('#js-username').innerText = localStorage.getItem('username');
 
-        document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+        showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
         this.showLoggedInContent();
 
@@ -572,7 +579,7 @@ class Pocket {
      * @return {void}
      */
     startSync() {
-        document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+        showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
         this.render();
 
@@ -613,7 +620,7 @@ class Pocket {
      * @return {void}
      */
     logout() {
-        document.querySelector('#js-status').innerText = chrome.i18n.getMessage('LOGGING_OUT') + '...';
+        showMessage(`${chrome.i18n.getMessage('LOGGING_OUT')}...`, true, false, false);
         localStorage.clear();
 
         document.querySelector('#js-default-message').style.display = 'block';
@@ -625,7 +632,7 @@ class Pocket {
 
         this.bindLoginClickEvent();
 
-        showMessage('Logout');
+        showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }
 };
 

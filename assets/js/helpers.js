@@ -61,23 +61,29 @@ function getCurrentUNIX() {
  * Shows success message.
  *
  * @function showMessage
- * @param  {String} message - Message text first part.
+ * @param {String} message - Message text first part.
  * @param {Boolean} isSuccess - If is success or fail.
+ * @param {Boolean} hasSuffix - If has suffix.
+ * @param {Boolean} hasEnding - If should be removed after 2 seconds.
  * @return {void}
  */
-function showMessage(message, isSuccess = true) {
-    if (isSuccess) {
-        message += " successful!";
-    } else {
-        message += " failed!";
+function showMessage(message, isSuccess = true, hasSuffix = true, hasEnding = true) {
+    if (hasSuffix) {
+        if (isSuccess) {
+            message += ` ${chrome.i18n.getMessage('SUCCESSFUL')}!`;
+        } else {
+            message += ` ${chrome.i18n.getMessage('FAILED')}!`;
+        }
     }
 
     const statusElement = document.querySelector('#js-status');
     statusElement.innerText = message;
 
-    setTimeout(() => {
-        statusElement.innerText = "";
-    }, 2000);
+    if (hasEnding) {
+        setTimeout(() => {
+            statusElement.innerText = "";
+        }, 2000);
+    }
 }
 
 /**
