@@ -4,10 +4,6 @@
     <meta charset=utf-8>
     <title data-translate="__MSG_EXTENSION_NAME__">New Tab - Pocket</title>
     <link rel="stylesheet" href="assets/css/style.css">
-    <script src="env.js"></script>
-    <script src="assets/js/vendor/lazysizes.min.js" async=""></script>
-    <script src="assets/js/helpers.js"></script>
-    <script src="assets/js/app.js"></script>
 </head>
 <body>
     <div class="rainbow">
@@ -17,16 +13,16 @@
         <div class="rainbow__detail rainbow__detail--fourth"></div>
     </div>
     <div class="container">
-        <div id="status" class="status"></div>
+        <div id="js-status" class="status"></div>
         <div class="header">
             <h1 class="header__title">
                 <a href="https://getpocket.com" title="__MSG_POCKET_HOMEPAGE__">
                     <img src="assets/images/logo.png" alt="Logo" class="header__logo" />
                 </a>
-                <span id="title" data-translate="__MSG_MY_POCKET_LIST__">My Pocket List</span>
-                <small class="header__count" id="count-wrapper" style="display: none;">(<span id="count">0</span>)</small>
+                <span id="js-title" data-translate="__MSG_MY_POCKET_LIST__">My Pocket List</span>
+                <small class="header__count" id="js-count-wrapper" style="display: none;">(<span id="js-count">0</span>)</small>
             </h1>
-            <ul class="menu" id="menu" style="display: none;">
+            <ul class="menu" id="js-menu" style="display: none;">
                 <li class="menu__item">
                     <a href="#0" class="menu__link menu__link--active js-changeMenu" data-page="list">
                         <span data-translate="__MSG_MY_LIST__">My List</span>
@@ -39,7 +35,7 @@
                 </li>
             </ul>
             <div class="header__username">
-                <span id="username"></span>
+                <span id="js-username"></span>
                 <button type="button" id="js-logout" class="btn btn--link" title="Logout" style="display: none;">
                     <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-99.8 166.4 89.5 96.7" xml:space="preserve" class="icon">
                     <g>
@@ -55,15 +51,22 @@
                 </button>
             </div>
         </div>
-        <div id="default-message" class="message" style="display: none;">
+        <div id="js-default-message" class="message" style="display: none;">
             <h2 class="message__text message__text--text-color" data-translate="__MSG_LOG_IN_TEXT__">Hello, log in to get started!</h2>
             <button type="button" id="js-login" class="btn btn--login" data-translate="__MSG_LOG_IN_WITH_POCKET__">Log in with Pocket</button>
         </div>
-        <div id="empty-list-message" class="message" style="display: none;">
+        <div id="js-empty-list-message" class="message" style="display: none;">
             <h2 class="message__text" data-translate="__MSG_EMPTY_MESSAGE__">Looks like you haven't saved anything to Pocket yet!</h2>
         </div>
-        <ol id="list" class="list"></ol>
-        <ol id="archive-list" class="list" style="display: none;"></ol>
+        <ol id="js-list" class="list"></ol>
+        <ol id="js-archive-list" class="list" style="display: none;"></ol>
     </div>
+
+    <script src="env.js"></script>
+    <script src="assets/js/globals.js"></script>
+    <script src="assets/js/vendor/lazysizes.min.js" async=""></script>
+    <script src="assets/js/helpers.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/app.js"></script>
 </body>
 </html>

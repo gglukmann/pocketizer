@@ -1,21 +1,19 @@
 'use strict';
 
-const pocketExtension = (() => {
-    const apiUrl = 'https://getpocket.com/';
-    const apiVersion = 'v3';
+class Pocket {
+    /**
+     * @constructor
+     */
+    constructor() {
+        this.active_page = 'list';
+        this.items_shown = 0;
+        this.load_count = 22;
 
-    const __redirect_url = chrome.identity.getRedirectURL() + 'oauth';
-    const __url_request = apiUrl + apiVersion + '/oauth/request';
-    const __url_authorize = apiUrl + apiVersion + '/oauth/authorize';
-    const __url_auth = apiUrl + 'auth/authorize';
-    const __url_get = apiUrl + apiVersion + '/get';
-    const __url_send = apiUrl + apiVersion + '/send';
-
-    let __request_token;
-    let __access_token;
-    let __active_page = 'list';
-    let __items_shown = 0;
-    const __load_count = 22;
+        this.scroll = {
+            lastKnownScrollY: 0,
+            ticking: false
+        }
+    }
 
     /**
      * Gets content from localStorage and from Pocket API to see if there are newer links.
@@ -23,10 +21,10 @@ const pocketExtension = (() => {
      * @function getContent
      * @return {void}
      */
-    function getContent() {
+    getContent() {
         let state;
 
-        switch (__active_page) {
+        switch (this.active_page) {
             case 'list':
                 state = 'unread';
             break;
@@ -38,7 +36,7 @@ const pocketExtension = (() => {
         let fetchData = {
             method: 'POST',
             body: JSON.stringify({
-                access_token: localStorage.getItem('token'),
+                access_token: auth.getToken(),
                 consumer_key: __consumer_key,
                 state: state,
                 detailType: 'complete'
@@ -48,10 +46,10 @@ const pocketExtension = (() => {
             }
         }
 
-        fetch(__url_get, fetchData)
+        fetch(API.url_get, fetchData)
             .then(response => response.json())
             .then(response => {
-                sortGetResponse(response);
+                this.sortGetResponse(response);
             })
             .catch(error => {
                 console.log(error);
@@ -66,7 +64,7 @@ const pocketExtension = (() => {
      * @param  {Object} response - response from fetch.
      * @return {void}
      */
-    function sortGetResponse(response) {
+    sortGetResponse(response) {
         let b = [];
         let items = response.list;
 
@@ -78,7 +76,7 @@ const pocketExtension = (() => {
             return x.sort_id - y.sort_id;
         });
 
-        switch (__active_page) {
+        switch (this.active_page) {
             case 'list':
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(b));
                 localStorage.setItem('listCount', b.length);
@@ -89,7 +87,7 @@ const pocketExtension = (() => {
             break;
         }
 
-        render();
+        this.render();
         showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
     }
 
@@ -99,36 +97,36 @@ const pocketExtension = (() => {
      * @function render
      * @return {void}
      */
-    function render() {
+    render() {
         let a;
         let listElement;
 
-        switch (__active_page) {
+        switch (this.active_page) {
             case 'list':
                 a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                a = a.filter((i, index) => (index < __load_count));
+                a = a.filter((i, index) => (index < this.load_count));
 
-                listElement = document.getElementById('list');
-                document.getElementById('count').innerText = localStorage.getItem('listCount');
+                listElement = document.querySelector('#js-list');
+                document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
             break;
             case 'archive':
                 a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-                a = a.filter((i, index) => (index < __load_count));
+                a = a.filter((i, index) => (index < this.load_count));
 
-                listElement = document.getElementById('archive-list');
-                document.getElementById('count').innerText = localStorage.getItem('archiveCount');
+                listElement = document.querySelector('#js-archive-list');
+                document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
             break;
         }
 
-        __items_shown = __load_count;
+        this.items_shown = this.load_count;
         listElement.innerHTML = "";
 
         if (a.length == 0) {
-            document.getElementById('empty-list-message').style.display = 'block';
+            document.querySelector('#js-empty-list-message').style.display = 'block';
         } else {
-            document.getElementById('empty-list-message').style.display = 'none';
+            document.querySelector('#js-empty-list-message').style.display = 'none';
 
-            createItems(a);
+            this.createItems(a);
         }
     }
 
@@ -139,15 +137,15 @@ const pocketExtension = (() => {
      * @param  {Array} a Array of items.
      * @return {void}
      */
-    function createItems(a) {
+    createItems(a) {
         let listElement;
 
-        switch (__active_page) {
+        switch (this.active_page) {
             case 'list':
-                listElement = document.getElementById('list');
+                listElement = document.querySelector('#js-list');
             break;
             case 'archive':
-                listElement = document.getElementById('archive-list');
+                listElement = document.querySelector('#js-archive-list');
             break;
         }
 
@@ -179,7 +177,7 @@ const pocketExtension = (() => {
             } else {
                 favouriteElement.setAttribute('data-favourite', 'false');
             }
-            favouriteElement.setAttribute('class', 'item__favourite js-toggleFavouriteButton');
+            favouriteElement.setAttribute('class', 'item__favourite js-toggle-favourite-button');
             favouriteElement.setAttribute('href', '#0');
             favouriteElement.setAttribute('title', chrome.i18n.getMessage('TOGGLE_FAVOURITED_STATE'));
             favouriteElement.setAttribute('data-id', a[key].item_id);
@@ -192,7 +190,7 @@ const pocketExtension = (() => {
             let isRead = false;
             let deleteNode = createTextNode(chrome.i18n.getMessage('DELETE'));
 
-            switch (__active_page) {
+            switch (this.active_page) {
                 case 'list':
                     readNode = createTextNode(chrome.i18n.getMessage('MARK_READ'));
                     isRead = false;
@@ -275,42 +273,39 @@ const pocketExtension = (() => {
         });
     }
 
-    function infiniteScroll() {
+    infiniteScroll() {
         let array;
 
-        switch (__active_page) {
+        switch (this.active_page) {
             case 'list':
                 array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                array = array.filter((i, index) => (index >= __items_shown && index < __items_shown + __load_count));
+                array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
             break;
             case 'archive':
                 array = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-                array = array.filter((i, index) => (index >= __items_shown && index < __items_shown + __load_count));
+                array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
             break;
         }
 
-        __items_shown = __items_shown + __load_count;
+        this.items_shown = this.items_shown + this.load_count;
 
-        createItems(array);
+        this.createItems(array);
     }
 
-    let lastKnownScrollPosition = 0;
-    let ticking = false;
+    handleScroll() {
+        this.scroll.lastKnownScrollY = window.scrollY;
 
-    window.addEventListener('scroll', (e) => {
-        lastKnownScrollPosition = window.scrollY;
-
-        if (!ticking) {
+        if (!this.scroll.ticking) {
             window.requestAnimationFrame(() => {
-                if (lastKnownScrollPosition === document.documentElement.scrollHeight - window.innerHeight) {
-                    infiniteScroll();
+                if (this.scroll.lastKnownScrollY === document.documentElement.scrollHeight - window.innerHeight) {
+                    this.infiniteScroll();
                 }
-                ticking = false;
+                this.scroll.ticking = false;
             });
 
-            ticking = true;
+            this.scroll.ticking = true;
         }
-    });
+    }
 
     /**
      * Binds click events for action buttons.
@@ -318,27 +313,27 @@ const pocketExtension = (() => {
      * @function bindActionClickEvents
      * @return {void}
      */
-    function bindActionClickEvents() {
+    bindActionClickEvents() {
         document.body.addEventListener('click', (e) => {
             let id = e.target.dataset.id;
 
-            if (e.target.classList.contains('js-toggleFavouriteButton')) {
+            if (e.target.classList.contains('js-toggle-favourite-button')) {
                 e.preventDefault();
                 let isFavourited = e.target.dataset.favourite;
                 isFavourited = (isFavourited == 'true'); // convert to boolean
 
-                toggleActionState(e, 'favourite', id, isFavourited);
+                this.toggleActionState(e, 'favourite', id, isFavourited);
             } else if (e.target.classList.contains('js-deleteButton')) {
                 e.preventDefault();
-                toggleActionState(e, 'delete', id, false);
+                this.toggleActionState(e, 'delete', id, false);
             } else if (e.target.classList.contains('js-toggleReadButton')) {
                 e.preventDefault();
-                toggleActionState(e, 'read', id, false);
+                this.toggleActionState(e, 'read', id, false);
             }
         });
 
-        document.getElementById('js-logout').addEventListener('click', () => {
-            logout();
+        document.querySelector('#js-logout').addEventListener('click', () => {
+            this.logout();
         }, false);
     }
 
@@ -348,13 +343,13 @@ const pocketExtension = (() => {
      * @function bindMenuClickEvents
      * @return {void}
      */
-    function bindMenuClickEvents() {
+    bindMenuClickEvents() {
         document.body.addEventListener('click', (e) => {
             if (e.target.parentNode.classList.contains('js-changeMenu')) {
                 e.preventDefault();
                 let page = e.target.parentNode.dataset.page;
 
-                changePage(page);
+                this.changePage(page);
             }
         });
     }
@@ -365,10 +360,10 @@ const pocketExtension = (() => {
      * @function bindLoginClickEvent
      * @return {void}
      */
-    function bindLoginClickEvent() {
-        let loginButton = document.getElementById('js-login');
+    bindLoginClickEvent() {
+        let loginButton = document.querySelector('#js-login');
         loginButton.addEventListener('click', () => {
-            startLogin();
+            this.startLogin();
 
             loginButton.disabled = true;
         }, false);
@@ -384,26 +379,26 @@ const pocketExtension = (() => {
      * @param  {Boolean} isFavourited - If should be favourited.
      * @return {void}
      */
-    function toggleActionState(e, state, id, isFavourited) {
+    toggleActionState(e, state, id, isFavourited) {
         let action;
 
         if (state == 'read') {
-            switch (__active_page) {
+            switch (this.active_page) {
                 case 'archive':
                     action = 'readd';
-                    document.getElementById('status').innerText = chrome.i18n.getMessage('UNARCHIVING') + '...';
+                    document.querySelector('#js-status').innerText = chrome.i18n.getMessage('UNARCHIVING') + '...';
                 break;
                 case 'list':
                     action = 'archive';
-                    document.getElementById('status').innerText = chrome.i18n.getMessage('ARCHIVING') + '...';
+                    document.querySelector('#js-status').innerText = chrome.i18n.getMessage('ARCHIVING') + '...';
                 break;
             }
         } else if (state == 'favourite') {
             action = (isFavourited === true ? 'unfavorite' : 'favorite');
-            document.getElementById('status').innerText = chrome.i18n.getMessage('PROCESSING') + '...';
+            document.querySelector('#js-status').innerText = chrome.i18n.getMessage('PROCESSING') + '...';
         } else if (state == 'delete') {
             action = 'delete';
-            document.getElementById('status').innerText = chrome.i18n.getMessage('DELETING') + '...';
+            document.querySelector('#js-status').innerText = chrome.i18n.getMessage('DELETING') + '...';
         }
 
         let actions = [{
@@ -415,7 +410,7 @@ const pocketExtension = (() => {
         let fetchData = {
             method: 'POST',
             body: JSON.stringify({
-                access_token: localStorage.getItem('token'),
+                access_token: auth.getToken(),
                 consumer_key: __consumer_key,
                 actions: actions
             }),
@@ -424,12 +419,12 @@ const pocketExtension = (() => {
             }
         }
 
-        fetch(__url_send, fetchData)
+        fetch(API.url_send, fetchData)
         .then(response => response.json())
         .then(response => {
             let a;
 
-            switch (__active_page) {
+            switch (this.active_page) {
                 case 'list':
                     a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
                 break;
@@ -447,14 +442,14 @@ const pocketExtension = (() => {
 
                             e.target.parentNode.parentNode.remove();
 
-                            switch (__active_page) {
+                            switch (this.active_page) {
                                 case 'list':
                                     localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                                    document.getElementById('count').innerText = localStorage.getItem('listCount');
+                                    document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                                 break;
                                 case 'archive':
                                     localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                                    document.getElementById('count').innerText = localStorage.getItem('archiveCount');
+                                    document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                                 break;
                             }
                         break;
@@ -462,13 +457,13 @@ const pocketExtension = (() => {
                             a[i].favorite = (isFavourited === true ? 0 : 1);
 
                             isFavourited = !isFavourited;
-                            e.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite = isFavourited;
+                            e.target.parentNode.querySelector('.js-toggle-favourite-button').dataset.favourite = isFavourited;
                         break;
                     }
                 }
             };
 
-            switch (__active_page) {
+            switch (this.active_page) {
                 case 'list':
                     localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
                 break;
@@ -478,9 +473,9 @@ const pocketExtension = (() => {
             }
 
             if (state == 'read') {
-                if (__active_page === 'list') {
+                if (this.active_page === 'list') {
                     showMessage(chrome.i18n.getMessage('ARCHIVING'));
-                } else if (__active_page === 'archive') {
+                } else if (this.active_page === 'archive') {
                     showMessage(chrome.i18n.getMessage('UNARCHIVING'));
                 }
             } else if (state == 'favourite') {
@@ -502,139 +497,43 @@ const pocketExtension = (() => {
      * @param  {String} page - Page to change to.
      * @return {void}
      */
-    function changePage(page) {
-        let menuLinkElements = document.getElementsByClassName('menu__link');
+    changePage(page) {
+        let menuLinkElements = document.querySelectorAll('.menu__link');
         for (let i = 0; i < menuLinkElements.length; i++) {
             menuLinkElements[i].classList.remove('menu__link--active');
-            if (menuLinkElements[i].getAttribute('data-page') == page) {
+            if (menuLinkElements[i].dataset.page == page) {
                 menuLinkElements[i].classList.add('menu__link--active');
             }
         }
 
-        __items_shown = 0;
+        this.items_shown = 0;
 
         switch (page) {
             case 'list':
-                __active_page = 'list';
+                this.active_page = 'list';
 
-                document.getElementById('count').innerText = localStorage.getItem('listCount');
-                document.getElementById('title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
-                document.getElementById('status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+                document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
+                document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
+                document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
-                getContent();
+                this.getContent();
 
-                document.getElementById('list').style.display = 'flex';
-                document.getElementById('archive-list').style.display = 'none';
+                document.querySelector('#js-list').style.display = 'flex';
+                document.querySelector('#js-archive-list').style.display = 'none';
             break;
             case 'archive':
-                __active_page = 'archive';
+                this.active_page = 'archive';
 
-                document.getElementById('count').innerText = localStorage.getItem('archiveCount');
-                document.getElementById('title').innerText = chrome.i18n.getMessage('ARCHIVE');
-                document.getElementById('status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+                document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
+                document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
+                document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
-                getContent();
+                this.getContent();
 
-                document.getElementById('archive-list').style.display = 'flex';
-                document.getElementById('list').style.display = 'none';
+                document.querySelector('#js-archive-list').style.display = 'flex';
+                document.querySelector('#js-list').style.display = 'none';
             break;
         }
-    }
-
-    /**
-     * Get access token from Pocket.
-     *
-     * @function getAccessToken
-     * @return {void}
-     */
-    function getAccessToken() {
-        let fetchData = {
-            method: 'POST',
-            body: JSON.stringify({
-                consumer_key: __consumer_key,
-                code: __request_token
-            }),
-            headers: {
-                'Content-Type': 'application/json; charset=UTF8',
-                'X-Accept': 'application/json'
-            }
-        }
-
-        fetch(__url_authorize, fetchData)
-        .then(response => response.json())
-        .then(response => {
-            __access_token = response.access_token;
-            __request_token = __access_token;
-
-            localStorage.setItem('token', __access_token);
-
-            let username = response.username;
-
-            localStorage.setItem('username', username);
-            document.getElementById('username').innerText = username;
-
-            loggedIn();
-        })
-        .catch(error => {
-            console.log(error);
-            showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
-        });
-    }
-
-    /**
-     * Open Pocket auth view from Chrome launchWebAuthFlow.
-     *
-     * @function launchChromeWebAuthFlow
-     * @return {void}
-     */
-    function launchChromeWebAuthFlow() {
-        let options = {
-            'url': `${__url_auth}?request_token=${__request_token}&redirect_uri=${__redirect_url}`,
-            'interactive': true
-        }
-
-        chrome.identity.launchWebAuthFlow(options, (redirectUrl) => {
-            document.getElementById('js-login').disabled = false;
-
-            if (chrome.runtime.lastError) {
-                console.log(new Error(chrome.runtime.lastError.message));
-                return;
-            }
-
-            getAccessToken();
-        });
-    }
-
-    /**
-     * Get Request token from Pocket.
-     *
-     * @function getRequestToken
-     * @return {void}
-     */
-    function getRequestToken() {
-        let fetchData = {
-            method: 'POST',
-            body: JSON.stringify({
-                consumer_key: __consumer_key,
-                redirect_uri: __redirect_url
-            }),
-            headers: {
-                'Content-Type': 'application/json; charset=UTF8',
-                'X-Accept': 'application/json'
-            }
-        }
-
-        fetch(__url_request, fetchData)
-        .then(response => response.json())
-        .then(response => {
-            __request_token = response.code;
-
-            launchChromeWebAuthFlow();
-        })
-        .catch(error => {
-            console.log(error);
-            showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
-        });
     }
 
     /**
@@ -643,13 +542,13 @@ const pocketExtension = (() => {
      * @function showLoggedInContent
      * @return {void}
      */
-    function showLoggedInContent() {
-        document.getElementById('default-message').style.display = 'none';
-        document.getElementById('count-wrapper').style.display = 'inline-block';
-        document.getElementById('menu').style.display = 'flex';
-        document.getElementById('list').style.display = 'flex';
-        document.getElementById('username').style.display = 'inline-block';
-        document.getElementById('js-logout').style.display = 'inline-block';
+    showLoggedInContent() {
+        document.querySelector('#js-default-message').style.display = 'none';
+        document.querySelector('#js-count-wrapper').style.display = 'inline-block';
+        document.querySelector('#js-menu').style.display = 'flex';
+        document.querySelector('#js-list').style.display = 'flex';
+        document.querySelector('#js-username').style.display = 'inline-block';
+        document.querySelector('#js-logout').style.display = 'inline-block';
     }
 
     /**
@@ -658,16 +557,18 @@ const pocketExtension = (() => {
      * @function loggedIn
      * @return {void}
      */
-    function loggedIn() {
-        document.getElementById('status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+    loggedIn() {
+        document.querySelector('#js-username').innerText = localStorage.getItem('username');
 
-        showLoggedInContent();
+        document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+
+        this.showLoggedInContent();
 
         // get content from pocket api
-        getContent();
+        this.getContent();
 
-        bindMenuClickEvents();
-        bindActionClickEvents();
+        this.bindMenuClickEvents();
+        this.bindActionClickEvents();
     }
 
     /**
@@ -676,21 +577,21 @@ const pocketExtension = (() => {
      * @function startSync
      * @return {void}
      */
-    function startSync() {
-        document.getElementById('status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
+    startSync() {
+        document.querySelector('#js-status').innerText = chrome.i18n.getMessage('SYNCHRONIZING') + "...";
 
-        render();
+        this.render();
 
-        showLoggedInContent();
+        this.showLoggedInContent();
 
         if (localStorage.getItem('username')) {
-            document.getElementById('username').innerText = localStorage.getItem('username');
+            document.querySelector('#js-username').innerText = localStorage.getItem('username');
         }
 
-        bindMenuClickEvents();
-        bindActionClickEvents();
+        this.bindMenuClickEvents();
+        this.bindActionClickEvents();
 
-        getContent();
+        this.getContent();
     }
 
     /**
@@ -699,8 +600,14 @@ const pocketExtension = (() => {
      * @function startLogin
      * @return {void}
      */
-    function startLogin() {
-        getRequestToken();
+    startLogin() {
+        auth.authenticate().then((response) => {
+            if (response.status !== 'authenticated') {
+                this.logout();
+            }
+
+            this.loggedIn();
+        });
     }
 
     /**
@@ -709,34 +616,39 @@ const pocketExtension = (() => {
      * @function logout
      * @return {void}
      */
-    function logout() {
+    logout() {
+        document.querySelector('#js-status').innerText = chrome.i18n.getMessage('LOGGING_OUT') + '...';
         localStorage.clear();
 
-        document.getElementById('default-message').style.display = 'block';
-        document.getElementById('list').style.display = 'none';
-        document.getElementById('archive-list').style.display = 'none';
-        document.getElementById('menu').style.display = 'none';
-        document.getElementById('username').style.display = 'none';
-        document.getElementById('js-logout').style.display = 'none';
-        document.getElementById('count-wrapper').style.display = 'none';
+        document.querySelector('#js-default-message').style.display = 'block';
+        document.querySelector('#js-list').style.display = 'none';
+        document.querySelector('#js-archive-list').style.display = 'none';
+        document.querySelector('#js-menu').style.display = 'none';
+        document.querySelector('#js-username').style.display = 'none';
+        document.querySelector('#js-logout').style.display = 'none';
+        document.querySelector('#js-count-wrapper').style.display = 'none';
 
-        bindLoginClickEvent();
+        this.bindLoginClickEvent();
 
         showMessage('Logout');
     }
 
-    return {
-        onload: () => {
-            localizeHtml();
+    init() {
+        localizeHtml();
 
-            if (localStorage.getItem('token')) {
-                startSync();
-            } else {
-                document.getElementById('default-message').style.display = 'block';
-                bindLoginClickEvent();
-            }
+        window.addEventListener('scroll', () => this.handleScroll());
+
+        if (auth.isLoggedIn()) {
+            this.startSync();
+        } else {
+            // TODO: user variabels for querySelector
+            document.querySelector('#js-default-message').style.display = 'block';
+            this.bindLoginClickEvent();
         }
-    };
-})();
+    }
+};
 
-window.onload = pocketExtension.onload;
+window.pocket = new Pocket();
+(() => {
+    window.pocket.init();
+})();

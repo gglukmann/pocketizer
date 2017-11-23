@@ -72,10 +72,11 @@ function showMessage(message, isSuccess = true) {
         message += " failed!";
     }
 
-    document.getElementById('status').innerText = message;
+    const statusElement = document.querySelector('#js-status');
+    statusElement.innerText = message;
 
     setTimeout(() => {
-        document.getElementById('status').innerText = "";
+        statusElement.innerText = "";
     }, 2000);
 }
 
