@@ -1,6 +1,9 @@
 'use strict';
 
 class ApiService {
+    /**
+     * @constructor
+     */
     constructor() {
         this._fetchData = {
             method: 'POST',
@@ -10,6 +13,13 @@ class ApiService {
         }
     }
 
+    /**
+     * Get data from pocket api.
+     *
+     * @function get
+     * @param  {String}  state List type to get.
+     * @return {Promise}       Response from api.
+     */
     async get(state) {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
@@ -30,6 +40,13 @@ class ApiService {
         return data;
     }
 
+    /**
+     * Make actions
+     *
+     * @function send
+     * @param  {Array}  actions Array of current action data.
+     * @return {Promise}         Response from pocket api.
+     */
     async send(actions) {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),

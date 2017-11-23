@@ -1,6 +1,9 @@
 'use strict';
 
 class AuthService {
+    /**
+     * @constructor
+     */
     constructor() {
         this._fetchData = {
             method: 'POST',
@@ -11,6 +14,12 @@ class AuthService {
         }
     }
 
+    /**
+     * Start authentication.
+     *
+     * @function authenticate
+     * @return {Promise} Authenticated user.
+     */
     async authenticate() {
         try {
             let code = await this.getRequestToken();
@@ -60,6 +69,7 @@ class AuthService {
      * Open Pocket auth view from Chrome launchWebAuthFlow.
      *
      * @function launchChromeWebAuthFlow
+     * @param {String} requestToken Request token from Pocket.
      * @return {void}
      */
     launchChromeWebAuthFlow(requestToken) {
@@ -87,6 +97,7 @@ class AuthService {
      * Get access token from Pocket.
      *
      * @function getAccessToken
+     * @param {String} requestToken Request token from Pocket.
      * @return {void}
      */
     getAccessToken(requestToken) {
@@ -115,6 +126,12 @@ class AuthService {
         });
     }
 
+    /**
+     * Get token from localStorage.
+     *
+     * @function getToken
+     * @return {String} Token.
+     */
     getToken() {
         if (!localStorage.getItem('token')) {
             return false;
@@ -123,10 +140,22 @@ class AuthService {
         return localStorage.getItem('token');
     }
 
+    /**
+     * Set token to localStorage.
+     *
+     * @function setToken
+     * @param {String} token Token.
+     */
     setToken(token) {
         localStorage.setItem('token', token);
     }
 
+    /**
+     * Check if user is logged in.
+     *
+     * @function isLoggedIn
+     * @return {Boolean} If user is logged in.
+     */
     isLoggedIn() {
         if (!this.getToken()) {
             return false;
