@@ -123,11 +123,13 @@ class Pocket {
         this.items_shown = this.load_count;
 
         document.querySelector('#js-list').innerHTML = "";
-        array = array.filter((i, index) => (index < this.load_count));
 
-        if (array.length == 0) {
+        if (array === null) {
+            this.getContent();
+        } else if (array.length === 0) {
             document.querySelector('#js-empty-list-message').style.display = 'block';
         } else {
+            array = array.filter((i, index) => (index < this.load_count));
             document.querySelector('#js-empty-list-message').style.display = 'none';
 
             this.createItems(array);
@@ -292,7 +294,7 @@ class Pocket {
         this.items_shown += this.load_count;
 
         if (array.length === 0) {
-            showMessage(chrome.i18n.getMessage('EVERYTING_LOADED'), true, false, true);
+            showMessage(chrome.i18n.getMessage('EVERYTHING_LOADED'), true, false, true);
         } else {
             showMessage(chrome.i18n.getMessage('LOADING'));
         }
