@@ -57,8 +57,8 @@ class AuthService {
                     return response.code;
                 })
                 .catch(error => {
-                    console.log(error);
                     showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+                    reject(error);
                 });
 
             resolve(code);
@@ -83,9 +83,8 @@ class AuthService {
                 document.querySelector('#js-login').disabled = false;
 
                 if (chrome.runtime.lastError) {
-                    console.log(new Error(chrome.runtime.lastError.message));
                     showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
-                    return false;
+                    reject(chrome.runtime.lastError.message);
                 }
 
                 resolve(requestToken);
@@ -118,8 +117,8 @@ class AuthService {
                     return response.username;
                 })
                 .catch(error => {
-                    console.log(error);
                     showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+                    reject(error);
                 });
 
             resolve(user);
