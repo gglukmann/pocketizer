@@ -391,6 +391,11 @@ a {
     color: var(--text-color);
 }
 
+.sentinel {
+    height: 1px;
+    width: 1px;
+}
+
 /* RAINBOW */
 .rainbow {
     position: fixed;

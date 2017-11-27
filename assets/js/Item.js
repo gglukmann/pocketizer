@@ -138,7 +138,7 @@ class Item {
      * @return {void}
      */
     render(itemElement) {
-        let listElement = document.querySelector('#js-list');
+        const listElement = document.querySelector('#js-list');
         append(listElement, itemElement);
     }
 }

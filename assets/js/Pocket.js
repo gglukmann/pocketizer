@@ -7,7 +7,7 @@ class Pocket {
     constructor() {
         this.active_page = 'list';
         this.items_shown = 0;
-        this.load_count = 22;
+        this.load_count = 18;
 
         this.scroll = {
             lastKnownScrollY: 0,
@@ -31,8 +31,6 @@ class Pocket {
             document.querySelector('#js-default-message').style.display = 'block';
             this.bindLoginClickEvent();
         }
-
-        window.addEventListener('scroll', () => this.handleScroll());
     }
 
     /**
@@ -133,6 +131,8 @@ class Pocket {
             document.querySelector('#js-empty-list-message').style.display = 'none';
 
             this.createItems(array);
+            this.createSentinel();
+            this.createObserver();
         }
     }
 
@@ -147,6 +147,44 @@ class Pocket {
         Object.keys(a).forEach(key => {
             item.create(a[key], this.active_page);
         });
+    }
+
+    /**
+     * Create empty div for observer to observe.
+     *
+     * @function createSentinel
+     * @return {void}
+     */
+    createSentinel() {
+        const list = document.querySelector('.list');
+        let element = createNode('div');
+
+        element.setAttribute('id', 'js-sentinel');
+        element.setAttribute('class', 'sentinel');
+
+        append(list, element);
+    }
+
+    /**
+     * Create IntersectionObserver to load more items on scroll.
+     *
+     * @function createObserver
+     * @return {void}
+     */
+    createObserver() {
+        const sentinel = document.querySelector('#js-sentinel');
+        const list = document.querySelector('#js-list');
+
+        const io = new IntersectionObserver(entries => {
+            if (entries[0].intersectionRatio <= 0) {
+                return;
+            }
+
+            this.infiniteScroll();
+            append(list, sentinel);
+        });
+
+        io.observe(sentinel);
     }
 
     /**
@@ -179,27 +217,6 @@ class Pocket {
         }
 
         this.createItems(array);
-    }
-
-    /**
-     * Scrolling on page handler.
-     *
-     * @function handleScroll
-     * @return {void}
-     */
-    handleScroll() {
-        this.scroll.lastKnownScrollY = window.scrollY;
-
-        if (!this.scroll.ticking) {
-            window.requestAnimationFrame(() => {
-                if (this.scroll.lastKnownScrollY === document.documentElement.scrollHeight - window.innerHeight) {
-                    this.infiniteScroll();
-                }
-                this.scroll.ticking = false;
-            });
-
-            this.scroll.ticking = true;
-        }
     }
 
     /**
