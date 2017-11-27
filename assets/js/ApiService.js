@@ -28,13 +28,13 @@ class ApiService {
             detailType: 'complete'
         });
 
-        let data = await makeFetch(API.url_get, this._fetchData)
+        let data = await helper.makeFetch(API.url_get, this._fetchData)
             .then(response => {
                 return response;
             })
             .catch(error => {
                 console.log(error);
-                showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
+                helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
             });
 
         return data;
@@ -54,13 +54,13 @@ class ApiService {
             actions: actions
         });
 
-        let action = await makeFetch(API.url_send, this._fetchData)
+        let action = await helper.makeFetch(API.url_send, this._fetchData)
             .then(response => {
                 return response;
             })
             .catch(error => {
                 console.log(error);
-                showMessage(chrome.i18n.getMessage('ACTION'), false);
+                helper.showMessage(chrome.i18n.getMessage('ACTION'), false);
             });
 
         return action;

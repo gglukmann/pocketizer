@@ -42,7 +42,7 @@ class AuthService {
      * @return {void}
      */
     getRequestToken() {
-        showMessage(`${chrome.i18n.getMessage('AUTHENTICATING')}...`, true, false, false);
+        helper.showMessage(`${chrome.i18n.getMessage('AUTHENTICATING')}...`, true, false, false);
 
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,
@@ -52,12 +52,12 @@ class AuthService {
         const that = this;
 
         return new Promise((resolve, reject) => {
-            let code = makeFetch(API.url_request, that._fetchData)
+            let code = helper.makeFetch(API.url_request, that._fetchData)
                 .then(response => {
                     return response.code;
                 })
                 .catch(error => {
-                    showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+                    helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                     reject(error);
                 });
 
@@ -83,7 +83,7 @@ class AuthService {
                 document.querySelector('#js-login').disabled = false;
 
                 if (chrome.runtime.lastError) {
-                    showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+                    helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                     reject(chrome.runtime.lastError.message);
                 }
 
@@ -108,7 +108,7 @@ class AuthService {
         const that = this;
 
         return new Promise((resolve, reject) => {
-            let user = makeFetch(API.url_authorize, that._fetchData)
+            let user = helper.makeFetch(API.url_authorize, that._fetchData)
                 .then(response => {
                     that.setToken(response.access_token);
 
@@ -117,7 +117,7 @@ class AuthService {
                     return response.username;
                 })
                 .catch(error => {
-                    showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+                    helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                     reject(error);
                 });
 

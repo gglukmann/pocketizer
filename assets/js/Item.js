@@ -9,17 +9,17 @@ class Item {
      * @return {void}
      */
     create(element, active_page) {
-        let itemElement = createNode('li');
-        let contentElement = createNode('div');
-        let excerptElement = createNode('div');
-        let titleElement = createNode('a');
-        let linkElement = createNode('a');
-        let fakeLinkElement = createNode('a');
-        let readButtonElement = createNode('a');
-        let deleteButtonElement = createNode('a');
-        let favouriteElement = createNode('a');
-        let pocketLinkElement = createNode('a');
-        let timeElement = createNode('div');
+        let itemElement = helper.createNode('li');
+        let contentElement = helper.createNode('div');
+        let excerptElement = helper.createNode('div');
+        let titleElement = helper.createNode('a');
+        let linkElement = helper.createNode('a');
+        let fakeLinkElement = helper.createNode('a');
+        let readButtonElement = helper.createNode('a');
+        let deleteButtonElement = helper.createNode('a');
+        let favouriteElement = helper.createNode('a');
+        let pocketLinkElement = helper.createNode('a');
+        let timeElement = helper.createNode('div');
         let title;
         let link;
 
@@ -40,70 +40,70 @@ class Item {
         favouriteElement.setAttribute('href', '#0');
         favouriteElement.setAttribute('title', chrome.i18n.getMessage('TOGGLE_FAVOURITED_STATE'));
         favouriteElement.setAttribute('data-id', element.item_id);
-        append(contentElement, favouriteElement);
+        helper.append(contentElement, favouriteElement);
 
-        let textNode = createTextNode(title);
-        let pocketLinkNode = createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
-        let timeNode = createTextNode(timeConverter(element.time_added));
+        let textNode = helper.createTextNode(title);
+        let pocketLinkNode = helper.createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
+        let timeNode = helper.createTextNode(helper.timeConverter(element.time_added));
         let readNode;
         let isRead = false;
-        let deleteNode = createTextNode(chrome.i18n.getMessage('DELETE'));
+        let deleteNode = helper.createTextNode(chrome.i18n.getMessage('DELETE'));
 
         switch (active_page) {
             case 'list':
-                readNode = createTextNode(chrome.i18n.getMessage('MARK_READ'));
+                readNode = helper.createTextNode(chrome.i18n.getMessage('MARK_READ'));
                 isRead = false;
             break;
             case 'archive':
-                readNode = createTextNode(chrome.i18n.getMessage('MARK_UNREAD'))
+                readNode = helper.createTextNode(chrome.i18n.getMessage('MARK_UNREAD'))
                 isRead = true;
             break;
         };
 
         timeElement.setAttribute('class', 'item__time');
         timeElement.setAttribute('title', chrome.i18n.getMessage('DATE_ADDED'));
-        append(timeElement, timeNode);
+        helper.append(timeElement, timeNode);
 
         readButtonElement.setAttribute('class', 'item__set-read js-toggleReadButton');
         readButtonElement.setAttribute('href', '#0');
         readButtonElement.setAttribute('data-id', element.item_id);
         readButtonElement.setAttribute('data-read', isRead);
-        append(readButtonElement, readNode);
+        helper.append(readButtonElement, readNode);
 
         deleteButtonElement.setAttribute('class', 'item__delete js-deleteButton');
         deleteButtonElement.setAttribute('href', '#0');
         deleteButtonElement.setAttribute('data-id', element.item_id);
-        append(deleteButtonElement, deleteNode);
+        helper.append(deleteButtonElement, deleteNode);
 
         itemElement.setAttribute('class', 'item');
         contentElement.setAttribute('class', 'item__content');
-        append(itemElement, contentElement);
+        helper.append(itemElement, contentElement);
 
         fakeLinkElement.setAttribute('href', element.resolved_url);
         fakeLinkElement.setAttribute('class', 'item__fake-link');
 
         titleElement.setAttribute('href', element.resolved_url);
         titleElement.setAttribute('class', 'item__title');
-        append(titleElement, textNode);
+        helper.append(titleElement, textNode);
 
         excerptElement.setAttribute('class', 'item__excerpt');
 
         if ((element.has_image == 1 || element.has_image == 2) && element.image) {
-            let imageElement = createNode('img');
+            let imageElement = helper.createNode('img');
             imageElement.setAttribute('data-src', element.image.src);
             imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
             imageElement.setAttribute('class', 'item__image js-lazyload');
             excerptElement.className += ' item__excerpt--image';
-            append(excerptElement, imageElement);
+            helper.append(excerptElement, imageElement);
         } else {
-            let excerptNode = createTextNode(element.excerpt);
-            append(excerptElement, excerptNode);
+            let excerptNode = helper.createTextNode(element.excerpt);
+            helper.append(excerptElement, excerptNode);
         }
 
         pocketLinkElement.setAttribute('class', 'item__pocket-link');
         pocketLinkElement.setAttribute('href', 'https://getpocket.com/a/read/' + element.item_id);
         pocketLinkElement.setAttribute('title', chrome.i18n.getMessage('OPEN_IN_POCKET'));
-        append(pocketLinkElement, pocketLinkNode);
+        helper.append(pocketLinkElement, pocketLinkNode);
 
         linkElement.setAttribute('class', 'item__link');
 
@@ -114,19 +114,19 @@ class Item {
         } else {
             link = element.resolved_url;
         }
-        let linkNode = createTextNode(link);
+        let linkNode = helper.createTextNode(link);
         linkElement.setAttribute('href', link);
         linkElement.setAttribute('title', link);
-        append(linkElement, linkNode);
+        helper.append(linkElement, linkNode);
 
-        append(contentElement, fakeLinkElement);
-        append(contentElement, titleElement);
-        append(contentElement, timeElement);
-        append(contentElement, excerptElement);
-        append(contentElement, linkElement);
-        append(contentElement, pocketLinkElement);
-        append(contentElement, readButtonElement);
-        append(contentElement, deleteButtonElement);
+        helper.append(contentElement, fakeLinkElement);
+        helper.append(contentElement, titleElement);
+        helper.append(contentElement, timeElement);
+        helper.append(contentElement, excerptElement);
+        helper.append(contentElement, linkElement);
+        helper.append(contentElement, pocketLinkElement);
+        helper.append(contentElement, readButtonElement);
+        helper.append(contentElement, deleteButtonElement);
 
         this.render(itemElement);
     }
@@ -139,7 +139,7 @@ class Item {
      */
     render(itemElement) {
         const listElement = document.querySelector('#js-list');
-        append(listElement, itemElement);
+        helper.append(listElement, itemElement);
     }
 }
 
