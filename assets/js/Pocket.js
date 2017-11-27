@@ -132,7 +132,8 @@ class Pocket {
 
             this.createItems(array);
             this.createSentinel();
-            this.createObserver();
+            this.createItemsObserver();
+            lazyload.load();
         }
     }
 
@@ -168,10 +169,10 @@ class Pocket {
     /**
      * Create IntersectionObserver to load more items on scroll.
      *
-     * @function createObserver
+     * @function createItemsObserver
      * @return {void}
      */
-    createObserver() {
+    createItemsObserver() {
         const sentinel = document.querySelector('#js-sentinel');
         const list = document.querySelector('#js-list');
 
@@ -217,6 +218,7 @@ class Pocket {
         }
 
         this.createItems(array);
+        lazyload.load();
     }
 
     /**

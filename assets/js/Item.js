@@ -92,7 +92,7 @@ class Item {
             let imageElement = createNode('img');
             imageElement.setAttribute('data-src', element.image.src);
             imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-            imageElement.setAttribute('class', 'item__image lazyload');
+            imageElement.setAttribute('class', 'item__image js-lazyload');
             excerptElement.className += ' item__excerpt--image';
             append(excerptElement, imageElement);
         } else {
