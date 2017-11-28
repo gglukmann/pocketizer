@@ -5,7 +5,7 @@ class Helper {
      * Create HTMLElement.
      *
      * @function createNode
-     * @param  {String} element - Element type.
+     * @param {String} element - Element type.
      * @return {HTMLElement} - Created HTMLElement.
      */
     createNode(element) {
@@ -16,7 +16,7 @@ class Helper {
      * Create text node.
      *
      * @function createTextNode
-     * @param  {String} element - Text to add to HTMLElement.
+     * @param {String} element - Text to add to HTMLElement.
      * @return {Object} - Created text node.
      */
     createTextNode(element) {
@@ -27,8 +27,8 @@ class Helper {
      * Append element to parent.
      *
      * @function append
-     * @param  {HTMLElement} parent - Parent element.
-     * @param  {HTMLElement} el - Child element.
+     * @param {HTMLElement} parent - Parent element.
+     * @param {HTMLElement} el - Child element.
      * @return {HTMLElement} - Element with appended child.
      */
     append(parent, el) {
@@ -39,7 +39,7 @@ class Helper {
      * Convert unix time to datetime format dd.mm.yyyy.
      *
      * @function timeConverter
-     * @param  {Number} UNIX - Unix timestamp.
+     * @param {Number} UNIX - Unix timestamp.
      * @return {Number} - dd.mm.yyyy.
      */
     timeConverter(UNIX){
@@ -93,8 +93,8 @@ class Helper {
      * Replace message key with chrome i18n text.
      *
      * @function replace_i18n
-     * @param  {HTMLElement} obj Element with message.
-     * @param  {String} tag Message string.
+     * @param {HTMLElement} obj Element with message.
+     * @param {String} tag Message string.
      * @return {void}
      */
     replace_i18n(obj, tag) {
@@ -141,9 +141,9 @@ class Helper {
      * Make async fetch.
      *
      * @function makeFetch
-     * @param  {String} url     Url to make fetch to.
-     * @param  {Object} options Fetch body.
-     * @return {JSON}         Fetch response in JSON.
+     * @param {String} url - Url to make fetch to.
+     * @param {Object} options - Fetch body.
+     * @return {JSON} Fetch response in JSON.
      */
     async makeFetch(url, options) {
         try {

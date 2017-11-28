@@ -66,7 +66,7 @@ class Lazyload {
     * Fetchs the image for the given URL.
     *
     * @function fetchImage
-    * @param {String} url Url from data-src.
+    * @param {String} url - Url from data-src.
     * @return {void}
     */
     fetchImage(url) {
@@ -82,7 +82,7 @@ class Lazyload {
     * Preloads the image.
     *
     * @function preloadImage
-    * @param {Object} image Image to preload.
+    * @param {Object} image - Image to preload.
     * @return {void}
     */
     preloadImage(image) {
@@ -98,7 +98,7 @@ class Lazyload {
     * Load all of the images immediately.
     *
     * @function loadImagesImmediately
-    * @param {NodeListOf<Element>} images Image to load.
+    * @param {NodeListOf<Element>} images - Image to load.
     * @return {void}
     */
     loadImagesImmediately(images) {
@@ -127,8 +127,8 @@ class Lazyload {
     * Apply the image.
     *
     * @function applyImage
-    * @param {object} img Image HTMLElement.
-    * @param {string} src Source url to apply.
+    * @param {Object} img - Image HTMLElement.
+    * @param {String} src - Source url to apply.
     * @return {void}
     */
     applyImage(img, src) {

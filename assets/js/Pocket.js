@@ -137,7 +137,7 @@ class Pocket {
      * Creates items and appends to DOM.
      *
      * @function createItems
-     * @param  {Array} a Array of items.
+     * @param  {Array} a - Array of items.
      * @return {void}
      */
     createItems(a) {
@@ -329,6 +329,17 @@ class Pocket {
             });
     }
 
+    /**
+     * Handles item state change after Pocket api success.
+     *
+     * @function handleActionResponse
+     * @param {Event} e - Event.
+     * @param {String} state - Current state.
+     * @param {Number} id - Item id.
+     * @param {Boolean} isFavourited - If should be favourited.
+     * @param {response} response - Response from Pocket api.
+     * @return {void}
+     */
     handleActionResponse(e, state, id, isFavourited, response) {
         let a;
 
@@ -397,7 +408,7 @@ class Pocket {
      * Change page between list and archive.
      *
      * @function changePage
-     * @param  {String} page - Page to change to.
+     * @param {String} page - Page to change to.
      * @return {void}
      */
     changePage(page) {

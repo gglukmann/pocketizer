@@ -17,8 +17,8 @@ class ApiService {
      * Get data from pocket api.
      *
      * @function get
-     * @param  {String}  state List type to get.
-     * @return {Promise}       Response from api.
+     * @param {String} state - List type to get.
+     * @return {Promise} Response from api.
      */
     async get(state) {
         this._fetchData.body = JSON.stringify({
@@ -42,8 +42,8 @@ class ApiService {
      * Make actions
      *
      * @function send
-     * @param  {Array}  actions Array of current action data.
-     * @return {Promise}         Response from pocket api.
+     * @param {Array} actions - Array of current action data.
+     * @return {Promise} Response from pocket api.
      */
     async send(actions) {
         this._fetchData.body = JSON.stringify({

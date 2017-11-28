@@ -68,7 +68,7 @@ class AuthService {
      * Open Pocket auth view from Chrome launchWebAuthFlow.
      *
      * @function launchChromeWebAuthFlow
-     * @param {String} requestToken Request token from Pocket.
+     * @param {String} requestToken - Request token from Pocket.
      * @return {void}
      */
     launchChromeWebAuthFlow(requestToken) {
@@ -93,7 +93,7 @@ class AuthService {
      * Get access token from Pocket.
      *
      * @function getAccessToken
-     * @param {String} requestToken Request token from Pocket.
+     * @param {String} requestToken - Request token from Pocket.
      * @return {void}
      */
     getAccessToken(requestToken) {
@@ -137,7 +137,8 @@ class AuthService {
      * Set token to localStorage.
      *
      * @function setToken
-     * @param {String} token Token.
+     * @param {String} token - Token.
+     * @return {void}
      */
     setToken(token) {
         localStorage.setItem('token', token);

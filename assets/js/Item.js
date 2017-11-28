@@ -4,8 +4,8 @@ class Item {
     /**
      * Create new item and append to list.
      *
-     * @param  {Object} element     Element from pocket.
-     * @param  {String} active_page List type.
+     * @param {Object} element - Element from pocket.
+     * @param {String} active_page - List type.
      * @return {void}
      */
     create(element, active_page) {
@@ -134,7 +134,7 @@ class Item {
     /**
      * Append element to list.
      *
-     * @param  {HTMLElement} itemElement Element to render.
+     * @param {HTMLElement} itemElement - Element to render.
      * @return {void}
      */
     render(itemElement) {
