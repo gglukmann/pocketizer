@@ -54,10 +54,6 @@ class Pocket {
         apiService.get(state)
             .then(response => {
                 this.sortGetResponse(response);
-            })
-            .catch(error => {
-                console.log(error);
-                helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
             });
     }
 
@@ -323,72 +319,78 @@ class Pocket {
 
         apiService.send(actions)
             .then(response => {
-                let a;
-
-                switch (this.active_page) {
-                    case 'list':
-                        a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                    break;
-                    case 'archive':
-                        a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-                    break;
-                }
-
-                for (let i = 0; i < a.length; i++) {
-                    if (a[i].item_id == id) {
-                        switch (state) {
-                            case 'read':
-                            case 'delete':
-                                a.splice(i, 1);
-
-                                e.target.parentNode.parentNode.remove();
-
-                                switch (this.active_page) {
-                                    case 'list':
-                                        localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                                        document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
-                                    break;
-                                    case 'archive':
-                                        localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                                        document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
-                                    break;
-                                }
-                            break;
-                            case 'favourite':
-                                a[i].favorite = (isFavourited === true ? 0 : 1);
-
-                                isFavourited = !isFavourited;
-                                e.target.parentNode.querySelector('.js-toggle-favourite-button').dataset.favourite = isFavourited;
-                            break;
-                        }
-                    }
-                };
-
-                switch (this.active_page) {
-                    case 'list':
-                        localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
-                    break;
-                    case 'archive':
-                        localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
-                    break;
-                }
-
-                if (state == 'read') {
-                    if (this.active_page === 'list') {
-                        helper.showMessage(chrome.i18n.getMessage('ARCHIVING'));
-                    } else if (this.active_page === 'archive') {
-                        helper.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
-                    }
-                } else if (state == 'favourite') {
-                    helper.showMessage(chrome.i18n.getMessage('PROCESSING'));
-                } else if (state == 'delete') {
-                    helper.showMessage(chrome.i18n.getMessage('DELETING'));
+                if (response.status === 1) {
+                    this.handleActionResponse(e, state, id, isFavourited, response);
                 }
             })
             .catch(error => {
                 console.log(error);
                 helper.showMessage(chrome.i18n.getMessage('ACTION'), false);
             });
+    }
+
+    handleActionResponse(e, state, id, isFavourited, response) {
+        let a;
+
+        switch (this.active_page) {
+            case 'list':
+                a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+            break;
+            case 'archive':
+                a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
+            break;
+        }
+
+        for (let i = 0; i < a.length; i++) {
+            if (a[i].item_id == id) {
+                switch (state) {
+                    case 'read':
+                    case 'delete':
+                        a.splice(i, 1);
+
+                        e.target.parentNode.parentNode.remove();
+
+                        switch (this.active_page) {
+                            case 'list':
+                                localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
+                                document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
+                            break;
+                            case 'archive':
+                                localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
+                                document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
+                            break;
+                        }
+                    break;
+                    case 'favourite':
+                        a[i].favorite = (isFavourited === true ? 0 : 1);
+
+                        isFavourited = !isFavourited;
+                        e.target.parentNode.querySelector('.js-toggle-favourite-button').dataset.favourite = isFavourited;
+                    break;
+                }
+            }
+        };
+
+        switch (this.active_page) {
+            case 'list':
+                localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
+            break;
+            case 'archive':
+                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
+            break;
+        }
+
+        if (state == 'read') {
+            if (this.active_page === 'list') {
+                helper.showMessage(chrome.i18n.getMessage('ARCHIVING'));
+            } else if (this.active_page === 'archive') {
+                helper.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
+            }
+        } else if (state == 'favourite') {
+            helper.showMessage(chrome.i18n.getMessage('PROCESSING'));
+        } else if (state == 'delete') {
+            helper.showMessage(chrome.i18n.getMessage('DELETING'));
+        }
     }
 
     /**
@@ -508,6 +510,7 @@ class Pocket {
                 this.logout();
             }
 
+            document.querySelector('#js-login').disabled = false;
             helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
             this.loggedIn();
         });

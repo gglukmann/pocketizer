@@ -22,15 +22,17 @@ class AuthService {
      */
     async authenticate() {
         try {
-            let code = await this.getRequestToken();
+            let { code } = await this.getRequestToken();
             let auth = await this.launchChromeWebAuthFlow(code);
-            let user = await this.getAccessToken(code);
+            let { username } = await this.getAccessToken(code);
 
             return {
                 "status": "authenticated",
-                "user": user
+                "user": username
             };
         } catch(e) {
+            helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+            document.querySelector('#js-login').disabled = false;
             throw new Error(e);
         }
     }
@@ -49,15 +51,12 @@ class AuthService {
             redirect_uri: API.redirect_url
         });
 
-        const that = this;
-
         return new Promise((resolve, reject) => {
-            let code = helper.makeFetch(API.url_request, that._fetchData)
+            let code = helper.makeFetch(API.url_request, this._fetchData)
                 .then(response => {
-                    return response.code;
+                    return response;
                 })
                 .catch(error => {
-                    helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                     reject(error);
                 });
 
@@ -80,8 +79,6 @@ class AuthService {
 
         return new Promise((resolve, reject) => {
             chrome.identity.launchWebAuthFlow(options, redirectUrl => {
-                document.querySelector('#js-login').disabled = false;
-
                 if (chrome.runtime.lastError) {
                     helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                     reject(chrome.runtime.lastError.message);
@@ -105,19 +102,16 @@ class AuthService {
             code: requestToken
         });
 
-        const that = this;
-
         return new Promise((resolve, reject) => {
-            let user = helper.makeFetch(API.url_authorize, that._fetchData)
+            let user = helper.makeFetch(API.url_authorize, this._fetchData)
                 .then(response => {
-                    that.setToken(response.access_token);
+                    this.setToken(response.access_token);
 
                     localStorage.setItem('username', response.username);
 
-                    return response.username;
+                    return response;
                 })
                 .catch(error => {
-                    helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                     reject(error);
                 });
 

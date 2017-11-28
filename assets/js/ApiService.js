@@ -29,9 +29,7 @@ class ApiService {
         });
 
         let data = await helper.makeFetch(API.url_get, this._fetchData)
-            .then(response => {
-                return response;
-            })
+            .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
@@ -55,9 +53,7 @@ class ApiService {
         });
 
         let action = await helper.makeFetch(API.url_send, this._fetchData)
-            .then(response => {
-                return response;
-            })
+            .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helper.showMessage(chrome.i18n.getMessage('ACTION'), false);

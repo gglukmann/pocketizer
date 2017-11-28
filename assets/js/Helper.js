@@ -98,7 +98,7 @@ class Helper {
      * @return {void}
      */
     replace_i18n(obj, tag) {
-        var msg = tag.replace(/__MSG_(\w+)__/g, (match, v1) => {
+        let msg = tag.replace(/__MSG_(\w+)__/g, (match, v1) => {
             return v1 ? chrome.i18n.getMessage(v1) : '';
         });
 
@@ -115,23 +115,23 @@ class Helper {
      */
     localizeHtml() {
         // Localize using __MSG_***__ data tags
-        var data = document.querySelectorAll('[data-translate]');
+        const data = document.querySelectorAll('[data-translate]');
 
-        for (var i in data) {
+        for (let i in data) {
             if (data.hasOwnProperty(i)) {
-                var obj = data[i];
-                var tag = obj.dataset.translate.toString();
+                let obj = data[i];
+                let tag = obj.dataset.translate.toString();
 
                 this.replace_i18n(obj, tag);
             }
         }
 
         // Localize everything else by replacing all __MSG_***__ tags
-        var page = document.getElementsByTagName('html');
+        const page = document.getElementsByTagName('html');
 
-        for (var j = 0; j < page.length; j++) {
-            var obj = page[j];
-            var tag = obj.innerHTML.toString();
+        for (let j = 0; j < page.length; j++) {
+            let obj = page[j];
+            let tag = obj.innerHTML.toString();
 
             this.replace_i18n(obj, tag);
         }
@@ -147,14 +147,12 @@ class Helper {
      */
     async makeFetch(url, options) {
         try {
-            let response = await fetch(url, options);
-            if (response.ok) {
-                return await response.json();
-            }
+            return await fetch(url, options);
         } catch (e) {
+            console.log(e);
             throw new Error(e);
         }
     }
 }
 
-const helper = new Helper ();
+const helper = new Helper();
