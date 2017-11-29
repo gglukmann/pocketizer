@@ -23,12 +23,12 @@ class Item {
         let title;
         let link;
 
-        if (element.resolved_title == '' && element.given_title == '') {
-            title = element.resolved_url;
-        } else if (element.resolved_title == '' || element.given_title != '') {
-            title = element.given_title;
-        } else {
+        if (element.resolved_title && element.resolved_title !== '') {
             title = element.resolved_title;
+        } else if (element.resolved_url && element.resolved_url !== '') {
+            title = element.resolved_url;
+        } else if (!element.resolved_title && !element.resolved_url) {
+            title = element.given_url;
         }
 
         if (element.favorite == 1) {
@@ -96,8 +96,10 @@ class Item {
             excerptElement.className += ' item__excerpt--image';
             helper.append(excerptElement, imageElement);
         } else {
-            let excerptNode = helper.createTextNode(element.excerpt);
-            helper.append(excerptElement, excerptNode);
+            if (element.excerpt) {
+                let excerptNode = helper.createTextNode(element.excerpt);
+                helper.append(excerptElement, excerptNode);
+            }
         }
 
         pocketLinkElement.setAttribute('class', 'item__pocket-link');
@@ -107,12 +109,10 @@ class Item {
 
         linkElement.setAttribute('class', 'item__link');
 
-        if (element.resolved_url == '' && element.given_url == '') {
-            link = element.given_url;
-        } else if (element.resolved_url == '' || element.given_url != '') {
-            link = element.given_url;
-        } else {
+        if (element.resolved_url && element.resolved_url !== '') {
             link = element.resolved_url;
+        } else {
+            link = element.given_url;
         }
         let linkNode = helper.createTextNode(link);
         linkElement.setAttribute('href', link);
