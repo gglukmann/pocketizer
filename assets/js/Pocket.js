@@ -27,7 +27,6 @@ class Pocket {
         if (authService.isLoggedIn()) {
             this.startSync();
         } else {
-            // TODO: user variabels for querySelector
             document.querySelector('#js-default-message').style.display = 'block';
             this.bindLoginClickEvent();
         }
@@ -142,7 +141,8 @@ class Pocket {
      */
     createItems(a) {
         Object.keys(a).forEach(key => {
-            item.create(a[key], this.active_page);
+            let newItem = item.create(a[key], this.active_page);
+            item.render(newItem);
         });
     }
 
@@ -227,7 +227,7 @@ class Pocket {
         document.body.addEventListener('click', (e) => {
             let id = e.target.dataset.id;
 
-            if (e.target.classList.contains('js-toggle-favourite-button')) {
+            if (e.target.classList.contains('js-toggleFavouriteButton')) {
                 e.preventDefault();
                 let isFavourited = e.target.dataset.favourite;
                 isFavourited = (isFavourited == 'true'); // convert to boolean
@@ -376,7 +376,7 @@ class Pocket {
                         a[i].favorite = (isFavourited === true ? 0 : 1);
 
                         isFavourited = !isFavourited;
-                        e.target.parentNode.querySelector('.js-toggle-favourite-button').dataset.favourite = isFavourited;
+                        e.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite = isFavourited;
                     break;
                 }
             }
@@ -402,6 +402,40 @@ class Pocket {
         } else if (state == 'delete') {
             helper.showMessage(chrome.i18n.getMessage('DELETING'));
         }
+    }
+
+    /**
+     * Add events to new item creating.
+     *
+     * @function bindAddNewItemEvents
+     * @return {void}
+     */
+    bindAddNewItemEvents() {
+        document.addEventListener('opened.modal', e => {
+            document.querySelector('#js-newItemInput').focus();
+        }, false);
+
+        document.addEventListener('closed.modal', e => {
+            document.querySelector('#js-newItemInput').value = '';
+        }, false);
+
+        document.newItemForm.addEventListener('submit', e => {
+            const form = document.newItemForm;
+
+            if (form.checkValidity()) {
+                e.preventDefault();
+                helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
+
+                const rawData = new FormData(form);
+                let data = {};
+
+                for (let link of rawData.entries()) {
+                    data[link[0]] = link[1];
+                }
+
+                item.add(data);
+            }
+        }, false);
     }
 
     /**
@@ -463,6 +497,7 @@ class Pocket {
         document.querySelector('#js-list').style.display = 'flex';
         document.querySelector('#js-username').style.display = 'inline-block';
         document.querySelector('#js-logout').style.display = 'inline-block';
+        document.querySelector('#js-addNewItemButton').style.display = 'inline-block';
     }
 
     /**
@@ -483,6 +518,7 @@ class Pocket {
 
         this.bindMenuClickEvents();
         this.bindActionClickEvents();
+        this.bindAddNewItemEvents();
     }
 
     /**
@@ -504,6 +540,7 @@ class Pocket {
 
         this.bindMenuClickEvents();
         this.bindActionClickEvents();
+        this.bindAddNewItemEvents();
 
         this.getContent();
     }
@@ -543,6 +580,7 @@ class Pocket {
         document.querySelector('#js-username').style.display = 'none';
         document.querySelector('#js-logout').style.display = 'none';
         document.querySelector('#js-count-wrapper').style.display = 'none';
+        document.querySelector('#js-addNewItemButton').style.display = 'none';
 
         this.bindLoginClickEvent();
 
@@ -550,7 +588,8 @@ class Pocket {
     }
 };
 
-window.pocket = new Pocket();
+const pocket = new Pocket();
 window.onload = (() => {
-    window.pocket.init();
+    pocket.init();
+    modal.init();
 });

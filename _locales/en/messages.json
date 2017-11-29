@@ -8,7 +8,7 @@
         "description": "Description of the add-on."
     },
     "ERROR_GETTING_CONTENT": {
-        "message": "Error: Getting new content"
+        "message": "Getting new content"
     },
     "SYNCHRONIZING": {
         "message": "Synchronizing"
@@ -73,6 +73,9 @@
     "LOGGING_OUT": {
         "message": "Logging out"
     },
+    "LOGOUT": {
+        "message": "Logout"
+    },
     "EMPTY_MESSAGE": {
         "message": "Looks like you haven't saved anything to Pocket yet!"
     },
@@ -90,5 +93,26 @@
     },
     "FAILED": {
         "message": "failed"
+    },
+    "CLOSE": {
+        "message": "Close"
+    },
+    "ERROR_ADDING": {
+        "message": "Adding"
+    },
+    "CREATING_ITEM": {
+        "message": "Creating new item"
+    },
+    "SAVE_URL": {
+        "message": "Save new url"
+    },
+    "SAVE_NEW_LINK": {
+        "message": "Save new link to Pocket"
+    },
+    "CANCEL": {
+        "message": "Cancel"
+    },
+    "ADD": {
+        "message": "Add"
     }
 }

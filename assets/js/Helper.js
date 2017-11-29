@@ -36,6 +36,33 @@ class Helper {
     }
 
     /**
+     * Prepent element to parent.
+     *
+     * @function prepend
+     * @param {HTMLElement} parent - Parent element.
+     * @param {HTMLElement} el - Child element.
+     * @return {HTMLElement} - Element with appended child.
+     */
+    prepend(parent, el) {
+        return parent.prepend(el);
+    }
+
+    /**
+     * Prepend element to array.
+     *
+     * @function prepend
+     * @param {Array[]} array - Array where to add.
+     * @param {Any} value - Value to add to array.
+     * @return {Array[]} - Array with prepended item.
+     */
+    prependArray(array, value) {
+        let newArray = array.slice();
+        newArray.unshift(value);
+
+        return newArray;
+    }
+
+    /**
      * Convert unix time to datetime format dd.mm.yyyy.
      *
      * @function timeConverter
@@ -151,6 +178,40 @@ class Helper {
         } catch (e) {
             console.log(e);
             throw new Error(e);
+        }
+    }
+
+    /**
+     * Disable window scrolling.
+     *
+     * @param {Boolean} hideScrollbar - If scrollbar should be hidden.
+     * @returns {void}
+     */
+    disableScroll(hideScrollbar) {
+        if (!document.body.classList.contains('scroll-disabled')) {
+            const curScroll = window.scrollY;
+
+            document.body.classList.add('scroll-disabled');
+            if (hideScrollbar) {
+                document.body.classList.add('scroll-disabled--hide-scrollbar');
+            }
+            document.body.style.top = -curScroll;
+        }
+    }
+
+    /**
+    * Enable window scrolling.
+    *
+    * @returns {void}
+    */
+    enableScroll() {
+        const bodyScroll = parseInt(document.body.style.top, 10);
+
+        document.body.classList.remove('scroll-disabled');
+        document.body.classList.remove('scroll-disabled--hide-scrollbar');
+        if (bodyScroll) {
+            document.body.scrollTop += -bodyScroll;
+            document.body.style.top = 0;
         }
     }
 }

@@ -12,8 +12,8 @@
         <div class="rainbow__detail rainbow__detail--third"></div>
         <div class="rainbow__detail rainbow__detail--fourth"></div>
     </div>
+    <div id="js-status" class="status"></div>
     <div class="container">
-        <div id="js-status" class="status"></div>
         <div class="header">
             <h1 class="header__title">
                 <a href="https://getpocket.com" title="__MSG_POCKET_HOMEPAGE__">
@@ -34,21 +34,28 @@
                     </a>
                 </li>
             </ul>
-            <div class="header__username">
-                <span id="js-username"></span>
-                <button type="button" id="js-logout" class="btn btn--link" title="Logout" style="display: none;">
-                    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="-99.8 166.4 89.5 96.7" xml:space="preserve" class="icon">
-                    <g>
-                        <g>
-                            <path class="st0" d="M-11.6,212.5l-28.6-17.1c-0.5-0.3-0.9-0.4-1.4-0.4c-1.2,0-2,1-2,2.8V209h-21.3c-3.2,0-5.8,2.6-5.8,5.8
-                            c0,3.2,2.6,5.8,5.8,5.8h21.3v11.3c0,1.7,0.8,2.8,2,2.8c0.4,0,0.9-0.1,1.4-0.4l28.6-17.1C-9.8,215.8-9.8,213.7-11.6,212.5z
-                            M-21.5,234.6c-3.2,0-5.8,2.6-5.8,5.8v4.4c0,3.8-3.1,6.9-6.9,6.9h-47.2c-3.8,0-6.9-3.1-6.9-6.9v-59.9c0-3.8,3.1-6.9,6.9-6.9h47.2
-                            c3.8,0,6.9,3.1,6.9,6.9v4.4c0,3.2,2.6,5.8,5.8,5.8s5.8-2.6,5.8-5.8v-10.2c0-7-5.7-12.7-12.7-12.7h-58.7c-7,0-12.7,5.7-12.7,12.7
-                            v71.4c0,7,5.7,12.7,12.7,12.7h58.7c7,0,12.7-5.7,12.7-12.7v-10.2C-15.7,237.1-18.3,234.6-21.5,234.6z"/>
-                        </g>
-                    </g>
+            <div class="header__right">
+                <a href="javascript:void(0);" id="js-addNewItemButton" class="btn btn--link" data-modal-target="#js-addModal" title="__MSG_SAVE_URL__" style="display: none;">
+                    <svg viewBox="0 0 32 32" class="icon">
+                        <path d="M28.045 12.131h-8.176v-8.176c0-2.136-1.732-3.868-3.868-3.868s-3.868 1.732-3.868 3.868v8.176h-8.176c-2.136 0-3.868 1.732-3.868 3.868s1.732 3.868 3.868 3.868h8.176v8.176c0 2.136 1.732 3.868 3.868 3.868s3.868-1.732 3.868-3.868v-8.176h8.176c2.136 0 3.868-1.732 3.868-3.868s-1.732-3.868-3.868-3.868z"></path>
                     </svg>
-                </button>
+                </a>
+                <div class="header__username">
+                    <span id="js-username"></span>
+                    <button type="button" id="js-logout" class="btn btn--link" title="__MSG_LOGOUT__" style="display: none;">
+                        <svg viewBox="-99.8 166.4 89.5 96.7" class="icon">
+                            <g>
+                                <g>
+                                    <path class="st0" d="M-11.6,212.5l-28.6-17.1c-0.5-0.3-0.9-0.4-1.4-0.4c-1.2,0-2,1-2,2.8V209h-21.3c-3.2,0-5.8,2.6-5.8,5.8
+                                    c0,3.2,2.6,5.8,5.8,5.8h21.3v11.3c0,1.7,0.8,2.8,2,2.8c0.4,0,0.9-0.1,1.4-0.4l28.6-17.1C-9.8,215.8-9.8,213.7-11.6,212.5z
+                                    M-21.5,234.6c-3.2,0-5.8,2.6-5.8,5.8v4.4c0,3.8-3.1,6.9-6.9,6.9h-47.2c-3.8,0-6.9-3.1-6.9-6.9v-59.9c0-3.8,3.1-6.9,6.9-6.9h47.2
+                                    c3.8,0,6.9,3.1,6.9,6.9v4.4c0,3.2,2.6,5.8,5.8,5.8s5.8-2.6,5.8-5.8v-10.2c0-7-5.7-12.7-12.7-12.7h-58.7c-7,0-12.7,5.7-12.7,12.7
+                                    v71.4c0,7,5.7,12.7,12.7,12.7h58.7c7,0,12.7-5.7,12.7-12.7v-10.2C-15.7,237.1-18.3,234.6-21.5,234.6z"/>
+                                </g>
+                            </g>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
         <div id="js-default-message" class="message" style="display: none;">
@@ -61,6 +68,30 @@
         <ol id="js-list" class="list"></ol>
     </div>
 
+    <div class="modal" id="js-addModal">
+        <button class="btn btn--link modal__close" data-modal-action="close" title="__MSG_CLOSE__">
+            <svg viewBox="0 0 32 32" class="icon">
+                <path d="M26.958 4.733c-6.138-6.138-16.090-6.138-22.235 0.007-6.138 6.138-6.138 16.090 0 22.227s16.090 6.138 22.227 0c6.145-6.145 6.145-16.097 0.008-22.234zM12.461 9.147l3.246 3.246 3.246-3.246c0.793-0.793 2.091-0.793 2.885 0l0.721 0.721c0.793 0.793 0.793 2.091 0 2.885l-3.246 3.246 3.246 3.246c0.793 0.793 0.793 2.091 0 2.885l-0.721 0.722c-0.793 0.793-2.091 0.793-2.885 0l-3.246-3.246-3.246 3.246c-0.793 0.793-2.091 0.793-2.885 0l-0.721-0.721c-0.793-0.793-0.793-2.091 0-2.885l3.246-3.246-3.245-3.245c-0.793-0.793-0.793-2.091 0-2.885l0.721-0.721c0.793-0.794 2.091-0.794 2.884-0.001z"></path>
+            </svg>
+        </button>
+        <form name="newItemForm" method="post">
+            <div class="modal__content">
+                <h3 class="modal__title" data-translate="__MSG_SAVE_NEW_LINK__">Save new link to Pocket</h3>
+
+                <div class="textfield">
+                    <input type="url" id="js-newItemInput" class="textfield__input" name="url" placeholder="https://..." pattern="https?://.+" required>
+                    <span class="text-error"></span>
+                </div>
+            </div>
+            <div class="modal__footer">
+                <div class="btn-group">
+                    <button class="btn btn--link" data-modal-action="close" data-translate="__MSG_CANCEL__">Cancel</button>
+                    <button type="submit" id="js-addNewItemSubmit" class="btn" data-translate="__MSG_ADD__">Add</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
     <script src="env.js"></script>
     <script src="assets/js/globals.js"></script>
     <script src="assets/js/Helper.js"></script>
@@ -68,6 +99,7 @@
     <script src="assets/js/ApiService.js"></script>
     <script src="assets/js/Lazyload.js"></script>
     <script src="assets/js/Item.js"></script>
+    <script src="assets/js/Modal.js"></script>
     <script src="assets/js/Pocket.js"></script>
 </body>
 </html>

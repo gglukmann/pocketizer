@@ -2,17 +2,19 @@
     --page-width: 1200px;
     --grid-gutter: 20px;
     --base-font-size: 13px;
+    --base-line-height: calc(18px / var(--base-font-size));
 
     --white: #fff;
-    --white-rgb: 255,255,255;
+    --white-rgb: 255, 255, 255;
     --black: #000;
-    --black-rgb: 0,0,0;
+    --black-rgb: 0, 0, 0;
     --black-l: #313131;
     --yellow: yellow;
     --red: #d13644;
     --red-l: #ee5f64;
     --red-m: #d3505a;
     --grey: #9f9f9f;
+    --grey-rgb: 244, 244, 244;
     --grey-l: #f4f4f6;
     --grey-m: #ededf0;
     --grey-d: #dcdce0;
@@ -32,15 +34,32 @@
     box-sizing: border-box;
 }
 
+html {
+    font-size: var(--base-font-size);
+    line-height: var(--base-line-height);
+}
+
 body {
+    display: block;
     color: var(--text-color);
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: var(--base-font-size);
+    font-size: 1em;
     margin: 0;
     padding: 0;
     background: var(--body-bg);
+    overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+body.scroll-disabled {
+  overflow-y: scroll;
+  position: fixed;
+  width: 100%;
+}
+
+body.scroll-disabled--hide-scrollbar {
+  overflow-y: hidden;
 }
 
 a {
@@ -60,10 +79,16 @@ a {
 
 .status {
     position: fixed;
-    top: 15px;
+    top: 8px;
     left: 50%;
     transform: translate(-50%, 0);
     z-index: 20;
+}
+
+@media (min-width: 850px) {
+    .status {
+        top: 15px;
+    }
 }
 
 /* HEADER */
@@ -76,9 +101,8 @@ a {
 }
 
 .header__logo {
-    height: 30px;
-    width: 30px;
-    margin-right: 10px;
+    height: auto;
+    width: 25px;
 }
 
 .header__username {
@@ -87,16 +111,32 @@ a {
 }
 
 .header__title {
-    font-size: 2.78em;
+    font-size: 2em;
     font-weight: 200;
     line-height: 1.4;
     padding-left: 10px;
     padding-right: 10px;
 }
 
+@media (min-width: 850px) {
+    .header__title {
+        font-size: 2.78em;
+    }
+}
+
 .header__count {
-    font-size: .6em;
+    font-size: .8em;
     color: var(--text-light);
+}
+
+@media (min-width: 850px) {
+    .header__count {
+        font-size: .6em;
+    }
+}
+
+.header__right {
+    display: flex;
 }
 
 /* MENU */
@@ -385,10 +425,24 @@ a {
     border: 0;
     vertical-align: middle;
     color: var(--text-light);
+    text-shadow: none;
 }
 
 .btn--link:hover {
     color: var(--text-color);
+}
+
+.btn > svg {
+  pointer-events: none;
+}
+
+.btn-group {
+    display: flex;
+    align-items: center;
+}
+
+.btn-group .btn:not(:last-child) {
+    margin-right: var(--grid-gutter);
 }
 
 .sentinel {
@@ -402,7 +456,7 @@ a {
     left: 0;
     top: 0;
     width: 100%;
-    z-index: 8001;
+    z-index: 200;
 }
 
 .rainbow:after {
@@ -431,4 +485,84 @@ a {
 
 .rainbow__detail--fourth {
     background-color: #ecbf63;
+}
+
+/* MODAL */
+.modal-container {
+    position: fixed;
+    z-index: 1000;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: none;
+    overflow: auto;
+    overflow-y: scroll;
+
+    padding: 10px 10px 0;
+    background: rgba(var(--grey-rgb), .5);
+}
+
+.modal-container.is-visible {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-container .modal {
+    display: block;
+    pointer-events: auto;
+}
+
+.modal-container__inner {
+    max-width: calc(var(--page-width) / 2);
+    width: 100%;
+    margin: auto;
+    align-self: center;
+}
+
+.modal {
+    display: none;
+    position: relative;
+    padding: calc(var(--grid-gutter) * 2) var(--grid-gutter);
+    background: var(--white);
+    box-shadow: 0 2px 5px 0 rgba(var(--black-rgb), .1);
+    margin-bottom: 10px;
+}
+
+.modal__title {
+    font-size: 1.46154em;
+    font-weight: 600;
+    line-height: 1.2;
+    padding: .7em 0;
+    margin: 0 0 var(--grid-gutter);
+}
+
+.modal__footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal__close {
+    position: absolute;
+    top: var(--grid-gutter);
+    right: var(--grid-gutter);
+    color: var(--text-color);
+}
+
+.modal__close:hover {
+    color: var(--text-light);
+}
+
+/* INPUT */
+.textfield {
+    margin: 0 0 var(--grid-gutter);
+}
+
+.textfield__input {
+    display: block;
+    border: 1px solid var(--border-dark);
+    border-radius: 4px;
+    font-size: 1.2em;
+    padding: 5px 10px;
+    width: 100%;
 }
