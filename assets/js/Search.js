@@ -1,6 +1,12 @@
 'use strict';
 
 class Search {
+    /**
+     * Show search input.
+     *
+     * @function show
+     * @return {void}
+     */
     show() {
         document.querySelector('#js-searchForm').classList.add('is-active');
         document.querySelector('#js-searchInput').focus();
@@ -9,6 +15,12 @@ class Search {
         this.bindEvents();
     }
 
+    /**
+     * Bind events.
+     *
+     * @function bindEvents
+     * @return {void}
+     */
     bindEvents() {
         document.querySelector('#js-searchInput').addEventListener('keyup', e => {
             this.search(e.target.value);
@@ -22,17 +34,36 @@ class Search {
         });
     }
 
+    /**
+     * Hide search input.
+     *
+     * @function hide
+     * @return {void}
+     */
     hide() {
         document.querySelector('#js-searchForm').classList.remove('is-active');
         document.querySelector('#js-searchButton').classList.remove('is-disabled');
     }
 
+    /**
+     * Reset search results.
+     *
+     * @function resetSearch
+     * @return {void}
+     */
     resetSearch() {
         document.querySelector('#js-searchInput').value = '';
         document.querySelector('#js-results-message').style.display = 'none';
         pocket.render();
     }
 
+    /**
+     * Search from localStorage array.
+     *
+     * @function search
+     * @param {String} value - Value to search.
+     * @return {void}
+     */
     search(value) {
         if (value.length === 0) {
             this.resetSearch();
