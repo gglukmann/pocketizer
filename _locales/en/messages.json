@@ -77,7 +77,13 @@
         "message": "Logout"
     },
     "EMPTY_MESSAGE": {
-        "message": "Looks like you haven't saved anything to Pocket yet!"
+        "message": "Looks like you haven't saved anything to Pocket yet!<br><small>Start by clicking the plus icon next to your username.<small>"
+    },
+    "NO_RESULTS_MESSAGE": {
+        "message": "No results for"
+    },
+    "RESULTS_MESSAGE": {
+        "message": "Results for"
     },
     "POCKET_HOMEPAGE": {
         "message": "Pocket homepage"
@@ -114,5 +120,14 @@
     },
     "ADD": {
         "message": "Add"
+    },
+    "SEARCH": {
+        "message": "Search"
+    },
+    "SEARCH_FROM": {
+        "message": "Search from title or url"
+    },
+    "EMPTY_SEARCH": {
+        "message": "Empty search"
     }
 }

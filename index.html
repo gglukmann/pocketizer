@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title data-translate="__MSG_EXTENSION_NAME__">New Tab - Pocket</title>
     <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -35,6 +36,19 @@
                 </li>
             </ul>
             <div class="header__right">
+                <form action="searchForm" action="post" class="search" id="js-searchForm">
+                    <div class="textfield search__textfield">
+                        <input type="text" id="js-searchInput" class="textfield__input search__input" name="search" placeholder="__MSG_SEARCH_FROM__" autocomplete="off">
+                        <div class="search__clear">
+                            <a href="#" id="js-emptySearch" class="search__clear-link" data-translate="__MSG_EMPTY_SEARCH__">Empty search</a>
+                        </div>
+                    </div>
+                </form>
+                <a href="#" id="js-searchButton" class="btn btn--link search__button" title="__MSG_SEARCH__" style="display: none;">
+                    <svg viewBox="0 0 32 32" class="icon">
+                        <path d="M31.119 31.119c-1.134 1.134-2.973 1.134-4.106 0l-4.459-4.459c-2.419 1.604-5.213 2.406-8.007 2.406-3.716 0-7.431-1.418-10.266-4.252-5.668-5.671-5.668-14.861 0-20.531 2.835-2.835 6.551-4.253 10.266-4.253s7.431 1.418 10.267 4.253c4.966 4.967 5.581 12.634 1.846 18.272l4.459 4.459c1.134 1.132 1.134 2.972-0.001 4.105zM14.547 3.66c-2.909 0-5.643 1.133-7.7 3.19-4.244 4.245-4.244 11.153 0 15.398 2.056 2.056 4.791 3.189 7.7 3.189s5.643-1.133 7.7-3.19c4.244-4.245 4.244-11.153-0.001-15.398-2.056-2.056-4.791-3.189-7.7-3.189z"></path>
+                    </svg>
+                </a>
                 <a href="javascript:void(0);" id="js-addNewItemButton" class="btn btn--link" data-modal-target="#js-addModal" title="__MSG_SAVE_URL__" style="display: none;">
                     <svg viewBox="0 0 32 32" class="icon">
                         <path d="M28.045 12.131h-8.176v-8.176c0-2.136-1.732-3.868-3.868-3.868s-3.868 1.732-3.868 3.868v8.176h-8.176c-2.136 0-3.868 1.732-3.868 3.868s1.732 3.868 3.868 3.868h8.176v8.176c0 2.136 1.732 3.868 3.868 3.868s3.868-1.732 3.868-3.868v-8.176h8.176c2.136 0 3.868-1.732 3.868-3.868s-1.732-3.868-3.868-3.868z"></path>
@@ -65,6 +79,12 @@
         <div id="js-empty-list-message" class="message" style="display: none;">
             <h2 class="message__text" data-translate="__MSG_EMPTY_MESSAGE__">Looks like you haven't saved anything to Pocket yet!</h2>
         </div>
+        <div id="js-results-message" class="message message--padding-small" style="display: none;">
+            <h2 class="message__text">
+                <span id="js-resultsString" data-translate="__MSG_RESULTS_MESSAGE__">Results for</span>
+                "<span id="js-searchValue"></span>"
+            </h2>
+        </div>
         <ol id="js-list" class="list"></ol>
     </div>
 
@@ -80,7 +100,6 @@
 
                 <div class="textfield">
                     <input type="url" id="js-newItemInput" class="textfield__input" name="url" placeholder="https://..." pattern="https?://.+" required>
-                    <span class="text-error"></span>
                 </div>
             </div>
             <div class="modal__footer">
@@ -100,6 +119,7 @@
     <script src="assets/js/Lazyload.js"></script>
     <script src="assets/js/Item.js"></script>
     <script src="assets/js/Modal.js"></script>
+    <script src="assets/js/Search.js"></script>
     <script src="assets/js/Pocket.js"></script>
 </body>
 </html>

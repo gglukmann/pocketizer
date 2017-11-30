@@ -33,6 +33,27 @@ class Pocket {
     }
 
     /**
+     * Get active page string.
+     *
+     * @function getActivePage
+     * @return {String} - Active page name.
+     */
+    getActivePage() {
+        return this.active_page;
+    }
+
+    /**
+     * Set active page.
+     *
+     * @function setActivePage
+     * @param {String} page - Page string to make active.
+     * @return {String} - Active page name.
+     */
+    setActivePage(page) {
+        return this.active_page = page;
+    }
+
+    /**
      * Gets content from localStorage and from Pocket API to see if there are newer links.
      *
      * @function getContent
@@ -41,7 +62,7 @@ class Pocket {
     getContent() {
         let state;
 
-        switch (this.active_page) {
+        switch (this.getActivePage()) {
             case 'list':
                 state = 'unread';
             break;
@@ -75,7 +96,7 @@ class Pocket {
             return x.sort_id - y.sort_id;
         });
 
-        switch (this.active_page) {
+        switch (this.getActivePage()) {
             case 'list':
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(array));
                 localStorage.setItem('listCount', array.length);
@@ -100,7 +121,7 @@ class Pocket {
         let array;
         let listElement;
 
-        switch (this.active_page) {
+        switch (this.getActivePage()) {
             case 'list':
                 array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
 
@@ -141,7 +162,7 @@ class Pocket {
      */
     createItems(a) {
         Object.keys(a).forEach(key => {
-            let newItem = item.create(a[key], this.active_page);
+            let newItem = item.create(a[key], this.getActivePage());
             item.render(newItem);
         });
     }
@@ -194,7 +215,7 @@ class Pocket {
         helper.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
         let array;
 
-        switch (this.active_page) {
+        switch (this.getActivePage()) {
             case 'list':
                 array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
             break;
@@ -248,13 +269,13 @@ class Pocket {
     }
 
     /**
-     * Bind menu change click events.
+     * Bind header click events.
      *
-     * @function bindMenuClickEvents
+     * @function bindHeaderClickEvents
      * @return {void}
      */
-    bindMenuClickEvents() {
-        document.body.addEventListener('click', (e) => {
+    bindHeaderClickEvents() {
+        document.body.addEventListener('click', e => {
             if (e.target.parentNode.classList.contains('js-changeMenu')) {
                 e.preventDefault();
                 let page = e.target.parentNode.dataset.page;
@@ -262,6 +283,10 @@ class Pocket {
                 this.changePage(page);
             }
         });
+
+        document.querySelector('#js-searchButton').addEventListener('click', e => {
+            search.show();
+        }, false);
     }
 
     /**
@@ -293,7 +318,7 @@ class Pocket {
         let action;
 
         if (state == 'read') {
-            switch (this.active_page) {
+            switch (this.getActivePage()) {
                 case 'archive':
                     action = 'readd';
                     helper.showMessage(`${chrome.i18n.getMessage('UNARCHIVING')}...`, true, false, false);
@@ -343,7 +368,7 @@ class Pocket {
     handleActionResponse(e, state, id, isFavourited, response) {
         let a;
 
-        switch (this.active_page) {
+        switch (this.getActivePage()) {
             case 'list':
                 a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
             break;
@@ -361,7 +386,7 @@ class Pocket {
 
                         e.target.parentNode.parentNode.remove();
 
-                        switch (this.active_page) {
+                        switch (this.getActivePage()) {
                             case 'list':
                                 localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
                                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
@@ -382,7 +407,7 @@ class Pocket {
             }
         };
 
-        switch (this.active_page) {
+        switch (this.getActivePage()) {
             case 'list':
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
             break;
@@ -392,9 +417,9 @@ class Pocket {
         }
 
         if (state == 'read') {
-            if (this.active_page === 'list') {
+            if (this.getActivePage() === 'list') {
                 helper.showMessage(chrome.i18n.getMessage('ARCHIVING'));
-            } else if (this.active_page === 'archive') {
+            } else if (this.getActivePage() === 'archive') {
                 helper.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
             }
         } else if (state == 'favourite') {
@@ -455,11 +480,11 @@ class Pocket {
         }
 
         this.items_shown = 0;
-        document.querySelector('#js-list').innerHTML = "";
+        document.querySelector('#js-list').innerHTML = '';
 
         switch (page) {
             case 'list':
-                this.active_page = 'list';
+                this.setActivePage('list');
 
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
@@ -469,7 +494,7 @@ class Pocket {
                 this.getContent();
             break;
             case 'archive':
-                this.active_page = 'archive';
+                this.setActivePage('archive');
 
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
@@ -492,12 +517,13 @@ class Pocket {
      */
     showLoggedInContent() {
         document.querySelector('#js-default-message').style.display = 'none';
-        document.querySelector('#js-count-wrapper').style.display = 'inline-block';
-        document.querySelector('#js-menu').style.display = 'flex';
-        document.querySelector('#js-list').style.display = 'flex';
-        document.querySelector('#js-username').style.display = 'inline-block';
-        document.querySelector('#js-logout').style.display = 'inline-block';
-        document.querySelector('#js-addNewItemButton').style.display = 'inline-block';
+        document.querySelector('#js-count-wrapper').removeAttribute('style');
+        document.querySelector('#js-menu').removeAttribute('style');
+        document.querySelector('#js-list').removeAttribute('style');
+        document.querySelector('#js-username').removeAttribute('style');
+        document.querySelector('#js-logout').removeAttribute('style');
+        document.querySelector('#js-addNewItemButton').removeAttribute('style');
+        document.querySelector('#js-searchButton').removeAttribute('style');
     }
 
     /**
@@ -516,7 +542,7 @@ class Pocket {
         // get content from pocket api
         this.getContent();
 
-        this.bindMenuClickEvents();
+        this.bindHeaderClickEvents();
         this.bindActionClickEvents();
         this.bindAddNewItemEvents();
     }
@@ -538,7 +564,7 @@ class Pocket {
             document.querySelector('#js-username').innerText = localStorage.getItem('username');
         }
 
-        this.bindMenuClickEvents();
+        this.bindHeaderClickEvents();
         this.bindActionClickEvents();
         this.bindAddNewItemEvents();
 
@@ -581,6 +607,7 @@ class Pocket {
         document.querySelector('#js-logout').style.display = 'none';
         document.querySelector('#js-count-wrapper').style.display = 'none';
         document.querySelector('#js-addNewItemButton').style.display = 'none';
+        document.querySelector('#js-searchButton').style.display = 'none';
 
         this.bindLoginClickEvent();
 

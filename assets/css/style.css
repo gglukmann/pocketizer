@@ -136,16 +136,29 @@ a {
 }
 
 .header__right {
+    position: relative;
     display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    padding: var(--grid-gutter) 0;
+}
+
+@media (min-width: 720px) {
+    .header__right {
+        width: auto;
+        padding-top: 0;
+        padding-bottom: 0;
+    }
 }
 
 /* MENU */
 .menu {
-    padding: 0;
     display: flex;
     align-items: center;
     list-style: none;
     margin: 0;
+    padding: 0;
 }
 
 @media (min-width: 850px) {
@@ -182,10 +195,18 @@ a {
     text-align: center;
 }
 
+.message--padding-small {
+    margin-top: 0;
+}
+
 .message__text {
     font-size: 1.8em;
     color: var(--text-light);
     padding: 1em;
+}
+
+.message--padding-small .message__text {
+    padding: 0;
 }
 
 .message__text--text-color {
@@ -200,6 +221,7 @@ a {
     margin: 10px 0 40px;
 }
 
+/* ITEM */
 .item {
     display: flex;
     position: relative;
@@ -436,15 +458,21 @@ a {
   pointer-events: none;
 }
 
+.btn + .btn {
+    margin-left: 10px;
+}
+
+/* BUTTON-GROUP */
 .btn-group {
     display: flex;
     align-items: center;
 }
 
-.btn-group .btn:not(:last-child) {
-    margin-right: var(--grid-gutter);
+.btn-group .btn:not(:first-child) {
+    margin-left: var(--grid-gutter);
 }
 
+/* SENTINEL */
 .sentinel {
     height: 1px;
     width: 1px;
@@ -564,5 +592,65 @@ a {
     border-radius: 4px;
     font-size: 1.2em;
     padding: 5px 10px;
+    min-width: 200px;
     width: 100%;
+}
+
+/* SEARCH */
+.search {
+    display: none;
+    position: absolute;
+    left: calc(var(--grid-gutter) / 2);
+}
+
+@media (min-width: 850px) {
+    .search {
+        left: auto;
+        right: calc(100% - 22px);
+    }
+}
+
+.search.is-active {
+    display: block;
+}
+
+.search__button {
+    position: relative;
+    z-index: 1;
+}
+
+.search__button.is-disabled {
+    pointer-events: none;
+    z-index: -1;
+}
+
+@media (min-width: 720px) {
+    .search__button.is-disabled {
+        z-index: 1;
+    }
+}
+
+/* Extends .textfield__input */
+.search__textfield {
+    position: relative;
+    margin-bottom: 0;
+}
+
+.search__input {
+    padding-right: 25px;
+}
+
+.search__input::placeholder {
+    font-size: 1rem;
+}
+
+.search__clear {
+    position: absolute;
+    right: 0;
+    bottom: -15px;
+    margin-top: 3px;
+}
+
+.search__clear-link {
+    font-size: .8em;
 }
