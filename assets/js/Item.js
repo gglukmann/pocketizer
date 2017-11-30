@@ -163,8 +163,10 @@ class Item {
             .then(response => {
                 modal.close();
 
-                let createdItem = this.create(response.item, 'list');
-                this.render(createdItem, true);
+                if (pocket.getActivePage() === 'list') {
+                    let createdItem = this.create(response.item, 'list');
+                    this.render(createdItem, true);
+                }
 
                 let array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
                 array = helper.prependArray(array, response.item);

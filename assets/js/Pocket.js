@@ -451,6 +451,10 @@ class Pocket {
                 e.preventDefault();
                 helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 
+                if (pocket.getActivePage() === 'list') {
+                    search.reset(true);
+                }
+
                 const rawData = new FormData(form);
                 let data = {};
 

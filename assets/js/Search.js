@@ -29,7 +29,7 @@ class Search {
         document.querySelector('#js-emptySearch').addEventListener('click', e => {
             e.preventDefault();
 
-            this.resetSearch();
+            this.reset();
             this.hide();
         });
     }
@@ -48,13 +48,18 @@ class Search {
     /**
      * Reset search results.
      *
-     * @function resetSearch
+     * @function reset
+     * @param {Boolean} doHide - If search input should be hidden too.
      * @return {void}
      */
-    resetSearch() {
+    reset(doHide) {
         document.querySelector('#js-searchInput').value = '';
         document.querySelector('#js-results-message').style.display = 'none';
         pocket.render();
+
+        if (doHide) {
+            this.hide();
+        }
     }
 
     /**
@@ -66,7 +71,7 @@ class Search {
      */
     search(value) {
         if (value.length === 0) {
-            this.resetSearch();
+            this.reset();
             return;
         }
 
