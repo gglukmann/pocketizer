@@ -173,7 +173,9 @@ class Item {
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(array));
 
                 localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
+                if (pocket.getActivePage() === 'list') {
+                    document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
+                }
 
                 helper.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
             });
