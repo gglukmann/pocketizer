@@ -180,6 +180,68 @@ class Item {
                 helper.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
             });
     }
+
+    /**
+     * Toggle favourite state.
+     *
+     * @function favourite
+     * @param {Event} e - Click event.
+     * @return {void}
+     */
+    favourite(e) {
+        e.preventDefault();
+        let id = e.target.dataset.id;
+        let isFavourited = e.target.dataset.favourite;
+        isFavourited = (isFavourited == 'true'); // convert to boolean
+
+        pocket.toggleActionState(e, 'favourite', id, isFavourited);
+    }
+
+    /**
+     * Toggle item between archive and list.
+     *
+     * @function archive
+     * @param {e} e - Click event.
+     * @return {void}
+     */
+    archive(e) {
+        e.preventDefault();
+        let id = e.target.dataset.id;
+        pocket.toggleActionState(e, 'read', id, false);
+    }
+
+    /**
+     * Open modal and delete item.
+     *
+     * @function delete
+     * @param {e} e - Click event.
+     * @return {void}
+     */
+    delete(e) {
+        e.preventDefault();
+        let deleteItemEvent = e;
+        modal.open('#js-deleteModal');
+
+        let newEvent = this.handleDeleteClick.bind(this, deleteItemEvent);
+
+        document.querySelector('#js-deleteSubmit').addEventListener('click', newEvent, false);
+
+        document.addEventListener('closed.modal', e => {
+            document.querySelector('#js-deleteSubmit').removeEventListener('click', newEvent, false);
+        }, false);
+    }
+
+    /**
+     * Handle delete button click.
+     *
+     * @function handleDeleteClick
+     * @param {Event} deleteItemEvent - Delete button from item event.
+     * @return {void}
+     */
+    handleDeleteClick(deleteItemEvent) {
+        let id = deleteItemEvent.target.dataset.id;
+        pocket.toggleActionState(deleteItemEvent, 'delete', id, false);
+    }
 }
 
 const item = new Item();

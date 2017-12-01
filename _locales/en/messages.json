@@ -129,5 +129,8 @@
     },
     "EMPTY_SEARCH": {
         "message": "Empty search"
+    },
+    "ARE_YOU_SURE": {
+        "message": "Are you sure?"
     }
 }

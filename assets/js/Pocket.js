@@ -245,21 +245,13 @@ class Pocket {
      * @return {void}
      */
     bindActionClickEvents() {
-        document.body.addEventListener('click', (e) => {
-            let id = e.target.dataset.id;
-
+        document.body.addEventListener('click', e => {
             if (e.target.classList.contains('js-toggleFavouriteButton')) {
-                e.preventDefault();
-                let isFavourited = e.target.dataset.favourite;
-                isFavourited = (isFavourited == 'true'); // convert to boolean
-
-                this.toggleActionState(e, 'favourite', id, isFavourited);
-            } else if (e.target.classList.contains('js-deleteButton')) {
-                e.preventDefault();
-                this.toggleActionState(e, 'delete', id, false);
+                item.favourite(e);
             } else if (e.target.classList.contains('js-toggleReadButton')) {
-                e.preventDefault();
-                this.toggleActionState(e, 'read', id, false);
+                item.archive(e);
+            } else if (e.target.classList.contains('js-deleteButton')) {
+                item.delete(e);
             }
         });
 
@@ -378,7 +370,7 @@ class Pocket {
         }
 
         for (let i = 0; i < a.length; i++) {
-            if (a[i].item_id == id) {
+            if (a[i].item_id === id) {
                 switch (state) {
                     case 'read':
                     case 'delete':
