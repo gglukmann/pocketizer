@@ -93,19 +93,22 @@ class Search {
         }
 
         Object.keys(array).forEach(key => {
-            let searchableString = '';
+            let searchableTitle = '';
+            let searchableUrl = '';
 
             if (array[key].resolved_title && array[key].resolved_title !== '') {
-                searchableString = array[key].resolved_title;
+                searchableTitle = array[key].resolved_title;
             } else if (array[key].given_title && array[key].given_title !== '') {
-                searchableString = array[key].given_title;
-            } else if (array[key].resolved_url && array[key].resolved_url !== '') {
-                searchableString = array[key].resolved_url;
-            } else {
-                searchableString = array[key].given_url;
+                searchableTitle = array[key].given_title;
             }
 
-            if (searchableString.toLowerCase().indexOf(value) > -1) {
+            if (array[key].resolved_url && array[key].resolved_url !== '') {
+                searchableUrl = array[key].resolved_url;
+            } else {
+                searchableUrl = array[key].given_url;
+            }
+
+            if (searchableTitle.toLowerCase().indexOf(value) > -1 || searchableUrl.toLowerCase().indexOf(value) > -1) {
                 let newItem = item.create(array[key], pocket.getActivePage());
                 item.render(newItem);
 
