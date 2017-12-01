@@ -40,9 +40,13 @@ class Search {
      * @function hide
      * @return {void}
      */
-    hide() {
+    hide(hideMessage) {
         document.querySelector('#js-searchForm').classList.remove('is-active');
         document.querySelector('#js-searchButton').classList.remove('is-disabled');
+
+        if (hideMessage) {
+            document.querySelector('#js-results-message').style.display = 'none';
+        }
     }
 
     /**

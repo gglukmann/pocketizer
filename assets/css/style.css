@@ -156,9 +156,17 @@ a {
 .menu {
     display: flex;
     align-items: center;
+    justify-content: center;
     list-style: none;
     margin: 0;
     padding: 0;
+    width: 100%;
+}
+
+@media (min-width: 480px) {
+    .menu {
+        width: auto;
+    }
 }
 
 @media (min-width: 850px) {
@@ -601,9 +609,10 @@ a {
     display: none;
     position: absolute;
     left: calc(var(--grid-gutter) / 2);
+    right: calc(var(--grid-gutter) / 2);
 }
 
-@media (min-width: 850px) {
+@media (min-width: 720px) {
     .search {
         left: auto;
         right: calc(100% - 22px);

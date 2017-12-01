@@ -485,6 +485,7 @@ class Pocket {
 
         this.items_shown = 0;
         document.querySelector('#js-list').innerHTML = '';
+        search.hide(true);
 
         switch (page) {
             case 'list':
