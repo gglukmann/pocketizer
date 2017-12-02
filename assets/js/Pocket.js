@@ -507,20 +507,31 @@ class Pocket {
     }
 
     /**
-     * Show right elements when coming to new tab or logging in.
+     * Show or hide right elements when coming to new tab or logging in.
      *
-     * @function showLoggedInContent
+     * @function toggleLoggedInContent
      * @return {void}
      */
-    showLoggedInContent() {
-        document.querySelector('#js-default-message').style.display = 'none';
-        document.querySelector('#js-count-wrapper').removeAttribute('style');
-        document.querySelector('#js-menu').removeAttribute('style');
-        document.querySelector('#js-list').removeAttribute('style');
-        document.querySelector('#js-username').removeAttribute('style');
-        document.querySelector('#js-logout').removeAttribute('style');
-        document.querySelector('#js-addNewItemButton').removeAttribute('style');
-        document.querySelector('#js-searchButton').removeAttribute('style');
+    toggleLoggedInContent(isShown = false) {
+        if (isShown) {
+            document.querySelector('#js-default-message').style.display = 'none';
+            document.querySelector('#js-count-wrapper').removeAttribute('style');
+            document.querySelector('#js-menu').removeAttribute('style');
+            document.querySelector('#js-list').removeAttribute('style');
+            document.querySelector('#js-username').removeAttribute('style');
+            document.querySelector('#js-logout').removeAttribute('style');
+            document.querySelector('#js-addNewItemButton').removeAttribute('style');
+            document.querySelector('#js-searchButton').removeAttribute('style');
+        } else {
+            document.querySelector('#js-default-message').style.display = 'block';
+            document.querySelector('#js-list').style.display = 'none';
+            document.querySelector('#js-menu').style.display = 'none';
+            document.querySelector('#js-username').style.display = 'none';
+            document.querySelector('#js-logout').style.display = 'none';
+            document.querySelector('#js-count-wrapper').style.display = 'none';
+            document.querySelector('#js-addNewItemButton').style.display = 'none';
+            document.querySelector('#js-searchButton').style.display = 'none';
+        }
     }
 
     /**
@@ -534,7 +545,7 @@ class Pocket {
 
         helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
-        this.showLoggedInContent();
+        this.toggleLoggedInContent(true);
 
         // get content from pocket api
         this.getContent();
@@ -555,7 +566,7 @@ class Pocket {
 
         this.render();
 
-        this.showLoggedInContent();
+        this.toggleLoggedInContent(true);
 
         if (localStorage.getItem('username')) {
             document.querySelector('#js-username').innerText = localStorage.getItem('username');
@@ -597,14 +608,7 @@ class Pocket {
         helper.showMessage(`${chrome.i18n.getMessage('LOGGING_OUT')}...`, true, false, false);
         localStorage.clear();
 
-        document.querySelector('#js-default-message').style.display = 'block';
-        document.querySelector('#js-list').style.display = 'none';
-        document.querySelector('#js-menu').style.display = 'none';
-        document.querySelector('#js-username').style.display = 'none';
-        document.querySelector('#js-logout').style.display = 'none';
-        document.querySelector('#js-count-wrapper').style.display = 'none';
-        document.querySelector('#js-addNewItemButton').style.display = 'none';
-        document.querySelector('#js-searchButton').style.display = 'none';
+        this.toggleLoggedInContent(false);
 
         this.bindLoginClickEvent();
 
