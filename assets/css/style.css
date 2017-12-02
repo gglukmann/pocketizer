@@ -422,7 +422,6 @@ a {
     transition: background-position .1s linear;
     width: auto;
     cursor: pointer;
-    outline: none;
 }
 
 .btn:hover {
@@ -443,8 +442,6 @@ a {
 .btn--login {
     min-width: 12.125em;
     padding: .8em 1.625em;
-    -moz-box-sizing: content-box;
-    -webkit-box-sizing: content-box;
     box-sizing: content-box;
 }
 
