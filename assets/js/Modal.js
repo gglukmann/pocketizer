@@ -1,15 +1,30 @@
 'use strict';
 
 class Modal {
+    /**
+     * @constructor
+     */
     constructor() {
         this.container = false;
         this.preventClose = false;
     }
 
+    /**
+     * Initialize modal.
+     *
+     * @function init
+     * @return {void}
+     */
     init() {
         this.bindClickEvents();
     }
 
+    /**
+     * Bind all click events.
+     *
+     * @function bindClickEvents
+     * @return {void}
+     */
     bindClickEvents() {
         document.body.addEventListener('click', e => {
             if (e.target.dataset.modalTarget && e.target.dataset.modalTarget !== '') {
@@ -36,6 +51,13 @@ class Modal {
         });
     }
 
+    /**
+     * Open modal.
+     *
+     * @function open
+     * @param {String} target - Target element string.
+     * @return {void}
+     */
     open(target) {
         this.element = document.querySelector(target);
 
@@ -76,6 +98,12 @@ class Modal {
         document.dispatchEvent(eventOpened);
     }
 
+    /**
+     * Close modal.
+     *
+     * @function close
+     * @return {void}
+     */
     close() {
         helper.enableScroll();
         this.container.classList.remove('is-visible');
