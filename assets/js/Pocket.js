@@ -119,6 +119,11 @@ class Pocket {
                         break;
                     // add to archive list
                     case "1":
+                        newArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                        newArray = newArray.filter(item => item.item_id !== newItem.item_id);
+
+                        localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
+
                         if (this.isArchiveLoaded()) {
                             newArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
                             newArray = helper.prependArray(newArray, newItem);
@@ -135,8 +140,8 @@ class Pocket {
                         listArray = listArray.filter(item => item.item_id !== newItem.item_id);
                         archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
 
-                        localStorage.setItem('archiveFromLocalStorage', JSON.stringify(archiveArray));
                         localStorage.setItem('listFromLocalStorage', JSON.stringify(listArray));
+                        localStorage.setItem('archiveFromLocalStorage', JSON.stringify(archiveArray));
                         break;
                 }
             }
@@ -159,7 +164,6 @@ class Pocket {
      */
     render() {
         let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
-        let listElement;
 
         this.items_shown = this.load_count;
 
@@ -510,12 +514,11 @@ class Pocket {
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
 
-                if (localStorage.getItem('archiveCount')) {
+                if (this.isArchiveLoaded()) {
                    this.render();
-                   this.getContent();
-               } else {
-                   this.getContent();
-               }
+                }
+
+                this.getContent();
             break;
         }
     }
