@@ -84,17 +84,8 @@ class Search {
         document.querySelector('#js-list').innerHTML = '';
         value = value.toLowerCase();
 
-        let array;
+        let array = JSON.parse(localStorage.getItem(`${pocket.getActivePage()}FromLocalStorage`));
         let count = 0;
-
-        switch (pocket.getActivePage()) {
-            case 'list':
-                array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-            break;
-            case 'archive':
-                array = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-            break;
-        }
 
         Object.keys(array).forEach(key => {
             let searchableTitle = '';

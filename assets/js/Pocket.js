@@ -60,18 +60,7 @@ class Pocket {
      * @return {void}
      */
     getContent() {
-        let state;
-
-        switch (this.getActivePage()) {
-            case 'list':
-                state = 'unread';
-            break;
-            case 'archive':
-                state = 'archive';
-            break;
-        }
-
-        apiService.get(state)
+        apiService.get()
             .then(response => {
                 this.sortGetResponse(response);
             });
@@ -87,24 +76,75 @@ class Pocket {
     sortGetResponse(response) {
         let array = [];
         let items = response.list;
-
-        for (let key in items) {
-            array.push(items[key]);
-        }
-
-        array.sort((x, y) => {
-            return x.sort_id - y.sort_id;
-        });
+        let isFirstLoad = false;
 
         switch (this.getActivePage()) {
             case 'list':
-                localStorage.setItem('listFromLocalStorage', JSON.stringify(array));
-                localStorage.setItem('listCount', array.length);
-            break;
+                if (!localStorage.getItem('listSince')) {
+                    isFirstLoad = true;
+                }
+                break;
             case 'archive':
-                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(array));
-                localStorage.setItem('archiveCount', array.length);
-            break;
+                if (!this.isArchiveLoaded()) {
+                    isFirstLoad = true;
+                }
+                break;
+        }
+
+        if (isFirstLoad) {
+            for (let key in items) {
+                array.push(items[key]);
+            }
+
+            array.sort((x, y) => {
+                return x.sort_id - y.sort_id;
+            });
+
+            localStorage.setItem(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
+            localStorage.setItem(`${this.getActivePage()}Count`, array.length);
+            localStorage.setItem(`${this.getActivePage()}Since`, response.since);
+        } else {
+            for (let key in items) {
+                let newItem = items[key];
+                let newArray;
+
+                switch (newItem.status) {
+                    // add to unread list
+                    case "0":
+                        newArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                        newArray = helper.prependArray(newArray, newItem);
+                        localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
+
+                        localStorage.setItem('listCount', parseInt(localStorage.getItem('listCount'), 10) + 1);
+                        break;
+                    // add to archive list
+                    case "1":
+                        if (this.isArchiveLoaded()) {
+                            newArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
+                            newArray = helper.prependArray(newArray, newItem);
+                            localStorage.setItem('archiveFromLocalStorage', JSON.stringify(newArray));
+
+                            localStorage.setItem('archiveCount', parseInt(localStorage.getItem('archiveCount'), 10) + 1);
+                        }
+                        break;
+                    // delete from unread or archive list
+                    case "2":
+                        let listArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                        let archiveArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
+
+                        listArray = listArray.filter(item => item.item_id !== newItem.item_id);
+                        archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
+
+                        localStorage.setItem('archiveFromLocalStorage', JSON.stringify(archiveArray));
+                        localStorage.setItem('listFromLocalStorage', JSON.stringify(listArray));
+                        break;
+                }
+            }
+
+            localStorage.setItem('listSince', response.since);
+            if (this.isArchiveLoaded()) {
+                localStorage.setItem('archiveSince', response.since);
+            }
         }
 
         this.render();
@@ -118,24 +158,12 @@ class Pocket {
      * @return {void}
      */
     render() {
-        let array;
+        let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
         let listElement;
-
-        switch (this.getActivePage()) {
-            case 'list':
-                array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-
-                document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
-            break;
-            case 'archive':
-                array = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-
-                document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
-            break;
-        }
 
         this.items_shown = this.load_count;
 
+        document.querySelector('#js-count').innerText = localStorage.getItem(`${this.getActivePage()}Count`);
         document.querySelector('#js-list').innerHTML = "";
 
         if (array === null) {
@@ -143,7 +171,7 @@ class Pocket {
         } else if (array.length === 0) {
             document.querySelector('#js-empty-list-message').style.display = 'block';
         } else {
-            array = array.filter((i, index) => (index < this.load_count));
+            array = array.filter((item, index) => (index < this.load_count));
             document.querySelector('#js-empty-list-message').style.display = 'none';
 
             this.createItems(array);
@@ -213,16 +241,7 @@ class Pocket {
      */
     infiniteScroll() {
         helper.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
-        let array;
-
-        switch (this.getActivePage()) {
-            case 'list':
-                array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-            break;
-            case 'archive':
-                array = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-            break;
-        }
+        let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
 
         array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
 
@@ -236,6 +255,20 @@ class Pocket {
 
         this.createItems(array);
         lazyload.load();
+    }
+
+    /**
+     * Is Archive list loaded.
+     *
+     * @function isArchiveLoaded
+     * @return {Boolean} If is loaded.
+     */
+    isArchiveLoaded() {
+        if (localStorage.getItem('archiveSince')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -358,39 +391,23 @@ class Pocket {
      * @return {void}
      */
     handleActionResponse(e, state, id, isFavourited, response) {
-        let a;
+        let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
 
-        switch (this.getActivePage()) {
-            case 'list':
-                a = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-            break;
-            case 'archive':
-                a = JSON.parse(localStorage.getItem('archiveListFromLocalStorage'));
-            break;
-        }
-
-        for (let i = 0; i < a.length; i++) {
-            if (a[i].item_id === id) {
+        for (let i = 0; i < array.length; i++) {
+            if (array[i].item_id === id) {
                 switch (state) {
                     case 'read':
                     case 'delete':
-                        a.splice(i, 1);
+                        array.splice(i, 1);
 
                         e.target.parentNode.parentNode.remove();
 
-                        switch (this.getActivePage()) {
-                            case 'list':
-                                localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
-                                document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
-                            break;
-                            case 'archive':
-                                localStorage.setItem('archiveCount', localStorage.getItem('archiveCount') - 1);
-                                document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
-                            break;
-                        }
+                        localStorage.setItem(`${this.getActivePage()}Count`, parseInt(localStorage.getItem(`${this.getActivePage()}Count`), 10) - 1);
+
+                        document.querySelector('#js-count').innerText = localStorage.getItem(`${this.getActivePage()}Count`);
                     break;
                     case 'favourite':
-                        a[i].favorite = (isFavourited === true ? 0 : 1);
+                        array[i].favorite = (isFavourited === true ? 0 : 1);
 
                         isFavourited = !isFavourited;
                         e.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite = isFavourited;
@@ -399,20 +416,16 @@ class Pocket {
             }
         };
 
-        switch (this.getActivePage()) {
-            case 'list':
-                localStorage.setItem('listFromLocalStorage', JSON.stringify(a));
-            break;
-            case 'archive':
-                localStorage.setItem('archiveListFromLocalStorage', JSON.stringify(a));
-            break;
-        }
+        localStorage.setItem(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
 
         if (state == 'read') {
-            if (this.getActivePage() === 'list') {
-                helper.showMessage(chrome.i18n.getMessage('ARCHIVING'));
-            } else if (this.getActivePage() === 'archive') {
-                helper.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
+            switch (this.getActivePage()) {
+                case 'list':
+                    helper.showMessage(chrome.i18n.getMessage('ARCHIVING'));
+                    break;
+                case 'archive':
+                    helper.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
+                    break;
             }
         } else if (state == 'favourite') {
             helper.showMessage(chrome.i18n.getMessage('PROCESSING'));
@@ -467,6 +480,8 @@ class Pocket {
      * @return {void}
      */
     changePage(page) {
+        helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+
         let menuLinkElements = document.querySelectorAll('.menu__link');
         for (let i = 0; i < menuLinkElements.length; i++) {
             menuLinkElements[i].classList.remove('menu__link--active');
@@ -485,7 +500,6 @@ class Pocket {
 
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
-                helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
                 this.render();
                 this.getContent();
@@ -495,13 +509,13 @@ class Pocket {
 
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
-                helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
                 if (localStorage.getItem('archiveCount')) {
-                    this.render();
-                }
-
-                this.getContent();
+                   this.render();
+                   this.getContent();
+               } else {
+                   this.getContent();
+               }
             break;
         }
     }
@@ -523,6 +537,7 @@ class Pocket {
             document.querySelector('#js-addNewItemButton').removeAttribute('style');
             document.querySelector('#js-searchButton').removeAttribute('style');
         } else {
+            document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
             document.querySelector('#js-list').style.display = 'none';
             document.querySelector('#js-menu').style.display = 'none';

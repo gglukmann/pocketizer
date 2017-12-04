@@ -20,13 +20,34 @@ class ApiService {
      * @param {String} state - List type to get.
      * @return {Promise} - Response from pocket api.
      */
-    async get(state) {
-        this._fetchData.body = JSON.stringify({
+    async get() {
+        this._fetchData.body = {
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            state: state,
             detailType: 'complete'
-        });
+        };
+
+        let state;
+
+        switch (pocket.getActivePage()) {
+            case 'list':
+                if (localStorage.getItem('listSince')) {
+                    this._fetchData.body.since = localStorage.getItem('listSince');
+                } else {
+                    state = 'unread';
+                }
+            break;
+            case 'archive':
+                if (pocket.isArchiveLoaded()) {
+                    this._fetchData.body.since = localStorage.getItem('archiveSince');
+                } else {
+                    state = 'archive';
+                }
+            break;
+        }
+
+        this._fetchData.body.state = this._fetchData.body.since ? 'all' : state;
+        this._fetchData.body = JSON.stringify(this._fetchData.body);
 
         let data = await helper.makeFetch(API.url_get, this._fetchData)
             .then(response => response.json())
