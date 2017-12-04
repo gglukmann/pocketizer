@@ -137,9 +137,9 @@ class Pocket {
                         });
 
                         newArray = helper.prependArray(newArray, newItem);
-                        localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
 
-                        localStorage.setItem('listCount', parseInt(localStorage.getItem('listCount'), 10) + 1);
+                        localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
+                        localStorage.setItem('listCount', newArray.length);
                         break;
                     // add to archive list
                     case "1":
@@ -148,14 +148,15 @@ class Pocket {
                         newArray = newArray.filter(item => item.item_id !== newItem.item_id);
 
                         localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
+                        localStorage.setItem('listCount', newArray.length);
 
                         // only add to localstorage archive list if archive is loaded
                         if (this.isArchiveLoaded()) {
                             newArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
                             newArray = helper.prependArray(newArray, newItem);
-                            localStorage.setItem('archiveFromLocalStorage', JSON.stringify(newArray));
 
-                            localStorage.setItem('archiveCount', parseInt(localStorage.getItem('archiveCount'), 10) + 1);
+                            localStorage.setItem('archiveFromLocalStorage', JSON.stringify(newArray));
+                            localStorage.setItem('archiveCount', newArray.length);
                         }
                         break;
                     // delete from unread or archive list
@@ -167,7 +168,9 @@ class Pocket {
                         archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
 
                         localStorage.setItem('listFromLocalStorage', JSON.stringify(listArray));
+                        localStorage.setItem('listCount', listArray.length);
                         localStorage.setItem('archiveFromLocalStorage', JSON.stringify(archiveArray));
+                        localStorage.setItem('archiveCount', archiveArray.length);
                         break;
                 }
             }
@@ -195,8 +198,6 @@ class Pocket {
 
         document.querySelector('#js-count').innerText = localStorage.getItem(`${this.getActivePage()}Count`);
         document.querySelector('#js-list').innerHTML = '';
-
-        console.log(array);
 
         if (array === null) {
             this.getContent();
