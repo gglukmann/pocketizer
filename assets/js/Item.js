@@ -194,7 +194,7 @@ class Item {
         let isFavourited = e.target.dataset.favourite;
         isFavourited = (isFavourited == 'true'); // convert to boolean
 
-        pocket.toggleActionState(e, 'favourite', id, isFavourited);
+        pocket.changeItemState(e, 'favourite', id, isFavourited);
     }
 
     /**
@@ -207,7 +207,7 @@ class Item {
     archive(e) {
         e.preventDefault();
         let id = e.target.dataset.id;
-        pocket.toggleActionState(e, 'read', id, false);
+        pocket.changeItemState(e, 'read', id, false);
     }
 
     /**
@@ -240,7 +240,7 @@ class Item {
      */
     handleDeleteClick(deleteItemEvent) {
         let id = deleteItemEvent.target.dataset.id;
-        pocket.toggleActionState(deleteItemEvent, 'delete', id, false);
+        pocket.changeItemState(deleteItemEvent, 'delete', id, false);
     }
 }
 

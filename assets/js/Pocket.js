@@ -62,18 +62,18 @@ class Pocket {
     getContent() {
         apiService.get()
             .then(response => {
-                this.sortGetResponse(response);
+                this.handleApiGetResponse(response);
             });
     }
 
     /**
      * Sort get response, add to localstorage and render page again.
      *
-     * @function sortGetResponse
+     * @function handleApiGetResponse
      * @param  {Object} response - response from fetch.
      * @return {void}
      */
-    sortGetResponse(response) {
+    handleApiGetResponse(response) {
         let array = [];
         let items = response.list;
         let isFirstLoad = false;
@@ -330,16 +330,16 @@ class Pocket {
     }
 
     /**
-     * Toggles item state.
+     * Changes item state.
      *
-     * @function toggleActionState
+     * @function changeItemState
      * @param  {Event}  e - Event.
      * @param  {String}  state - Current state.
      * @param  {Number}  id - Item id.
      * @param  {Boolean} isFavourited - If should be favourited.
      * @return {void}
      */
-    toggleActionState(e, state, id, isFavourited) {
+    changeItemState(e, state, id, isFavourited) {
         let action;
 
         if (state == 'read') {
