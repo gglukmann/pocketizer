@@ -4,9 +4,9 @@
 
 > Browser extension - Unofficial Pocket new tab extension for Chrome and Firefox
 
-Get your Pocket list and archive right on your browsers new tab.
+Get your Pocket unread list and archive right on your browsers new tab.
 
-Open links, mark as read ning delete links from your account right from new tab. And ofcourse add your favorite articles to favorites list.
+You can mark your items as read, delete them or add to favorites list. You can find your items faster with search over titles and urls and if you don't have Pocket original extension installed, you can add new links too.
 
 ![New Tab](http://gglukmann.github.io/pocket/screenshots/screenshot1280x800.jpg)
 
