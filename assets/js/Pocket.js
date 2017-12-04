@@ -105,6 +105,8 @@ class Pocket {
             localStorage.setItem(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
             localStorage.setItem(`${this.getActivePage()}Count`, array.length);
             localStorage.setItem(`${this.getActivePage()}Since`, response.since);
+
+            this.fullSync = false;
         } else {
             for (let key in items) {
                 let newItem = items[key];
@@ -114,6 +116,14 @@ class Pocket {
                     // add to unread list
                     case "0":
                         newArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+
+                        // delete old item, if it is added from this extension
+                        newArray.forEach((item, i) => {
+                            if (item.item_id === newItem.item_id) {
+                                newArray.splice(i, 1);
+                            }
+                        });
+
                         newArray = helper.prependArray(newArray, newItem);
                         localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
 
@@ -121,11 +131,13 @@ class Pocket {
                         break;
                     // add to archive list
                     case "1":
+                        // delete old item, if it is added to archive from somewhere else and is in unread list in extension
                         newArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
                         newArray = newArray.filter(item => item.item_id !== newItem.item_id);
 
                         localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
 
+                        // only add to localstorage archive list if archive is loaded
                         if (this.isArchiveLoaded()) {
                             newArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
                             newArray = helper.prependArray(newArray, newItem);
