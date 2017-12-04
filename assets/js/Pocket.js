@@ -93,8 +93,14 @@ class Pocket {
                 }
                 break;
             case 'archive':
-                if (!this.isArchiveLoaded()) {
+                // TODO: Remove old list name sometime in the future
+                if (localStorage.getItem('archiveListFromLocalStorage')) {
                     isFirstLoad = true;
+                    localStorage.removeItem('archiveListFromLocalStorage');
+                } else {
+                    if (!this.isArchiveLoaded()) {
+                        isFirstLoad = true;
+                    }
                 }
                 break;
         }
@@ -189,6 +195,8 @@ class Pocket {
 
         document.querySelector('#js-count').innerText = localStorage.getItem(`${this.getActivePage()}Count`);
         document.querySelector('#js-list').innerHTML = '';
+
+        console.log(array);
 
         if (array === null) {
             this.getContent();
