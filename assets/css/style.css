@@ -77,6 +77,11 @@ a {
     fill: currentColor;
 }
 
+.icon--bigger {
+    height: 1.2em;
+    width: 1.2em;
+}
+
 .status {
     position: fixed;
     top: 8px;

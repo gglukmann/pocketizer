@@ -47,6 +47,20 @@ class ApiService {
         }
 
         this._fetchData.body.state = this._fetchData.body.since ? 'all' : state;
+
+        if (pocket.fullSync) {
+            this._fetchData.body.since = null;
+
+            switch (pocket.getActivePage()) {
+                case 'list':
+                    this._fetchData.body.state = 'unread';
+                    break;
+                case 'archive':
+                    this._fetchData.body.state = 'archive';
+                    break;
+            }
+        }
+
         this._fetchData.body = JSON.stringify(this._fetchData.body);
 
         let data = await helper.makeFetch(API.url_get, this._fetchData)

@@ -13,6 +13,8 @@ class Pocket {
             lastKnownScrollY: 0,
             ticking: false
         }
+
+        this.fullSync = false;
     }
 
     /**
@@ -91,7 +93,7 @@ class Pocket {
                 break;
         }
 
-        if (isFirstLoad) {
+        if (isFirstLoad || this.fullSync) {
             for (let key in items) {
                 array.push(items[key]);
             }
@@ -316,6 +318,12 @@ class Pocket {
         document.querySelector('#js-searchButton').addEventListener('click', e => {
             search.show();
         }, false);
+
+        document.querySelector('#js-fullSync').addEventListener('click', e => {
+            this.fullSync = true;
+            helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+            this.getContent();
+        }, false);
     }
 
     /**
@@ -539,6 +547,7 @@ class Pocket {
             document.querySelector('#js-logout').removeAttribute('style');
             document.querySelector('#js-addNewItemButton').removeAttribute('style');
             document.querySelector('#js-searchButton').removeAttribute('style');
+            document.querySelector('#js-fullSync').removeAttribute('style');
         } else {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
@@ -549,6 +558,7 @@ class Pocket {
             document.querySelector('#js-count-wrapper').style.display = 'none';
             document.querySelector('#js-addNewItemButton').style.display = 'none';
             document.querySelector('#js-searchButton').style.display = 'none';
+            document.querySelector('#js-fullSync').style.display = 'none';
         }
     }
 

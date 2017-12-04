@@ -132,5 +132,8 @@
     },
     "ARE_YOU_SURE": {
         "message": "Are you sure?"
+    },
+    "FULL_SYNC": {
+        "message": "Sync all"
     }
 }
