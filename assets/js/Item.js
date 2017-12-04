@@ -172,7 +172,7 @@ class Item {
                 array = helper.prependArray(array, response.item);
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(array));
 
-                localStorage.setItem('listCount', localStorage.getItem('listCount') - 1);
+                localStorage.setItem('listCount', parseInt(localStorage.getItem('listCount'), 10) + 1);
                 if (pocket.getActivePage() === 'list') {
                     document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 }

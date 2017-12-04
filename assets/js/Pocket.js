@@ -188,7 +188,7 @@ class Pocket {
         this.items_shown = this.load_count;
 
         document.querySelector('#js-count').innerText = localStorage.getItem(`${this.getActivePage()}Count`);
-        document.querySelector('#js-list').innerHTML = "";
+        document.querySelector('#js-list').innerHTML = '';
 
         if (array === null) {
             this.getContent();
@@ -209,12 +209,12 @@ class Pocket {
      * Creates items and appends to DOM.
      *
      * @function createItems
-     * @param  {Array} a - Array of items.
+     * @param {Array} array - Array of items.
      * @return {void}
      */
-    createItems(a) {
-        Object.keys(a).forEach(key => {
-            let newItem = item.create(a[key], this.getActivePage());
+    createItems(array) {
+        Object.keys(array).forEach(key => {
+            let newItem = item.create(array[key], this.getActivePage());
             item.render(newItem);
         });
     }
