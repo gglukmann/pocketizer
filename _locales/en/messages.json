@@ -110,7 +110,7 @@
         "message": "Creating new item"
     },
     "SAVE_URL": {
-        "message": "Save new url"
+        "message": "Save new link"
     },
     "SAVE_NEW_LINK": {
         "message": "Save new link to Pocket"
@@ -134,6 +134,6 @@
         "message": "Are you sure?"
     },
     "FULL_SYNC": {
-        "message": "Sync all"
+        "message": "Synchronize"
     }
 }

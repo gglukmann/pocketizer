@@ -15,6 +15,12 @@ class Pocket {
         }
 
         this.fullSync = false;
+
+        this.menuAndItemClicks = false;
+        this.loggedOutClicks = false;
+        this.logoutButtonClick = false;
+        this.searchButtonClick = false;
+        this.fullSyncButtonClick = false;
     }
 
     /**
@@ -30,7 +36,7 @@ class Pocket {
             this.startSync();
         } else {
             document.querySelector('#js-default-message').style.display = 'block';
-            this.bindLoginClickEvent();
+            this.bindLoggedOutClickEvents();
         }
     }
 
@@ -290,67 +296,115 @@ class Pocket {
     }
 
     /**
-     * Binds click events for action buttons.
+     * Binds click events for logged in buttons.
      *
-     * @function bindActionClickEvents
+     * @function bindLoggedInClickEvents
      * @return {void}
      */
-    bindActionClickEvents() {
-        document.body.addEventListener('click', e => {
-            if (e.target.classList.contains('js-toggleFavouriteButton')) {
-                item.favourite(e);
-            } else if (e.target.classList.contains('js-toggleReadButton')) {
-                item.archive(e);
-            } else if (e.target.classList.contains('js-deleteButton')) {
-                item.delete(e);
-            }
-        });
+    bindLoggedInClickEvents() {
+        this.menuAndItemClicks = this.handleMenuAndItemClicks.bind(this);
+        document.body.addEventListener('click', this.menuAndItemClicks, false);
 
-        document.querySelector('#js-logout').addEventListener('click', () => {
-            this.logout();
-        }, false);
+        this.logoutButtonClick = this.logout.bind(this);
+        document.querySelector('#js-logout').addEventListener('click', this.logoutButtonClick, false);
+
+        this.searchButtonClick = this.handleSearchClick.bind(this);
+        document.querySelector('#js-searchButton').addEventListener('click', this.searchButtonClick, false);
+
+        this.fullSyncButtonClick = this.handleFullSyncClick.bind(this);
+        document.querySelector('#js-fullSync').addEventListener('click', this.fullSyncButtonClick, false);
     }
 
     /**
-     * Bind header click events.
+     * Handle menu and item clicks.
      *
-     * @function bindHeaderClickEvents
+     * @function handleMenuAndItemClicks
+     * @param {Event} e - Event from click.
      * @return {void}
      */
-    bindHeaderClickEvents() {
-        document.body.addEventListener('click', e => {
-            if (e.target.parentNode.classList.contains('js-changeMenu')) {
-                e.preventDefault();
-                let page = e.target.parentNode.dataset.page;
+    handleMenuAndItemClicks(e) {
+        if (e.target.classList.contains('js-toggleFavouriteButton')) {
+            item.favourite(e);
+        } else if (e.target.classList.contains('js-toggleReadButton')) {
+            item.archive(e);
+        } else if (e.target.classList.contains('js-deleteButton')) {
+            item.delete(e);
+        }
 
-                this.changePage(page);
-            }
-        });
+        if (e.target.parentNode.classList.contains('js-changeMenu')) {
+            e.preventDefault();
+            let page = e.target.parentNode.dataset.page;
 
-        document.querySelector('#js-searchButton').addEventListener('click', e => {
-            search.show();
-        }, false);
-
-        document.querySelector('#js-fullSync').addEventListener('click', e => {
-            this.fullSync = true;
-            helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
-            this.getContent();
-        }, false);
+            this.changePage(page);
+        }
     }
 
     /**
-     * Bind login button click event.
+     * Handle search button click.
      *
-     * @function bindLoginClickEvent
+     * @function handleSearchClick
      * @return {void}
      */
-    bindLoginClickEvent() {
-        let loginButton = document.querySelector('#js-login');
-        loginButton.addEventListener('click', () => {
-            this.startLogin();
+    handleSearchClick() {
+        search.show();
+    }
 
-            loginButton.disabled = true;
-        }, false);
+    /**
+     * Handle full sync button click.
+     *
+     * @function handleFullSyncClick
+     * @return {void}
+     */
+    handleFullSyncClick() {
+        this.fullSync = true;
+        helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+        this.getContent();
+    }
+
+    /**
+     * Remove all logged in elements click events.
+     *
+     * @function removeLoggedInClickEvents
+     * @return {void}
+     */
+    removeLoggedInClickEvents() {
+        document.body.removeEventListener('click', this.menuAndItemClicks, false);
+        document.querySelector('#js-logout').removeEventListener('click', this.logoutButtonClick, false);
+        document.querySelector('#js-searchButton').removeEventListener('click', this.searchButtonClick, false);
+        document.querySelector('#js-fullSync').removeEventListener('click', this.fullSyncButtonClick, false);
+    }
+
+    /**
+     * Bind logged out buttons click events.
+     *
+     * @function bindLoggedOutClickEvents
+     * @return {void}
+     */
+    bindLoggedOutClickEvents() {
+        this.loggedOutClicks = this.handleLoginClick.bind(this);
+        document.querySelector('#js-login').addEventListener('click', this.loggedOutClicks, false);
+    }
+
+    /**
+     * Handle login button click.
+     *
+     * @function
+     * @return {void}
+     */
+    handleLoginClick() {
+        this.startLogin();
+
+        document.querySelector('#js-login').disabled = true;
+    }
+
+    /**
+     * Remove logged out buttons clicks.
+     *
+     * @function removeLoggedOutClickEvents
+     * @return {void}
+     */
+    removeLoggedOutClickEvents() {
+        document.querySelector('#js-login').removeEventListener('click', this.loggedOutClicks, false);
     }
 
     /**
@@ -504,15 +558,11 @@ class Pocket {
      * @return {void}
      */
     changePage(page) {
+        page = page ? page : 'list';
+
         helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
-        let menuLinkElements = document.querySelectorAll('.menu__link');
-        for (let i = 0; i < menuLinkElements.length; i++) {
-            menuLinkElements[i].classList.remove('menu__link--active');
-            if (menuLinkElements[i].dataset.page == page) {
-                menuLinkElements[i].classList.add('menu__link--active');
-            }
-        }
+        this.changeMenuActiveState(page);
 
         this.items_shown = 0;
         document.querySelector('#js-list').innerHTML = '';
@@ -535,11 +585,29 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
 
                 if (this.isArchiveLoaded()) {
-                   this.render();
+                    this.render();
                 }
 
                 this.getContent();
             break;
+        }
+    }
+
+    /**
+     * Show right menu item active state.
+     *
+     * @function changeMenuActiveState
+     * @return {void}
+     */
+    changeMenuActiveState(page) {
+        let menuLinkElements = document.querySelectorAll('.menu__link');
+
+        for (let i = 0; i < menuLinkElements.length; i++) {
+            menuLinkElements[i].classList.remove('is-active');
+
+            if (menuLinkElements[i].dataset.page === page) {
+                menuLinkElements[i].classList.add('is-active');
+            }
         }
     }
 
@@ -564,10 +632,12 @@ class Pocket {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
             document.querySelector('#js-list').style.display = 'none';
+            document.querySelector('#js-list').innerHTML = '';
             document.querySelector('#js-menu').style.display = 'none';
             document.querySelector('#js-username').style.display = 'none';
             document.querySelector('#js-logout').style.display = 'none';
             document.querySelector('#js-count-wrapper').style.display = 'none';
+            document.querySelector('#js-count').innerHTML = '';
             document.querySelector('#js-addNewItemButton').style.display = 'none';
             document.querySelector('#js-searchButton').style.display = 'none';
             document.querySelector('#js-fullSync').style.display = 'none';
@@ -590,8 +660,8 @@ class Pocket {
         // get content from pocket api
         this.getContent();
 
-        this.bindHeaderClickEvents();
-        this.bindActionClickEvents();
+        this.removeLoggedOutClickEvents();
+        this.bindLoggedInClickEvents();
         this.bindAddNewItemEvents();
     }
 
@@ -612,8 +682,7 @@ class Pocket {
             document.querySelector('#js-username').innerText = localStorage.getItem('username');
         }
 
-        this.bindHeaderClickEvents();
-        this.bindActionClickEvents();
+        this.bindLoggedInClickEvents();
         this.bindAddNewItemEvents();
 
         this.getContent();
@@ -647,10 +716,13 @@ class Pocket {
     logout() {
         helper.showMessage(`${chrome.i18n.getMessage('LOGGING_OUT')}...`, true, false, false);
         localStorage.clear();
+        this.setActivePage('list');
+        this.changeMenuActiveState('list');
 
         this.toggleLoggedInContent(false);
 
-        this.bindLoginClickEvent();
+        this.removeLoggedInClickEvents();
+        this.bindLoggedOutClickEvents();
 
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }

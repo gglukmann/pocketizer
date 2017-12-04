@@ -197,7 +197,7 @@ a {
     color: var(--menu-hover);
 }
 
-.menu__link--active {
+.menu__link.is-active {
     color: var(--menu-hover);
     cursor: default;
 }
@@ -617,7 +617,7 @@ a {
 @media (min-width: 720px) {
     .search {
         left: auto;
-        right: calc(100% - 22px);
+        right: calc(100% - 52px);
     }
 }
 
