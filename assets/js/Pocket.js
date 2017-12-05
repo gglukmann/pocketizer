@@ -105,14 +105,12 @@ class Pocket {
                 break;
         }
 
-        if (isFirstLoad || this.fullSync) {
-            for (let key in items) {
-                array.push(items[key]);
-            }
+        for (let key in items) {
+            array.push(items[key]);
+        }
 
-            array.sort((x, y) => {
-                return x.sort_id - y.sort_id;
-            });
+        if (isFirstLoad || this.fullSync) {
+            array.sort((x, y) => x.sort_id - y.sort_id);
 
             localStorage.setItem(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
             localStorage.setItem(`${this.getActivePage()}Count`, array.length);
@@ -120,8 +118,10 @@ class Pocket {
 
             this.fullSync = false;
         } else {
-            for (let key in items) {
-                let newItem = items[key];
+            array.sort((x, y) => y.sort_id - x.sort_id);
+
+            for (let key in array) {
+                let newItem = array[key];
                 let newArray;
 
                 switch (newItem.status) {
