@@ -162,15 +162,19 @@ class Pocket {
                     // delete from unread or archive list
                     case "2":
                         let listArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                        let archiveArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
 
                         listArray = listArray.filter(item => item.item_id !== newItem.item_id);
-                        archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
 
                         localStorage.setItem('listFromLocalStorage', JSON.stringify(listArray));
                         localStorage.setItem('listCount', listArray.length);
-                        localStorage.setItem('archiveFromLocalStorage', JSON.stringify(archiveArray));
-                        localStorage.setItem('archiveCount', archiveArray.length);
+
+                        if (this.isArchiveLoaded()) {
+                            let archiveArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
+                            archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
+
+                            localStorage.setItem('archiveFromLocalStorage', JSON.stringify(archiveArray));
+                            localStorage.setItem('archiveCount', archiveArray.length);
+                        }
                         break;
                 }
             }
