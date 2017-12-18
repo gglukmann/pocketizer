@@ -592,36 +592,10 @@ a {
     position: fixed;
     left: 0;
     top: 0;
+    height: 2px;
     width: 100%;
     z-index: 200;
-}
-
-.rainbow:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-.rainbow__detail {
-    float: left;
-    height: 2px;
-    width: 25%;
-}
-
-.rainbow__detail--first {
-    background-color: #afecc3;
-}
-
-.rainbow__detail--second {
-    background-color: #84c3c0;
-}
-
-.rainbow__detail--third {
-    background-color: #d45a68;
-}
-
-.rainbow__detail--fourth {
-    background-color: #ecbf63;
+    background: linear-gradient(90deg,#AFECC3 0,#84C3C0 34%,#D45A68 67%,#ECBF63 100%);
 }
 
 /* MODAL */
