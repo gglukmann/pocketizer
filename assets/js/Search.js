@@ -59,6 +59,11 @@ class Search {
     reset(doHide) {
         document.querySelector('#js-searchInput').value = '';
         document.querySelector('#js-results-message').style.display = 'none';
+
+        if (pocket.getActivePage() === 'list') {
+            trendingItem.showAll();
+        }
+
         pocket.render();
 
         if (doHide) {
@@ -79,6 +84,7 @@ class Search {
             return;
         }
 
+        trendingItem.hideAll();
         document.querySelector('#js-results-message').removeAttribute('style');
         document.querySelector('#js-searchValue').innerText = value;
         document.querySelector('#js-list').innerHTML = '';
@@ -104,7 +110,7 @@ class Search {
             }
 
             if (searchableTitle.toLowerCase().indexOf(value) > -1 || searchableUrl.toLowerCase().indexOf(value) > -1) {
-                let newItem = item.create(array[key], pocket.getActivePage());
+                let newItem = item.create(array[key]);
                 item.render(newItem);
 
                 count++;

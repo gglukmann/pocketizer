@@ -120,6 +120,30 @@ class ApiService {
 
         return add;
     }
+
+    /**
+     * Get trending stories.
+     *
+     * @function getTrending
+     * @return {Promise} - Response from pocket api.
+     */
+    async getTrending(count) {
+        this._fetchData.body = JSON.stringify({
+            consumer_key: __consumer_key,
+            version: 2,
+            count: count,
+            lang: chrome.i18n.getUILanguage()
+        });
+
+        let getTrending = await helper.makeFetch(API.url_getTrending, this._fetchData)
+            .then(response => response.json())
+            .catch(error => {
+                console.log(error);
+                helper.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
+            });
+
+        return getTrending;
+    }
 }
 
 const apiService = new ApiService();

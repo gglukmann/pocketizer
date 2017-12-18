@@ -5,10 +5,9 @@ class Item {
      * Create new item and append to list.
      *
      * @param {Object} element - Element from pocket.
-     * @param {String} active_page - List type.
-     * @return {void}
+     * @return {HTMLElement} - Created element.
      */
-    create(element, active_page) {
+    create(element) {
         let itemElement = helper.createNode('li');
         let contentElement = helper.createNode('div');
         let excerptElement = helper.createNode('div');
@@ -23,7 +22,9 @@ class Item {
         let title;
         let link;
 
-        if (element.resolved_title && element.resolved_title !== '') {
+        if (element.title) {
+            title = element.title;
+        } else if (element.resolved_title && element.resolved_title !== '') {
             title = element.resolved_title;
         } else if (element.resolved_url && element.resolved_url !== '') {
             title = element.resolved_url;
@@ -49,7 +50,7 @@ class Item {
         let isRead = false;
         let deleteNode = helper.createTextNode(chrome.i18n.getMessage('DELETE'));
 
-        switch (active_page) {
+        switch (pocket.getActivePage()) {
             case 'list':
                 readNode = helper.createTextNode(chrome.i18n.getMessage('MARK_READ'));
                 isRead = false;
@@ -88,7 +89,7 @@ class Item {
         }
 
         fakeLinkElement.setAttribute('href', link);
-        fakeLinkElement.setAttribute('class', 'item__fake-link');
+        fakeLinkElement.setAttribute('class', 'item__link-fake');
 
         titleElement.setAttribute('href', link);
         titleElement.setAttribute('class', 'item__title');

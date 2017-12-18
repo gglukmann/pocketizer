@@ -105,11 +105,13 @@ class Modal {
      * @return {void}
      */
     close() {
-        helper.enableScroll();
-        this.container.classList.remove('is-visible');
+        if (this.container && this.container.classList.contains('is-visible')) {
+            helper.enableScroll();
+            this.container.classList.remove('is-visible');
 
-        const event = new Event('closed.modal');
-        document.dispatchEvent(event);
+            const event = new Event('closed.modal');
+            document.dispatchEvent(event);
+        }
     }
 }
 

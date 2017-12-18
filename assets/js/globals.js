@@ -8,5 +8,6 @@ const API = {
     url_auth: API_URL + 'auth/authorize',
     url_get: API_URL + API_VERSION + '/get',
     url_send: API_URL + API_VERSION + '/send',
-    url_add: API_URL + API_VERSION + '/add'
+    url_add: API_URL + API_VERSION + '/add',
+    url_getTrending: API_URL + API_VERSION + '/getGlobalRecs'
 }

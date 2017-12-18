@@ -115,6 +115,9 @@
     "SAVE_NEW_LINK": {
         "message": "Save new link to Pocket"
     },
+    "SAVE_TO_POCKET": {
+        "message": "Save to Pocket"
+    },
     "CANCEL": {
         "message": "Cancel"
     },
@@ -135,5 +138,11 @@
     },
     "FULL_SYNC": {
         "message": "Synchronize"
+    },
+    "TRENDING": {
+        "message": "Trending stories"
+    },
+    "SEE_MORE_STORIES": {
+        "message": "See more stories"
     }
 }

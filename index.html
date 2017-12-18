@@ -89,6 +89,26 @@
                 "<span id="js-searchValue"></span>"
             </h2>
         </div>
+        <div id="js-trending">
+            <h4 class="section-title">
+                <a href="#0" class="collapse-toggle" data-target="#js-trendingCollapse">
+                    <svg class="icon icon--middle collapse-toggle__icon" viewBox="0 0 32 32">
+                        <path d="M15.999 27.199l-15.123-16.733c-1.168-1.296-1.168-3.398 0-4.694 1.171-1.296 3.072-1.296 4.243 0l10.88 12.038 10.88-12.038c1.171-1.296 3.069-1.296 4.24 0 1.174 1.296 1.174 3.398 0 4.694l-15.12 16.733z"></path>
+                    </svg>
+                </a>
+                <span class="section-title__header" data-translate="__MSG_TRENDING__">Trending stories</span>
+                <a href="https://getpocket.com/explore/trending?src=unofficial_new_tab_pocket" class="section-title__link">
+                    <span data-translate="__MSG_SEE_MORE_STORIES__">See more stories</span>
+                    <svg class="icon icon--middle" viewBox="0 0 23.5 42.3">
+                        <path d="M1.5,42.3c-0.4,0-0.8-0.1-1.1-0.4c-0.6-0.6-0.6-1.5,0-2.1l18.7-18.6L0.4,2.6 C-0.1,2-0.1,1,0.4,0.4C1-0.1,2-0.1,2.6,0.4l20.9,20.7L2.6,41.8C2.3,42.1,1.9,42.3,1.5,42.3z"/>
+                    </svg>
+                </a>
+            </h4>
+            <div id="js-trendingCollapse" class="collapse">
+                <ol id="js-trendingList" class="list list--trending"></ol>
+                <hr class="separator separator--small">
+            </div>
+        </div>
         <ol id="js-list" class="list"></ol>
     </div>
 
@@ -138,8 +158,10 @@
     <script src="assets/js/AuthService.js"></script>
     <script src="assets/js/ApiService.js"></script>
     <script src="assets/js/Lazyload.js"></script>
-    <script src="assets/js/Item.js"></script>
     <script src="assets/js/Modal.js"></script>
+    <script src="assets/js/Collapse.js"></script>
+    <script src="assets/js/Item.js"></script>
+    <script src="assets/js/TrendingItem.js"></script>
     <script src="assets/js/Search.js"></script>
     <script src="assets/js/Pocket.js"></script>
 </body>

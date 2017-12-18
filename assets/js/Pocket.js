@@ -21,6 +21,7 @@ class Pocket {
         this.logoutButtonClick = false;
         this.searchButtonClick = false;
         this.fullSyncButtonClick = false;
+        this.saveTrendingItemToPocketClick = false;
     }
 
     /**
@@ -38,6 +39,8 @@ class Pocket {
             document.querySelector('#js-default-message').style.display = 'block';
             this.bindLoggedOutClickEvents();
         }
+
+        this.getTrending();
     }
 
     /**
@@ -59,6 +62,37 @@ class Pocket {
      */
     setActivePage(page) {
         return this.active_page = page;
+    }
+
+    /**
+     * Get trending stories.
+     *
+     * @function getTrending
+     * @return {void}
+     */
+    getTrending() {
+        apiService.getTrending(4)
+            .then(response => {
+                this.handleTrendingResponse(response);
+            });
+    }
+
+    /**
+     * Handle trending fetch response.
+     *
+     * @function handleTrendingResponse
+     * @param  {Object} response - response from fetch.
+     * @return {void}
+     */
+    handleTrendingResponse(response) {
+        let items = response.list;
+
+        for (let key in items) {
+            let newItem = trendingItem.create(items[key]);
+            trendingItem.render(newItem);
+        }
+
+        this.bindSaveTrendingItemToPocketClicks();
     }
 
     /**
@@ -227,7 +261,7 @@ class Pocket {
      */
     createItems(array) {
         Object.keys(array).forEach(key => {
-            let newItem = item.create(array[key], this.getActivePage());
+            let newItem = item.create(array[key]);
             item.render(newItem);
         });
     }
@@ -421,6 +455,47 @@ class Pocket {
     }
 
     /**
+     * Bind trending items save to pocket links
+     *
+     * @function bindSaveTrendingItemToPocketClicks
+     * @return {void}
+     */
+    bindSaveTrendingItemToPocketClicks() {
+        this.saveTrendingItemToPocketClick = this.handleSaveTrendingItemToPocketClick.bind(this);
+        document.body.addEventListener('click', this.saveTrendingItemToPocketClick, false);
+    }
+
+    /**
+     * Handle save trending item to pocket click.
+     *
+     * @function handleSaveTrendingItemToPocketClick
+     * @param  {Event} e - Click event.
+     * @return {void}
+     */
+    handleSaveTrendingItemToPocketClick(e) {
+        e.preventDefault();
+        if (e.target.id === 'js-addNewFromTrendingItem') {
+            helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
+
+            let data = {
+                url: e.target.dataset.link
+            };
+
+            item.add(data);
+        }
+    }
+
+    /**
+     * Remove save trending item to pocket clicks.
+     *
+     * @function removeTrendingItemToPocketClicks
+     * @return {void}
+     */
+    removeTrendingItemToPocketClicks() {
+        document.body.removeEventListener('click', this.saveTrendingItemToPocketClick, false);
+    }
+
+    /**
      * Changes item state.
      *
      * @function changeItemState
@@ -587,6 +662,7 @@ class Pocket {
 
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
+                trendingItem.showAll();
 
                 this.render();
                 this.getContent();
@@ -596,6 +672,7 @@ class Pocket {
 
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
+                trendingItem.hideAll();
 
                 if (this.isArchiveLoaded()) {
                     this.render();
@@ -736,6 +813,7 @@ class Pocket {
 
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();
+        this.removeTrendingItemToPocketClicks();
 
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }
