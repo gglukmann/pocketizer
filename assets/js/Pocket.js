@@ -479,8 +479,8 @@ class Pocket {
      * @return {void}
      */
     handleSaveTrendingItemToPocketClick(e) {
-        e.preventDefault();
         if (e.target.id === 'js-addNewFromTrendingItem') {
+            e.preventDefault();
             helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 
             let data = {
