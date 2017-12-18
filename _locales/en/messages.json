@@ -144,5 +144,8 @@
     },
     "SEE_MORE_STORIES": {
         "message": "See more stories"
+    },
+    "TOGGLE_TRENDING": {
+        "message": "Toggle trending stories"
     }
 }

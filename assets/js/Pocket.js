@@ -33,6 +33,12 @@ class Pocket {
     init() {
         helper.localizeHtml();
 
+        if (localStorage.getItem('isTrendingShown') === 'true') {
+            collapse.open('#js-trendingCollapseTrigger', '#js-trendingCollapse');
+        } else {
+            collapse.close('#js-trendingCollapseTrigger', '#js-trendingCollapse');
+        }
+
         if (authService.isLoggedIn()) {
             this.startSync();
         } else {
@@ -718,6 +724,8 @@ class Pocket {
             document.querySelector('#js-addNewItemButton').removeAttribute('style');
             document.querySelector('#js-searchButton').removeAttribute('style');
             document.querySelector('#js-fullSync').removeAttribute('style');
+            document.querySelector('#js-trendingCollapseTrigger').removeAttribute('style');
+            document.querySelector('#js-trendingSeparator').removeAttribute('style');
         } else {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
@@ -731,6 +739,8 @@ class Pocket {
             document.querySelector('#js-addNewItemButton').style.display = 'none';
             document.querySelector('#js-searchButton').style.display = 'none';
             document.querySelector('#js-fullSync').style.display = 'none';
+            document.querySelector('#js-trendingCollapseTrigger').style.display = 'none';
+            document.querySelector('#js-trendingSeparator').style.display = 'none';
         }
     }
 
@@ -815,6 +825,8 @@ class Pocket {
         this.bindLoggedOutClickEvents();
         this.removeTrendingItemToPocketClicks();
 
+        collapse.open('#js-trendingCollapseTrigger', '#js-trendingCollapse');
+
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }
 };
@@ -823,4 +835,5 @@ const pocket = new Pocket();
 window.onload = (() => {
     pocket.init();
     modal.init();
+    collapse.init();
 });
