@@ -78,7 +78,7 @@ class Collapse {
         this.trigger = this.trigger || document.querySelector(trigger);
         this.element = this.element || document.querySelector(target);
 
-        const eventClose = new Event('close.modal');
+        const eventClose = new Event('close.collapse');
         document.dispatchEvent(eventClose);
 
         this.trigger.classList.remove('is-active');
@@ -88,7 +88,7 @@ class Collapse {
             localStorage.setItem('isTrendingShown', false);
         }
 
-        const eventClosed = new Event('closed.modal');
+        const eventClosed = new Event('closed.collapse');
         document.dispatchEvent(eventClosed);
     }
 }

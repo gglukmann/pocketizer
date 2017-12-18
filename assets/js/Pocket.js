@@ -279,7 +279,7 @@ class Pocket {
      * @return {void}
      */
     createSentinel() {
-        const list = document.querySelector('.list');
+        const list = document.querySelector('#js-list');
         let element = helper.createNode('div');
 
         element.setAttribute('id', 'js-sentinel');
