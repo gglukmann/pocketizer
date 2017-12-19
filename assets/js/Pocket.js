@@ -147,6 +147,8 @@ class Pocket {
      * @return {void}
      */
     infiniteScrollRecommendations() {
+        helper.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
+
         let array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
 
         array.shift(); // remove first item because it is already loaded on first load
@@ -196,8 +198,6 @@ class Pocket {
                 let newItem = item.createAdItem(items[key].item, 'recommend');
                 item.render(newItem);
             }
-
-            helper.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
 
             resolve(true);
         });
