@@ -130,19 +130,46 @@ class ApiService {
     async getTrending(count) {
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,
-            version: 2,
             count: count,
-            lang: chrome.i18n.getUILanguage()
+            lang: chrome.i18n.getUILanguage(),
+            version: 2
         });
 
         let getTrending = await helper.makeFetch(API.url_getTrending, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
-                helper.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
+                helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_TRENDING'), false);
             });
 
         return getTrending;
+    }
+
+    /**
+     * Get recommended stories.
+     *
+     * @function getRecommendations
+     * @param {String} resolved_id - Id to get recommended items to.
+     * @return {Promise} - Response from pocket api.
+     */
+    async getRecommendations(resolved_id) {
+        this._fetchData.body = JSON.stringify({
+            access_token: authService.getToken(),
+            consumer_key: __consumer_key,
+            count: 40,
+            locale_lang: chrome.i18n.getUILanguage(),
+            version: 4,
+            resolved_id: resolved_id
+        });
+
+        let getRecommendations = await helper.makeFetch(API.url_getRecommendations, this._fetchData)
+            .then(response => response.json())
+            .catch(error => {
+                console.log(error);
+                helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_RECOMMENDED'), false);
+            });
+
+        return getRecommendations;
     }
 }
 

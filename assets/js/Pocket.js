@@ -21,7 +21,7 @@ class Pocket {
         this.logoutButtonClick = false;
         this.searchButtonClick = false;
         this.fullSyncButtonClick = false;
-        this.saveTrendingItemToPocketClick = false;
+        this.saveAdItemToPocketClick = false;
     }
 
     /**
@@ -87,18 +87,54 @@ class Pocket {
      * Handle trending fetch response.
      *
      * @function handleTrendingResponse
-     * @param  {Object} response - response from fetch.
+     * @param {Object} response - Response from fetch.
      * @return {void}
      */
     handleTrendingResponse(response) {
         let items = response.list;
 
         for (let key in items) {
-            let newItem = trendingItem.create(items[key]);
-            trendingItem.render(newItem);
+            let newItem = item.createAdItem(items[key]);
+            item.render(newItem, 'trendingList');
         }
 
-        this.bindSaveTrendingItemToPocketClicks();
+        this.bindSaveAdItemToPocketClicks();
+    }
+
+    /**
+     * Get recommended stories.
+     *
+     * @function getRecommendations
+     * @return {void}
+     */
+    getRecommendations() {
+        // get latest saved item
+        let list = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+        // TODO: load more recommended items while scrolling
+
+        apiService.getRecommendations()
+            .then(response => {
+                this.handleRecommendedResponse(response);
+            });
+    }
+
+    /**
+     * Handle recommende fetch response.
+     *
+     * @function handleRecommendedResponse
+     * @param {Object} response - Resposne from fetch.
+     * @return {void}
+     */
+    handleRecommendedResponse(response) {
+        console.log(response);
+        let items = response.feed;
+
+        for (let key in items) {
+            let newItem = item.createAdItem(items[key].item, 'recommend');
+            item.render(newItem);
+        }
+
+        helper.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
     }
 
     /**
@@ -266,10 +302,10 @@ class Pocket {
      * @return {void}
      */
     createItems(array) {
-        Object.keys(array).forEach(key => {
+        for (let key in array) {
             let newItem = item.create(array[key]);
             item.render(newItem);
-        });
+        };
     }
 
     /**
@@ -461,25 +497,25 @@ class Pocket {
     }
 
     /**
-     * Bind trending items save to pocket links
+     * Bind ad items save to pocket links
      *
-     * @function bindSaveTrendingItemToPocketClicks
+     * @function bindSaveAdItemToPocketClicks
      * @return {void}
      */
-    bindSaveTrendingItemToPocketClicks() {
-        this.saveTrendingItemToPocketClick = this.handleSaveTrendingItemToPocketClick.bind(this);
-        document.body.addEventListener('click', this.saveTrendingItemToPocketClick, false);
+    bindSaveAdItemToPocketClicks() {
+        this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
+        document.body.addEventListener('click', this.saveAdItemToPocketClick, false);
     }
 
     /**
-     * Handle save trending item to pocket click.
+     * Handle save ad item to pocket click.
      *
-     * @function handleSaveTrendingItemToPocketClick
+     * @function handleSaveAdItemToPocketClick
      * @param  {Event} e - Click event.
      * @return {void}
      */
-    handleSaveTrendingItemToPocketClick(e) {
-        if (e.target.id === 'js-addNewFromTrendingItem') {
+    handleSaveAdItemToPocketClick(e) {
+        if (e.target.id === 'js-addNewFromAd') {
             e.preventDefault();
             helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 
@@ -488,17 +524,20 @@ class Pocket {
             };
 
             item.add(data);
+
+            e.target.classList.add('is-saved');
+            e.target.childNodes[1].innerText = chrome.i18n.getMessage('SAVED');
         }
     }
 
     /**
-     * Remove save trending item to pocket clicks.
+     * Remove save ad item to pocket clicks.
      *
-     * @function removeTrendingItemToPocketClicks
+     * @function removeAdItemToPocketClicks
      * @return {void}
      */
-    removeTrendingItemToPocketClicks() {
-        document.body.removeEventListener('click', this.saveTrendingItemToPocketClick, false);
+    removeAdItemToPocketClicks() {
+        document.body.removeEventListener('click', this.saveAdItemToPocketClick, false);
     }
 
     /**
@@ -666,8 +705,10 @@ class Pocket {
             case 'list':
                 this.setActivePage('list');
 
+                document.querySelector('#js-count-wrapper').removeAttribute('style');
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
+                document.querySelector('#js-searchButton').removeAttribute('style');
                 trendingItem.showAll();
 
                 this.render();
@@ -676,8 +717,10 @@ class Pocket {
             case 'archive':
                 this.setActivePage('archive');
 
+                document.querySelector('#js-count-wrapper').removeAttribute('style');
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
+                document.querySelector('#js-searchButton').removeAttribute('style');
                 trendingItem.hideAll();
 
                 if (this.isArchiveLoaded()) {
@@ -685,6 +728,16 @@ class Pocket {
                 }
 
                 this.getContent();
+            break;
+            case 'recommend':
+                this.setActivePage('recommend');
+
+                document.querySelector('#js-count-wrapper').style.display = 'none';
+                document.querySelector('#js-title').innerText = chrome.i18n.getMessage('RECOMMENDED');
+                document.querySelector('#js-searchButton').style.display = 'none';
+                trendingItem.hideAll();
+
+                this.getRecommendations();
             break;
         }
     }
@@ -823,7 +876,7 @@ class Pocket {
 
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();
-        this.removeTrendingItemToPocketClicks();
+        this.removeAdItemToPocketClicks();
 
         collapse.open('#js-trendingCollapseTrigger', '#js-trendingCollapse');
 

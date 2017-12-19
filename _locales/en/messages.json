@@ -10,6 +10,12 @@
     "ERROR_GETTING_CONTENT": {
         "message": "Getting new content"
     },
+    "ERROR_GETTING_TRENDING": {
+        "message": "Getting trending stories"
+    },
+    "ERROR_GETTING_RECOMMENDED": {
+        "message": "Getting recommended stories"
+    },
     "SYNCHRONIZING": {
         "message": "Synchronizing"
     },
@@ -54,6 +60,9 @@
     },
     "ARCHIVE": {
         "message": "Archive"
+    },
+    "RECOMMENDED": {
+        "message": "Recommended"
     },
     "AUTHENTICATION": {
         "message": "Authentication"
@@ -117,6 +126,9 @@
     },
     "SAVE_TO_POCKET": {
         "message": "Save to Pocket"
+    },
+    "SAVED": {
+        "message": "Saved"
     },
     "CANCEL": {
         "message": "Cancel"

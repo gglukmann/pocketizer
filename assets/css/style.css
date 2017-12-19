@@ -11,7 +11,7 @@
     --black-l: #313131;
     --yellow: yellow;
     --red: #d13644;
-    --red-l: #ee5f64;
+    --red-l: #ee4256;
     --red-m: #d3505a;
     --grey: #9f9f9f;
     --grey-rgb: 244, 244, 244;
@@ -314,7 +314,11 @@ a {
 
 .item--trending .item__content {
     padding-bottom: 6em;
-    transition: box-shadow 150ms;
+    transition: box-shadow 150ms, transform 150ms;
+}
+
+.item--recommend .item__content {
+    padding-bottom: 6em;
 }
 
 @media (min-width: 720px) {
@@ -434,6 +438,15 @@ a {
     border-top: 1px solid var(--border-light);
     color: var(--text-light);
     z-index: 10;
+}
+
+.item__link-save.is-saved:hover,
+.item__link-save.is-saved {
+    color: var(--red-l);
+}
+
+.item__link-text-child {
+    pointer-events: none;
 }
 
 .item__link-svg {
