@@ -8,6 +8,7 @@ class Pocket {
         this.active_page = 'list';
         this.items_shown = 0;
         this.load_count = 18;
+        this.load_count_ad = 1;
 
         this.scroll = {
             lastKnownScrollY: 0,
@@ -98,24 +99,86 @@ class Pocket {
             item.render(newItem, 'trendingList');
         }
 
+        // TODO: if already added to list. add is-saved class and Saved text to button
+
         this.bindSaveAdItemToPocketClicks();
+    }
+
+    /**
+     * Create recommended items observer to load them when sentinel is visible.
+     *
+     * @function createAdItemsObserver
+     * @return {void}
+     */
+    createAdItemsObserver() {
+        const sentinel = document.querySelector('#js-sentinel');
+
+        const io = new IntersectionObserver(entries => {
+            if (entries[0].intersectionRatio <= 0) {
+                return;
+            }
+
+            this.infiniteScrollRecommendations();
+        });
+
+        io.observe(sentinel);
+    }
+
+    /**
+     * Load recommendations when changing page to Recommended.
+     *
+     * @function loadRecommendations
+     * @return {void}
+     */
+    loadRecommendations() {
+        let array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+
+        this.getRecommendations([array[0]])
+            .then(() => {
+                this.createSentinel();
+                this.createAdItemsObserver();
+            });
+    }
+
+    /**
+     * Load more recommendations when scrolling.
+     *
+     * @function infiniteScrollRecommendations
+     * @return {void}
+     */
+    infiniteScrollRecommendations() {
+        let array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+
+        array.shift(); // remove first item because it is already loaded on first load
+        array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count_ad));
+
+        this.items_shown += this.load_count_ad;
+
+        if (array.length === 0) {
+            helper.showMessage(chrome.i18n.getMessage('EVERYTHING_LOADED'), true, false, true);
+        } else {
+            helper.showMessage(chrome.i18n.getMessage('LOADING'));
+        }
+
+        this.getRecommendations(array)
+            .then(() => {
+                const sentinel = document.querySelector('#js-sentinel');
+                const list = document.querySelector('#js-list');
+
+                helper.append(list, sentinel);
+            });
     }
 
     /**
      * Get recommended stories.
      *
      * @function getRecommendations
+     * @param {Array[]} - Array of one item from listFromLocalStorage.
      * @return {void}
      */
-    getRecommendations() {
-        // get latest saved item
-        let list = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-        // TODO: load more recommended items while scrolling
-
-        apiService.getRecommendations()
-            .then(response => {
-                this.handleRecommendedResponse(response);
-            });
+    getRecommendations(array) {
+        return apiService.getRecommendations(array[0].resolved_id)
+            .then(response => this.handleRecommendedResponse(response));
     }
 
     /**
@@ -123,18 +186,21 @@ class Pocket {
      *
      * @function handleRecommendedResponse
      * @param {Object} response - Resposne from fetch.
-     * @return {void}
+     * @return {Promise} - Promise when all items are rendered.
      */
     handleRecommendedResponse(response) {
-        console.log(response);
-        let items = response.feed;
+        return new Promise(function(resolve, reject) {
+            let items = response.feed;
 
-        for (let key in items) {
-            let newItem = item.createAdItem(items[key].item, 'recommend');
-            item.render(newItem);
-        }
+            for (let key in items) {
+                let newItem = item.createAdItem(items[key].item, 'recommend');
+                item.render(newItem);
+            }
 
-        helper.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
+            helper.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
+
+            resolve(true);
+        });
     }
 
     /**
@@ -737,7 +803,7 @@ class Pocket {
                 document.querySelector('#js-searchButton').style.display = 'none';
                 trendingItem.hideAll();
 
-                this.getRecommendations();
+                this.loadRecommendations();
             break;
         }
     }

@@ -156,7 +156,7 @@ class ApiService {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            count: 40,
+            count: 10,
             locale_lang: chrome.i18n.getUILanguage(),
             version: 4,
             resolved_id: resolved_id
