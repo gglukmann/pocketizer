@@ -775,6 +775,7 @@ class Pocket {
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
                 document.querySelector('#js-searchButton').removeAttribute('style');
+                document.querySelector('#js-fullSync').removeAttribute('style');
                 trendingItem.showAll();
 
                 this.render();
@@ -787,6 +788,7 @@ class Pocket {
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
                 document.querySelector('#js-searchButton').removeAttribute('style');
+                document.querySelector('#js-fullSync').removeAttribute('style');
                 trendingItem.hideAll();
 
                 if (this.isArchiveLoaded()) {
@@ -801,6 +803,7 @@ class Pocket {
                 document.querySelector('#js-count-wrapper').style.display = 'none';
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('RECOMMENDED');
                 document.querySelector('#js-searchButton').style.display = 'none';
+                document.querySelector('#js-fullSync').style.display = 'none';
                 trendingItem.hideAll();
 
                 this.loadRecommendations();
@@ -845,6 +848,7 @@ class Pocket {
             document.querySelector('#js-fullSync').removeAttribute('style');
             document.querySelector('#js-trendingCollapseTrigger').removeAttribute('style');
             document.querySelector('#js-trendingSeparator').removeAttribute('style');
+            trendingItem.showAll();
         } else {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
@@ -860,6 +864,7 @@ class Pocket {
             document.querySelector('#js-fullSync').style.display = 'none';
             document.querySelector('#js-trendingCollapseTrigger').style.display = 'none';
             document.querySelector('#js-trendingSeparator').style.display = 'none';
+            trendingItem.hideAll();
         }
     }
 
@@ -943,8 +948,6 @@ class Pocket {
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();
         this.removeAdItemToPocketClicks();
-
-        collapse.open('#js-trendingCollapseTrigger', '#js-trendingCollapse');
 
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }
