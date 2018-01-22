@@ -195,7 +195,8 @@ class Helper {
             if (hideScrollbar) {
                 document.body.classList.add('scroll-disabled--hide-scrollbar');
             }
-            document.body.style.top = -curScroll;
+
+            document.body.style.top = -curScroll + 'px';
         }
     }
 
@@ -209,8 +210,9 @@ class Helper {
 
         document.body.classList.remove('scroll-disabled');
         document.body.classList.remove('scroll-disabled--hide-scrollbar');
+
         if (bodyScroll) {
-            document.body.scrollTop += -bodyScroll;
+            document.documentElement.scrollTop = document.body.scrollTop = -bodyScroll;
             document.body.style.top = 0;
         }
     }
