@@ -167,6 +167,7 @@ class Item {
         // fake link
         fakeLinkElement.setAttribute('href', element.resolved_url);
         fakeLinkElement.setAttribute('class', 'item__link-fake');
+        fakeLinkElement.setAttribute('title', chrome.i18n.getMessage('OPEN_ITEM'));
 
         // background
         if (element.images[1]) {
@@ -192,7 +193,7 @@ class Item {
         saveElement.setAttribute('class', 'item__link-save');
         saveElement.setAttribute('href', '#0');
         saveElement.dataset.link = element.resolved_url;
-        saveElement.setAttribute('title', element.resolved_url);
+        saveElement.setAttribute('title', chrome.i18n.getMessage('SAVE_TO_POCKET'));
         saveElement.setAttribute('id', 'js-addNewFromAd');
         // span with text
         let saveNode = helper.createTextNode(chrome.i18n.getMessage('SAVE_TO_POCKET'));

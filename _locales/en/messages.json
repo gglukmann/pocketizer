@@ -25,6 +25,9 @@
     "OPEN_IN_POCKET": {
         "message": "Open in Pocket"
     },
+    "OPEN_ITEM": {
+        "message": "Open item"
+    },
     "DELETE": {
         "message": "Delete"
     },
