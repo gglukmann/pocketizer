@@ -119,18 +119,24 @@ class Helper {
     /**
      * Replace message key with chrome i18n text.
      *
-     * @function replace_i18n
+     * @function replaceI18n
      * @param {HTMLElement} obj Element with message.
      * @param {String} tag Message string.
+     * @param {String} attribute Attribute name if used for translation.
      * @return {void}
      */
-    replace_i18n(obj, tag) {
+    replaceI18n(obj, tag, attribute) {
         let msg = tag.replace(/__MSG_(\w+)__/g, (match, v1) => {
             return v1 ? chrome.i18n.getMessage(v1) : '';
         });
 
         if (msg !== tag) {
-            obj.innerHTML = msg;
+            if (attribute) {
+                obj.setAttribute(attribute, msg);
+                return;
+            }
+
+            obj.textContent = msg;
         }
     }
 
@@ -149,19 +155,22 @@ class Helper {
                 let obj = data[i];
                 let tag = obj.dataset.translate.toString();
 
-                this.replace_i18n(obj, tag);
+                this.replaceI18n(obj, tag);
             }
         }
 
-        // Localize everything else by replacing all __MSG_***__ tags
-        const page = document.getElementsByTagName('html');
+        // Localize whitelisted attributes by replacing all __MSG_***__ tags
+        const whiteListAttributes = ['title', 'placeholder'];
 
-        for (let j = 0; j < page.length; j++) {
-            let obj = page[j];
-            let tag = obj.innerHTML.toString();
+        whiteListAttributes.forEach(whiteListedAttribute => {
+            let attributes = [...document.querySelectorAll('[' + whiteListedAttribute + ']')];
 
-            this.replace_i18n(obj, tag);
-        }
+            attributes.forEach(attr => {
+                let tag = attr.getAttribute(whiteListedAttribute);
+
+                this.replaceI18n(attr, tag, whiteListedAttribute);
+            });
+        });
     }
 
     /**
