@@ -89,7 +89,10 @@
         "message": "Logout"
     },
     "EMPTY_MESSAGE": {
-        "message": "Looks like you haven't saved anything to Pocket yet!<br><small>Start by clicking the plus icon next to your username.<small>"
+        "message": "Looks like you haven't saved anything to Pocket yet!"
+    },
+    "EMPTY_MESSAGE_INFO": {
+        "message": "Start by clicking the plus icon next to your username."
     },
     "NO_RESULTS_MESSAGE": {
         "message": "No results for"
