@@ -20,6 +20,7 @@
     --grey-d: #dcdce0;
     --green: #43aea8;
     --green-l: #50bcb6;
+    --green-d: #4CAF50;
 
     --text-color: var(--black-l);
     --text-light: var(--grey);
@@ -599,6 +600,35 @@ a {
     margin-left: 10px;
 }
 
+.btn.is-syncing {
+    animation: rotate 2s infinite linear;
+}
+.btn.is-synced {
+    color: var(--green-d);
+    animation: pop .5s;
+}
+
+@keyframes rotate {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+@keyframes pop {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
 /* BUTTON-GROUP */
 .btn-group {
     display: flex;
@@ -793,4 +823,8 @@ a {
 
 .collapse.is-open {
     display: block;
+}
+
+.hidden {
+    display: none;
 }

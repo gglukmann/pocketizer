@@ -258,6 +258,11 @@ class Pocket {
             localStorage.setItem(`${this.getActivePage()}Count`, array.length);
             localStorage.setItem(`${this.getActivePage()}Since`, response.since);
 
+            if (this.fullSync) {
+                const eventFullSync = new Event('synced');
+                document.dispatchEvent(eventFullSync);
+            }
+
             this.fullSync = false;
         } else {
             array.sort((x, y) => y.sort_id - x.sort_id);
@@ -508,12 +513,48 @@ class Pocket {
      * Handle full sync button click.
      *
      * @function handleFullSyncClick
+     * @param {Event} e - Click event.
      * @return {void}
      */
-    handleFullSyncClick() {
-        this.fullSync = true;
+    handleFullSyncClick(e) {
         helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+
+        const target = e.target;
+        const syncClass = 'is-syncing';
+
+        helper.addClass(target, syncClass);
+        this.fullSync = true;
+
         this.getContent();
+
+        this.removeSyncedClassHandler = this.handleRemoveSyncedClass.bind(this, target, syncClass);
+        document.addEventListener('synced', this.removeSyncedClassHandler, false);
+    }
+
+    /**
+     * Handle full synced event.
+     *
+     * @function handleRemoveSyncedClass
+     * @param {HTMLElement} target - Target HTMLElement.
+     * @param {String} syncClass - Syncing class.
+     * @returns {void}
+     */
+    handleRemoveSyncedClass(target, syncClass) {
+        const syncedClass = 'is-synced';
+
+        helper.removeClass(target, syncClass);
+        helper.addClass(target, syncedClass);
+
+        helper.addClass(target.children[0], 'hidden');
+        helper.removeClass(target.children[1], 'hidden');
+
+        setTimeout(() => {
+            helper.removeClass(target, syncedClass);
+            helper.addClass(target.children[1], 'hidden');
+            helper.removeClass(target.children[0], 'hidden');
+        }, 1500);
+
+        document.removeEventListener('synced', this.removeSyncedClassHandler, false);
     }
 
     /**

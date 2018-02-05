@@ -193,6 +193,7 @@ class Helper {
     /**
      * Disable window scrolling.
      *
+     * @function disableScroll
      * @param {Boolean} hideScrollbar - If scrollbar should be hidden.
      * @returns {void}
      */
@@ -212,6 +213,7 @@ class Helper {
     /**
     * Enable window scrolling.
     *
+     * @function enableScroll
     * @returns {void}
     */
     enableScroll() {
@@ -224,6 +226,30 @@ class Helper {
             document.documentElement.scrollTop = document.body.scrollTop = -bodyScroll;
             document.body.style.top = 0;
         }
+    }
+
+    /**
+     * Add class to HTMLElement.
+     *
+     * @function addClass
+     * @param {HTMLElement} element - HTMLElement.
+     * @param {String} className - Class name to add.
+     * @returns {void}
+     */
+    addClass(element, className) {
+        element.classList.add(className);
+    }
+
+    /**
+     * Remove class from HTMLElement.
+     *
+     * @function removeClass
+     * @param {HTMLElement} element - HTMLElement.
+     * @param {String} className - Class name to remove.
+     * @returns {void}
+     */
+    removeClass(element, className) {
+        element.classList.remove(className);
     }
 }
 
