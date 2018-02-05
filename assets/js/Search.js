@@ -8,9 +8,9 @@ class Search {
      * @return {void}
      */
     show() {
-        document.querySelector('#js-searchForm').classList.add('is-active');
+        helper.addClass(document.querySelector('#js-searchForm'), 'is-active');
         document.querySelector('#js-searchInput').focus();
-        document.querySelector('#js-searchButton').classList.add('is-disabled');
+        helper.addClass(document.querySelector('#js-searchButton'), 'is-disabled');
 
         this.bindEvents();
     }
@@ -41,8 +41,8 @@ class Search {
      * @return {void}
      */
     hide(hideMessage) {
-        document.querySelector('#js-searchForm').classList.remove('is-active');
-        document.querySelector('#js-searchButton').classList.remove('is-disabled');
+        helper.removeClass(document.querySelector('#js-searchForm'), 'is-active');
+        helper.removeClass(document.querySelector('#js-searchButton'), 'is-disabled');
 
         if (hideMessage) {
             document.querySelector('#js-results-message').style.display = 'none';

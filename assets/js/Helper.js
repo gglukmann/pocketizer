@@ -201,9 +201,9 @@ class Helper {
         if (!document.body.classList.contains('scroll-disabled')) {
             const curScroll = window.scrollY;
 
-            document.body.classList.add('scroll-disabled');
+            this.addClass(document.body, 'scroll-disabled');
             if (hideScrollbar) {
-                document.body.classList.add('scroll-disabled--hide-scrollbar');
+                this.addClass(document.body, 'scroll-disabled--hide-scrollbar');
             }
 
             document.body.style.top = -curScroll + 'px';
@@ -219,8 +219,8 @@ class Helper {
     enableScroll() {
         const bodyScroll = parseInt(document.body.style.top, 10);
 
-        document.body.classList.remove('scroll-disabled');
-        document.body.classList.remove('scroll-disabled--hide-scrollbar');
+        this.removeClass(document.body, 'scroll-disabled');
+        this.removeClass(document.body, 'scroll-disabled--hide-scrollbar');
 
         if (bodyScroll) {
             document.documentElement.scrollTop = document.body.scrollTop = -bodyScroll;

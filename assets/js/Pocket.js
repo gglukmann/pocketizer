@@ -632,7 +632,7 @@ class Pocket {
 
             item.add(data);
 
-            e.target.classList.add('is-saved');
+            helper.addClass(e.target, 'is-saved');
             e.target.childNodes[1].innerText = chrome.i18n.getMessage('SAVED');
         }
     }
@@ -862,10 +862,10 @@ class Pocket {
         let menuLinkElements = document.querySelectorAll('.menu__link');
 
         for (let i = 0; i < menuLinkElements.length; i++) {
-            menuLinkElements[i].classList.remove('is-active');
+            helper.removeClass(menuLinkElements[i], 'is-active');
 
             if (menuLinkElements[i].dataset.page === page) {
-                menuLinkElements[i].classList.add('is-active');
+                helper.addClass(menuLinkElements[i], 'is-active');
             }
         }
     }
