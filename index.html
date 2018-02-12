@@ -30,7 +30,7 @@
                     </a>
                 </li>
                 <li class="menu__item">
-                    <a href="#0" class="menu__link js-changeMenu" data-page="recommend">
+                    <a href="#0" class="menu__link js-changeMenu" data-page="recommend" style="display: none;">
                         <span data-translate="__MSG_RECOMMENDED__">Recommended</span>
                     </a>
                 </li>
@@ -80,7 +80,11 @@
             </div>
         </div>
         <div id="js-default-message" class="message" style="display: none;">
-            <h2 class="message__text message__text--text-color" data-translate="__MSG_LOG_IN_TEXT__">Hello, log in to get started!</h2>
+            <h2 class="message__text message__text--text-color">
+                <span data-translate="__MSG_LOG_IN_TEXT__">Hello, log in to get started!</span>
+                <br>
+                <small class="text-extra-small" data-translate="__MSG_LOG_IN_INFO__">Please login with only username and password. Google and Firefox authentication does not redirect back to extension.</small>
+            </h2>
             <button type="button" id="js-login" class="btn btn--login" data-translate="__MSG_LOG_IN_WITH_POCKET__">Log in with Pocket</button>
         </div>
         <div id="js-empty-list-message" class="message" style="display: none;">
@@ -160,15 +164,15 @@
 
     <script src="env.js"></script>
     <script src="assets/js/globals.js"></script>
-    <script src="assets/js/Helper.js"></script>
-    <script src="assets/js/AuthService.js"></script>
-    <script src="assets/js/ApiService.js"></script>
-    <script src="assets/js/Lazyload.js"></script>
-    <script src="assets/js/Modal.js"></script>
-    <script src="assets/js/Collapse.js"></script>
-    <script src="assets/js/Item.js"></script>
-    <script src="assets/js/TrendingItem.js"></script>
-    <script src="assets/js/Search.js"></script>
+    <script src="assets/js/utils/Helper.js"></script>
+    <script src="assets/js/services/AuthService.js"></script>
+    <script src="assets/js/services/ApiService.js"></script>
+    <script src="assets/js/components/Lazyload.js"></script>
+    <script src="assets/js/components/Modal.js"></script>
+    <script src="assets/js/components/Collapse.js"></script>
+    <script src="assets/js/components/Item.js"></script>
+    <script src="assets/js/components/TrendingItem.js"></script>
+    <script src="assets/js/components/Search.js"></script>
     <script src="assets/js/Pocket.js"></script>
 </body>
 </html>

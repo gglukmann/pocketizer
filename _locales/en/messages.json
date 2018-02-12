@@ -82,6 +82,9 @@
     "LOG_IN_WITH_POCKET": {
         "message": "Log in with Pocket"
     },
+    "LOG_IN_INFO": {
+        "message": "Please login with only username and password. Google and Firefox authentication does not redirect back to extension."
+    },
     "LOGGING_OUT": {
         "message": "Logging out"
     },

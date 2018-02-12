@@ -357,6 +357,7 @@ class Pocket {
         } else {
             array = array.filter((item, index) => (index < this.load_count));
             document.querySelector('#js-empty-list-message').style.display = 'none';
+            this.showRecommendedPageLink();
 
             this.createItems(array);
             this.createSentinel();
@@ -453,6 +454,16 @@ class Pocket {
         }
 
         return false;
+    }
+
+    /**
+     * Show Recommended page in menu.
+     *
+     * @function showRecommendedPage
+     * @return {void}
+     */
+    showRecommendedPageLink() {
+        document.querySelector('[data-page="recommend"]').removeAttribute('style');
     }
 
     /**
@@ -964,6 +975,7 @@ class Pocket {
             if (response.status !== 'authenticated') {
                 helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                 this.logout();
+                return;
             }
 
             document.querySelector('#js-login').disabled = false;

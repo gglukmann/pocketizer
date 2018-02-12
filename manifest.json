@@ -24,11 +24,11 @@
         "newtab": "index.html"
     },
     "content_scripts": [{
-        "js": ["assets/js/content.js"],
+        "js": ["assets/js/extension/content.js"],
         "matches": ["*://*/*"]
     }],
     "background": {
-      "scripts": ["assets/js/background.js"]
+      "scripts": ["assets/js/extension/background.js"]
     },
     "permissions": [
         "identity",

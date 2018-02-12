@@ -828,3 +828,8 @@ a {
 .hidden {
     display: none;
 }
+
+.text-extra-small {
+    font-size: small;
+    color: var(--text-light);
+}
