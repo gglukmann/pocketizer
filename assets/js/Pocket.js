@@ -13,7 +13,7 @@ class Pocket {
         this.scroll = {
             lastKnownScrollY: 0,
             ticking: false
-        }
+        };
 
         this.fullSync = false;
 
@@ -78,7 +78,9 @@ class Pocket {
      * @return {void}
      */
     getTrending() {
-        apiService.getTrending(4)
+        const trendingItemsCount = 4;
+
+        apiService.getTrending(trendingItemsCount)
             .then(response => {
                 this.handleTrendingResponse(response);
             });
@@ -175,7 +177,7 @@ class Pocket {
      * Get recommended stories.
      *
      * @function getRecommendations
-     * @param {Array[]} - Array of one item from listFromLocalStorage.
+     * @param {Array[]} array - Array of one item from listFromLocalStorage.
      * @return {void}
      */
     getRecommendations(array) {
@@ -191,7 +193,7 @@ class Pocket {
      * @return {Promise} - Promise when all items are rendered.
      */
     handleRecommendedResponse(response) {
-        return new Promise(function(resolve, reject) {
+        return new Promise(resolve => {
             let items = response.feed;
 
             for (let key in items) {
@@ -377,7 +379,7 @@ class Pocket {
         for (let key in array) {
             let newItem = item.create(array[key]);
             item.render(newItem);
-        };
+        }
     }
 
     /**
@@ -449,11 +451,9 @@ class Pocket {
      * @return {Boolean} If is loaded.
      */
     isArchiveLoaded() {
-        if (localStorage.getItem('archiveSince')) {
-            return true;
-        }
+        return !!localStorage.getItem('archiveSince');
 
-        return false;
+
     }
 
     /**
@@ -671,7 +671,7 @@ class Pocket {
     changeItemState(e, state, id, isFavourited) {
         let action;
 
-        if (state == 'read') {
+        if (state === 'read') {
             switch (this.getActivePage()) {
                 case 'archive':
                     action = 'readd';
@@ -682,10 +682,10 @@ class Pocket {
                     helper.showMessage(`${chrome.i18n.getMessage('ARCHIVING')}...`, true, false, false);
                 break;
             }
-        } else if (state == 'favourite') {
+        } else if (state === 'favourite') {
             action = (isFavourited === true ? 'unfavorite' : 'favorite');
             helper.showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
-        } else if (state == 'delete') {
+        } else if (state === 'delete') {
             action = 'delete';
             helper.showMessage(`${chrome.i18n.getMessage('DELETING')}...`, true, false, false);
         }
@@ -743,11 +743,11 @@ class Pocket {
                     break;
                 }
             }
-        };
+        }
 
         localStorage.setItem(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
 
-        if (state == 'read') {
+        if (state === 'read') {
             switch (this.getActivePage()) {
                 case 'list':
                     helper.showMessage(chrome.i18n.getMessage('ARCHIVING'));
@@ -756,9 +756,9 @@ class Pocket {
                     helper.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
                     break;
             }
-        } else if (state == 'favourite') {
+        } else if (state === 'favourite') {
             helper.showMessage(chrome.i18n.getMessage('PROCESSING'));
-        } else if (state == 'delete') {
+        } else if (state === 'delete') {
             helper.showMessage(chrome.i18n.getMessage('DELETING'));
         }
     }
@@ -770,11 +770,11 @@ class Pocket {
      * @return {void}
      */
     bindAddNewItemEvents() {
-        document.addEventListener('opened.modal', e => {
+        document.addEventListener('opened.modal', () => {
             document.querySelector('#js-newItemInput').focus();
         }, false);
 
-        document.addEventListener('closed.modal', e => {
+        document.addEventListener('closed.modal', () => {
             document.querySelector('#js-newItemInput').value = '';
         }, false);
 
@@ -971,17 +971,20 @@ class Pocket {
      * @return {void}
      */
     startLogin() {
-        authService.authenticate().then((response) => {
-            if (response.status !== 'authenticated') {
-                helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
-                this.logout();
-                return;
-            }
+        authService.authenticate()
+            .then((response) => {
+                if (response.status !== 'authenticated') {
+                    helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+                    document.querySelector('#js-login').disabled = false;
 
-            document.querySelector('#js-login').disabled = false;
-            helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
-            this.loggedIn();
-        });
+                    this.logout();
+                    return;
+                }
+
+                document.querySelector('#js-login').disabled = false;
+                helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
+                this.loggedIn();
+            });
     }
 
     /**
@@ -1004,7 +1007,7 @@ class Pocket {
 
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }
-};
+}
 
 const pocket = new Pocket();
 window.onload = (() => {

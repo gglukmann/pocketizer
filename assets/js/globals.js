@@ -11,4 +11,4 @@ const API = {
     url_add: API_URL + API_VERSION + '/add',
     url_getTrending: API_URL + API_VERSION + '/getGlobalRecs',
     url_getRecommendations: API_URL + API_VERSION + '/getSuggestedItems'
-}
+};

@@ -23,7 +23,7 @@ class AuthService {
     async authenticate() {
         try {
             let { code } = await this.getRequestToken();
-            let auth = await this.launchChromeWebAuthFlow(code);
+            await this.launchChromeWebAuthFlow(code);
             let { username } = await this.getAccessToken(code);
 
             return {
@@ -76,10 +76,10 @@ class AuthService {
         let options = {
             'url': `${API.url_auth}?request_token=${requestToken}&redirect_uri=${API.redirect_url}`,
             'interactive': true
-        }
+        };
 
         return new Promise((resolve, reject) => {
-            chrome.identity.launchWebAuthFlow(options, redirectUrl => {
+            chrome.identity.launchWebAuthFlow(options, () => {
                 if (chrome.runtime.lastError) {
                     helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                     reject(chrome.runtime.lastError.message);
@@ -128,11 +128,7 @@ class AuthService {
      * @return {String} Token.
      */
     getToken() {
-        if (!localStorage.getItem('token')) {
-            return false;
-        }
-
-        return localStorage.getItem('token');
+        return localStorage.getItem('token') ? localStorage.getItem('token') : false;
     }
 
     /**
@@ -153,11 +149,7 @@ class AuthService {
      * @return {Boolean} If user is logged in.
      */
     isLoggedIn() {
-        if (!this.getToken()) {
-            return false;
-        }
-
-        return true;
+        return !!this.getToken();
     }
 }
 

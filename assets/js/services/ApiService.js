@@ -17,7 +17,6 @@ class ApiService {
      * Get data from pocket api.
      *
      * @function get
-     * @param {String} state - List type to get.
      * @return {Promise} - Response from pocket api.
      */
     async get() {
@@ -63,18 +62,16 @@ class ApiService {
 
         this._fetchData.body = JSON.stringify(this._fetchData.body);
 
-        let data = await helper.makeFetch(API.url_get, this._fetchData)
+        return await helper.makeFetch(API.url_get, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
             });
-
-        return data;
     }
 
     /**
-     * Make actions
+     * Make actions.
      *
      * @function send
      * @param {Array} actions - Array of current action data.
@@ -87,14 +84,12 @@ class ApiService {
             actions: actions
         });
 
-        let action = await helper.makeFetch(API.url_send, this._fetchData)
+        return await helper.makeFetch(API.url_send, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helper.showMessage(chrome.i18n.getMessage('ACTION'), false);
             });
-
-        return action;
     }
 
     /**
@@ -111,14 +106,12 @@ class ApiService {
             url: data.url
         });
 
-        let add = await helper.makeFetch(API.url_add, this._fetchData)
+        return await helper.makeFetch(API.url_add, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helper.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
             });
-
-        return add;
     }
 
     /**
@@ -135,14 +128,12 @@ class ApiService {
             version: 2
         });
 
-        let getTrending = await helper.makeFetch(API.url_getTrending, this._fetchData)
+        return await helper.makeFetch(API.url_getTrending, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_TRENDING'), false);
             });
-
-        return getTrending;
     }
 
     /**
@@ -162,14 +153,12 @@ class ApiService {
             resolved_id: resolved_id
         });
 
-        let getRecommendations = await helper.makeFetch(API.url_getRecommendations, this._fetchData)
+        return await helper.makeFetch(API.url_getRecommendations, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_RECOMMENDED'), false);
             });
-
-        return getRecommendations;
     }
 }
 
