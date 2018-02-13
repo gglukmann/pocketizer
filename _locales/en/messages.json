@@ -83,7 +83,7 @@
         "message": "Log in with Pocket"
     },
     "LOG_IN_INFO": {
-        "message": "Please login with only username and password. Google and Firefox authentication does not redirect back to extension."
+        "message": "Please login with only email/username and password. Google and Firefox authentication does not redirect back to extension."
     },
     "LOGGING_OUT": {
         "message": "Logging out"
@@ -101,7 +101,7 @@
         "message": "No results for"
     },
     "RESULTS_MESSAGE": {
-        "message": "Results for"
+        "message": "results found for"
     },
     "POCKET_HOMEPAGE": {
         "message": "Pocket homepage"

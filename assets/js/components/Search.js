@@ -117,11 +117,15 @@ class Search {
             }
         });
 
-        let resultsStringElement = document.querySelector('#js-resultsString');
+        const resultsStringElement = document.querySelector('#js-resultsString');
+        const searchCountElement = document.querySelector('#js-searchCount');
         if (count === 0) {
             resultsStringElement.innerText = chrome.i18n.getMessage('NO_RESULTS_MESSAGE');
+            searchCountElement.style.display = 'none';
         } else {
             resultsStringElement.innerText = chrome.i18n.getMessage('RESULTS_MESSAGE');
+            searchCountElement.removeAttribute('style');
+            searchCountElement.innerText = count;
         }
 
         lazyload.load();
