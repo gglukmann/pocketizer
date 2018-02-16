@@ -27,12 +27,12 @@ class Modal {
      */
     bindClickEvents() {
         document.body.addEventListener('click', e => {
+            if (e.target.dataset.modalPreventClose && e.target.dataset.modalPreventClose === 'true') {
+                this.preventClose = true;
+            }
+
             if (e.target.dataset.modalTarget && e.target.dataset.modalTarget !== '') {
                 e.preventDefault();
-
-                if (e.target.dataset.modalType && e.target.dataset.modalType === 'delete') {
-                    this.preventClose = true;
-                }
 
                 this.open(e.target.dataset.modalTarget);
             }
@@ -42,7 +42,7 @@ class Modal {
             }
         });
 
-        document.body.addEventListener('keyup', e => {
+        document.body.addEventListener('keydown', e => {
             if (!this.preventClose) {
                 if (e.keyCode === 27) {
                     this.close();
@@ -56,14 +56,16 @@ class Modal {
      *
      * @function open
      * @param {String} target - Target element string.
+     * @param {Boolean} preventClose - If close should be prevented with enter, esc or backdrop click.
      * @return {void}
      */
-    open(target) {
+    open(target, preventClose) {
+        this.preventClose = preventClose ? preventClose : this.preventClose;
         this.element = document.querySelector(target);
 
         let previousModals = document.querySelectorAll('.modal-container.is-visible');
         if (previousModals.length > 0) {
-            previousModals.forEach(item => {
+            previousModals.forEach(() => {
                 this.close();
             });
         }

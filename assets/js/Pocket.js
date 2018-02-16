@@ -779,7 +779,7 @@ class Pocket {
         }, false);
 
         document.newItemForm.addEventListener('submit', e => {
-            const form = document.newItemForm;
+            const form = e.target;
 
             if (form.checkValidity()) {
                 e.preventDefault();
