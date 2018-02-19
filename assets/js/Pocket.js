@@ -1029,6 +1029,8 @@ class Pocket {
         this.bindLoggedOutClickEvents();
         this.removeAdItemToPocketClicks();
 
+        document.body.classList.remove('theme-light', 'theme-dark', 'theme-sepia');
+
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }
 }

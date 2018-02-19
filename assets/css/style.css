@@ -26,6 +26,11 @@
     --theme-dark-bg2: #292929;
     --theme-dark-text: #ccc;
 
+    --theme-sepia-bg: #fbf0d9;
+    --theme-sepia-bg-rgb: 253, 246, 232;
+    --theme-sepia-bg2: #fdf6e8;
+    --theme-sepia-text: #5b4636;
+
     --text-color: var(--black-l);
     --text-light: var(--grey);
     --body-bg: var(--grey-l);
@@ -60,6 +65,11 @@ body {
 body.theme-dark {
     background: var(--theme-dark-bg);
     color: var(--white);
+}
+
+body.theme-sepia {
+    background: var(--theme-sepia-bg);
+    color: var(--theme-sepia-text);
 }
 
 body.scroll-disabled {
@@ -368,6 +378,10 @@ a {
     border-color: var(--theme-dark-bg2) var(--theme-dark-bg2) #383737;
 }
 
+.theme-sepia .item__content {
+    background-color: var(--theme-sepia-bg2);
+}
+
 .item__link-fake {
     position: absolute;
     display: block;
@@ -399,6 +413,10 @@ a {
 
 .theme-dark .item__title {
     color: var(--theme-dark-text);
+}
+
+.theme-sepia .item__title {
+    color: var(--theme-sepia-text);
 }
 
 .item__time {
@@ -715,6 +733,10 @@ a {
     background: rgba(var(--black-rgb), .6);
 }
 
+.theme-sepia .modal-container {
+    background: rgba(var(--theme-sepia-bg-rgb), .8);
+}
+
 .modal-container.is-visible {
     display: flex;
     flex-direction: column;
@@ -743,6 +765,10 @@ a {
 
 .theme-dark .modal {
     background: var(--theme-dark-bg);
+}
+
+.theme-sepia .modal {
+    background: var(--theme-sepia-bg);
 }
 
 .modal__title {
