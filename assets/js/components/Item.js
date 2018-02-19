@@ -118,7 +118,9 @@ class Item {
 
         linkElement.setAttribute('class', 'item__link');
 
-        let linkNode = helper.createTextNode(link);
+        let domain = link.replace(/^(https?:|)\/\//, '');
+        domain = domain.split('/')[0];
+        let linkNode = helper.createTextNode(domain);
         linkElement.setAttribute('href', link);
         linkElement.setAttribute('title', link);
         helper.append(linkElement, linkNode);

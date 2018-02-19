@@ -729,7 +729,11 @@ class Pocket {
                     case 'delete':
                         array.splice(i, 1);
 
-                        e.target.parentNode.parentNode.remove();
+                        const itemNode = e.target.parentNode.parentNode;
+                        itemNode.classList.add('move-up');
+                        setTimeout(() => {
+                            itemNode.remove();
+                        }, 500);
 
                         localStorage.setItem(`${this.getActivePage()}Count`, parseInt(localStorage.getItem(`${this.getActivePage()}Count`), 10) - 1);
 

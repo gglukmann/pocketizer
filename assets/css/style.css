@@ -302,6 +302,12 @@ a {
     }
 }
 
+.item.move-up {
+    transform: translateY(-100%);
+    opacity: 0;
+    transition: transform .5s, opacity .5s;
+}
+
 .item__content {
     display: block;
     position: relative;
