@@ -559,6 +559,14 @@ a {
     box-shadow: 0 2px 1px rgba(var(--black-rgb), .1);
 }
 
+.theme-dark .item__favourite {
+    box-shadow: 0 1px 1px rgba(var(--white-rgb), .1);
+}
+
+.theme-dark .item__favourite:hover {
+    box-shadow: 0 2px 1px rgba(var(--white-rgb), .1);
+}
+
 .item__image {
     position: absolute;
     width: 100%;

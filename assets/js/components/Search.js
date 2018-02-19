@@ -106,7 +106,6 @@ class Search {
 
         if (doHide) {
             this.hide();
-            this.removeEvents();
         }
     }
 
