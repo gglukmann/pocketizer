@@ -299,11 +299,11 @@ class Pocket {
                         newArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
 
                         // delete old item, if it is added from this extension
-                        newArray.forEach((item, i) => {
-                            if (item.item_id === newItem.item_id) {
+                        for (let i in newArray) {
+                            if (newArray[i].item_id === newItem.item_id) {
                                 newArray.splice(i, 1);
                             }
-                        });
+                        }
 
                         newArray = helper.prependArray(newArray, newItem);
 
@@ -740,7 +740,7 @@ class Pocket {
     handleActionResponse(e, state, id, isFavourited, response) {
         let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
 
-        for (let i = 0; i < array.length; i++) {
+        for (let i in array) {
             if (array[i].item_id === id) {
                 switch (state) {
                     case 'read':
@@ -894,11 +894,11 @@ class Pocket {
     changeMenuActiveState(page) {
         let menuLinkElements = document.querySelectorAll('.menu__link');
 
-        for (let i = 0; i < menuLinkElements.length; i++) {
-            helper.removeClass(menuLinkElements[i], 'is-active');
+        for (let menuLink of menuLinkElements) {
+            helper.removeClass(menuLink, 'is-active');
 
-            if (menuLinkElements[i].dataset.page === page) {
-                helper.addClass(menuLinkElements[i], 'is-active');
+            if (menuLink.dataset.page === page) {
+                helper.addClass(menuLink, 'is-active');
             }
         }
     }

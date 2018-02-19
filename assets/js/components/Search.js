@@ -132,29 +132,29 @@ class Search {
         let array = JSON.parse(localStorage.getItem(`${pocket.getActivePage()}FromLocalStorage`));
         let count = 0;
 
-        Object.keys(array).forEach(key => {
+        for (let arrayItem of array) {
             let searchableTitle = '';
             let searchableUrl = '';
 
-            if (array[key].resolved_title && array[key].resolved_title !== '') {
-                searchableTitle = array[key].resolved_title;
-            } else if (array[key].given_title && array[key].given_title !== '') {
-                searchableTitle = array[key].given_title;
+            if (arrayItem.resolved_title && arrayItem.resolved_title !== '') {
+                searchableTitle = arrayItem.resolved_title;
+            } else if (arrayItem.given_title && arrayItem.given_title !== '') {
+                searchableTitle = arrayItem.given_title;
             }
 
-            if (array[key].resolved_url && array[key].resolved_url !== '') {
-                searchableUrl = array[key].resolved_url;
+            if (arrayItem.resolved_url && arrayItem.resolved_url !== '') {
+                searchableUrl = arrayItem.resolved_url;
             } else {
-                searchableUrl = array[key].given_url;
+                searchableUrl = arrayItem.given_url;
             }
 
             if (searchableTitle.toLowerCase().indexOf(value) > -1 || searchableUrl.toLowerCase().indexOf(value) > -1) {
-                let newItem = item.create(array[key]);
+                let newItem = item.create(arrayItem);
                 item.render(newItem);
 
                 count++;
             }
-        });
+        }
 
         const resultsStringElement = document.querySelector('#js-resultsString');
         const searchCountElement = document.querySelector('#js-searchCount');

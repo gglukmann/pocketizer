@@ -37,8 +37,7 @@ class Lazyload {
                 }
 
                 // Loop through the entries
-                for (let i = 0; i < entries.length; i++) {
-                    let entry = entries[i];
+                for (let entry of entries) {
                     // Are we in viewport?
                     if (entry.intersectionRatio > 0) {
                         this.imageCount--;
@@ -50,9 +49,7 @@ class Lazyload {
                 }
             }, config);
 
-            // foreach() is not supported in IE
-            for (let i = 0; i < images.length; i++) {
-                let image = images[i];
+            for (let image of images) {
                 if (image.classList.contains('js-lazyloaded')) {
                     continue;
                 }
@@ -102,9 +99,7 @@ class Lazyload {
     * @return {void}
     */
     loadImagesImmediately(images) {
-        // foreach() is not supported in IE
-        for (let i = 0; i < images.length; i++) {
-            let image = images[i];
+        for (let image of images) {
             this.preloadImage(image);
         }
     }

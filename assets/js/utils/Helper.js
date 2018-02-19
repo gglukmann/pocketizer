@@ -162,15 +162,15 @@ class Helper {
         // Localize whitelisted attributes by replacing all __MSG_***__ tags
         const whiteListAttributes = ['title', 'placeholder'];
 
-        whiteListAttributes.forEach(whiteListedAttribute => {
+        for (let whiteListedAttribute of whiteListAttributes) {
             let attributes = [...document.querySelectorAll('[' + whiteListedAttribute + ']')];
 
-            attributes.forEach(attr => {
+            for (let attr of attributes) {
                 let tag = attr.getAttribute(whiteListedAttribute);
 
                 this.replaceI18n(attr, tag, whiteListedAttribute);
-            });
-        });
+            }
+        }
     }
 
     /**
