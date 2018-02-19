@@ -7,6 +7,10 @@ class Modal {
     constructor() {
         this.container = false;
         this.preventClose = false;
+
+        this.containerClick = false;
+        this.openModalClick = false;
+        this.modalKeydown = false;
     }
 
     /**
@@ -16,39 +20,70 @@ class Modal {
      * @return {void}
      */
     init() {
-        this.bindClickEvents();
+        this.bindEvents();
     }
 
     /**
-     * Bind all click events.
+     * Bind all events.
      *
-     * @function bindClickEvents
+     * @function bindEvents
      * @return {void}
      */
-    bindClickEvents() {
-        document.body.addEventListener('click', e => {
-            if (e.target.dataset.modalPreventClose && e.target.dataset.modalPreventClose === 'true') {
-                this.preventClose = true;
-            }
+    bindEvents() {
+        this.openModalClick = this.handleOpenModalClick.bind(this);
+        document.body.addEventListener('click', this.openModalClick, false);
 
-            if (e.target.dataset.modalTarget && e.target.dataset.modalTarget !== '') {
-                e.preventDefault();
+        this.modalKeydown = this.handleModalKeydown.bind(this);
+        document.body.addEventListener('keydown', this.modalKeydown, false);
+    }
 
-                this.open(e.target.dataset.modalTarget);
-            }
+    /**
+     * Remove all modal events.
+     *
+     * @function removeEvent
+     * @return {void}
+     */
+    removeEvents() {
+        document.body.removeEventListener('click', this.openModalClick, false);
+        document.body.removeEventListener('keydown', this.modalKeydown, false);
+    }
 
-            if (e.target.dataset.modalAction && e.target.dataset.modalAction === 'close') {
+    /**
+     * Handle open modal click event.
+     *
+     * @function handleOpenModalClick
+     * @param {Event} e - Click event.
+     * @return {void}
+     */
+    handleOpenModalClick(e) {
+        if (e.target.dataset.modalPreventClose && e.target.dataset.modalPreventClose === 'true') {
+            this.preventClose = true;
+        }
+
+        if (e.target.dataset.modalTarget && e.target.dataset.modalTarget !== '') {
+            e.preventDefault();
+
+            this.open(e.target.dataset.modalTarget);
+        }
+
+        if (e.target.dataset.modalAction && e.target.dataset.modalAction === 'close') {
+            this.close();
+        }
+    }
+
+    /**
+     * Handle keydown event.
+     *
+     * @function handleModalKeydown
+     * @param {Event} e - Keydown event.
+     * @return {void}
+     */
+    handleModalKeydown(e) {
+        if (!this.preventClose) {
+            if (e.keyCode === 27) {
                 this.close();
             }
-        });
-
-        document.body.addEventListener('keydown', e => {
-            if (!this.preventClose) {
-                if (e.keyCode === 27) {
-                    this.close();
-                }
-            }
-        });
+        }
     }
 
     /**
@@ -80,12 +115,8 @@ class Modal {
             this.inner.setAttribute('class', 'modal-container__inner');
 
             if (!this.preventClose) {
-                this.container.addEventListener('click', e => {
-                    if (e.target === e.currentTarget) {
-                        e.preventDefault();
-                        this.close();
-                    }
-                });
+                this.containerClick = this.handleContainerClick.bind(this);
+                this.container.addEventListener('click', this.containerClick, false);
             }
 
             helper.append(this.inner, this.element);
@@ -101,6 +132,20 @@ class Modal {
     }
 
     /**
+     * Handle container click.
+     *
+     * @function handleContainerClick
+     * @param {Event} e - Click event.
+     * @return {void}
+     */
+    handleContainerClick(e) {
+        if (e.target === e.currentTarget) {
+            e.preventDefault();
+            this.close();
+        }
+    }
+
+    /**
      * Close modal.
      *
      * @function close
@@ -108,12 +153,24 @@ class Modal {
      */
     close() {
         if (this.container && this.container.classList.contains('is-visible')) {
+            this.container.removeEventListener('click', this.containerClick, false);
             helper.enableScroll();
             this.container.classList.remove('is-visible');
 
             const event = new Event('closed.modal');
             document.dispatchEvent(event);
         }
+    }
+
+    /**
+     * Destroy plugin.
+     *
+     * @function destroy
+     * @return {void}
+     */
+    destroy() {
+        this.close();
+        this.removeEvents();
     }
 }
 

@@ -1029,7 +1029,11 @@ class Pocket {
         this.bindLoggedOutClickEvents();
         this.removeAdItemToPocketClicks();
 
-        document.body.classList.remove('theme-light', 'theme-dark', 'theme-sepia');
+        modal.destroy();
+        collapse.destroy();
+        selector.destroy();
+
+        helper.removeClass(document.body, ['theme-light', 'theme-dark', 'theme-sepia']);
 
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }

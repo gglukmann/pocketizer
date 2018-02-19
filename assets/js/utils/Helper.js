@@ -249,6 +249,11 @@ class Helper {
      * @returns {void}
      */
     removeClass(element, className) {
+        if (typeof className === 'object') {
+            element.classList.remove(...className);
+            return;
+        }
+
         element.classList.remove(className);
     }
 }

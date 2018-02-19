@@ -2,6 +2,14 @@
 
 class Search {
     /**
+     * constructor
+     */
+    constructor() {
+        this.makeSearchClick = false;
+        this.closeSearchClick = false;
+    }
+
+    /**
      * Show search input.
      *
      * @function show
@@ -16,22 +24,52 @@ class Search {
     }
 
     /**
-     * Bind events.
+     * Bind all events.
      *
      * @function bindEvents
      * @return {void}
      */
     bindEvents() {
-        document.querySelector('#js-searchInput').addEventListener('keyup', e => {
-            this.search(e.target.value);
-        });
+        this.makeSearchClick = this.handleMakeSearchClick.bind(this);
+        document.querySelector('#js-searchInput').addEventListener('keyup', this.makeSearchClick, false);
 
-        document.querySelector('#js-emptySearch').addEventListener('click', e => {
-            e.preventDefault();
+        this.closeSearchClick = this.handleCloseSearchClick.bind(this);
+        document.querySelector('#js-emptySearch').addEventListener('click', this.closeSearchClick, false);
+    }
 
-            this.reset();
-            this.hide();
-        });
+    /**
+     * Remove all events.
+     *
+     * @function removeEvents
+     * @return {void}
+     */
+    removeEvents() {
+        document.querySelector('#js-searchInput').removeEventListener('keyup', this.makeSearchClick, false);
+        document.querySelector('#js-emptySearch').removeEventListener('click', this.closeSearchClick, false);
+    }
+
+    /**
+     * Handle search keyup event.
+     *
+     * @function handleMakeSearchClick
+     * @param {Event} e - Keyup event.
+     * @return {void}
+     */
+    handleMakeSearchClick(e) {
+        this.search(e.target.value);
+    }
+
+    /**
+     * Handle close search click.
+     *
+     * @function handleCloseSearchClick
+     * @param {Event} e - Click event.
+     * @return {void}
+     */
+    handleCloseSearchClick(e) {
+        e.preventDefault();
+
+        this.reset(true);
     }
 
     /**
@@ -68,6 +106,7 @@ class Search {
 
         if (doHide) {
             this.hide();
+            this.removeEvents();
         }
     }
 
@@ -129,6 +168,17 @@ class Search {
         }
 
         lazyload.load();
+    }
+
+    /**
+     * Destroy plugin.
+     *
+     * @function destroy
+     * @return {void}
+     */
+    destroy() {
+        this.reset(true);
+        this.removeEvents();
     }
 }
 

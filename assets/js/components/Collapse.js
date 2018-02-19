@@ -2,38 +2,71 @@
 
 class Collapse {
     /**
+     * constructor
+     */
+    constructor() {
+        this.openCollapseClick = false;
+    }
+
+    /**
      * Initialize collapse.
      *
      * @function init
      * @return {void}
      */
     init() {
-        this.bindClickEvents();
+        this.bindEvents();
     }
 
     /**
-     * Bind all click events.
+     * Bind all events.
      *
-     * @function bindClickEvents
+     * @function bindEvents
      * @return {void}
      */
-    bindClickEvents() {
-        document.body.addEventListener('click', e => {
-            if (e.target.dataset.collapseTarget && e.target.dataset.collapseTarget !== '') {
-                e.preventDefault();
-
-                this.trigger = e.target;
-                this.element = document.querySelector(e.target.dataset.collapseTarget);
-
-                if (this.isOpen()) {
-                    this.close();
-                } else {
-                    this.open();
-                }
-            }
-        });
+    bindEvents() {
+        this.openCollapseClick = this.handleOpenCollapseClick.bind(this);
+        document.body.addEventListener('click', this.openCollapseClick, false);
     }
 
+    /**
+     * Handle open click event.
+     *
+     * @function handleOpenCollapseClick
+     * @param {Event} e - Click event.
+     * @return {void}
+     */
+    handleOpenCollapseClick(e) {
+        if (e.target.dataset.collapseTarget && e.target.dataset.collapseTarget !== '') {
+            e.preventDefault();
+
+            this.trigger = e.target;
+            this.element = document.querySelector(e.target.dataset.collapseTarget);
+
+            if (this.isOpen()) {
+                this.close();
+            } else {
+                this.open();
+            }
+        }
+    }
+
+    /**
+     * Remove all events.
+     *
+     * @function removeEvents
+     * @return {void}
+     */
+    removeEvents() {
+        document.body.removeEventListener('click', this.openCollapseClick, false);
+    }
+
+    /**
+     * Check if collapse is open.
+     *
+     * @function isOpen
+     * @return {boolean}
+     */
     isOpen() {
         if (!this.trigger.classList.contains('is-active')) {
             return false;
@@ -90,6 +123,17 @@ class Collapse {
 
         const eventClosed = new Event('closed.collapse');
         document.dispatchEvent(eventClosed);
+    }
+
+    /**
+     * Destroy plugin.
+     *
+     * @function destroy
+     * @return {void}
+     */
+    destroy() {
+        this.close();
+        this.removeEvents();
     }
 }
 
