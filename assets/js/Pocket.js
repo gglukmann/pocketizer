@@ -33,6 +33,7 @@ class Pocket {
      */
     init() {
         helper.localizeHtml();
+        this.setTheme();
 
         if (localStorage.getItem('isTrendingShown') === 'true') {
             collapse.open('#js-trendingCollapseTrigger', '#js-trendingCollapse');
@@ -48,6 +49,25 @@ class Pocket {
         }
 
         this.getTrending();
+    }
+
+    /**
+     * Set theme color on pocket load.
+     *
+     * @function setTheme
+     * @return {void}
+     */
+    setTheme() {
+        if (localStorage.getItem('theme')) {
+           helper.addClass(document.body, 'theme-' + localStorage.getItem('theme'));
+
+           const colorSelector = [...document.querySelectorAll('[name=selector-color]')];
+           for (let selector of colorSelector) {
+               if (selector.value === localStorage.getItem('theme')) {
+                   selector.checked = true;
+               }
+           }
+        }
     }
 
     /**
@@ -452,8 +472,6 @@ class Pocket {
      */
     isArchiveLoaded() {
         return !!localStorage.getItem('archiveSince');
-
-
     }
 
     /**
@@ -730,7 +748,7 @@ class Pocket {
                         array.splice(i, 1);
 
                         const itemNode = e.target.parentNode.parentNode;
-                        itemNode.classList.add('move-up');
+                        helper.addClass(itemNode, 'move-up');
                         setTimeout(() => {
                             itemNode.remove();
                         }, 500);
@@ -901,6 +919,7 @@ class Pocket {
             document.querySelector('#js-logout').removeAttribute('style');
             document.querySelector('#js-addNewItemButton').removeAttribute('style');
             document.querySelector('#js-searchButton').removeAttribute('style');
+            document.querySelector('#js-settings').removeAttribute('style');
             document.querySelector('#js-fullSync').removeAttribute('style');
             document.querySelector('#js-trendingCollapseTrigger').removeAttribute('style');
             document.querySelector('#js-trendingSeparator').removeAttribute('style');
@@ -917,6 +936,7 @@ class Pocket {
             document.querySelector('#js-count').innerHTML = '';
             document.querySelector('#js-addNewItemButton').style.display = 'none';
             document.querySelector('#js-searchButton').style.display = 'none';
+            document.querySelector('#js-settings').style.display = 'none';
             document.querySelector('#js-fullSync').style.display = 'none';
             document.querySelector('#js-trendingCollapseTrigger').style.display = 'none';
             document.querySelector('#js-trendingSeparator').style.display = 'none';
@@ -1014,8 +1034,10 @@ class Pocket {
 }
 
 const pocket = new Pocket();
+
 window.onload = (() => {
     pocket.init();
     modal.init();
     collapse.init();
+    selector.init();
 });

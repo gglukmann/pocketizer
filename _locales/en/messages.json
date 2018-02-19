@@ -130,6 +130,9 @@
     "SAVE_URL": {
         "message": "Save new link"
     },
+    "SETTINGS": {
+        "message": "Settings"
+    },
     "SAVE_NEW_LINK": {
         "message": "Save new link to Pocket"
     },
@@ -168,5 +171,17 @@
     },
     "TOGGLE_TRENDING": {
         "message": "Toggle trending stories"
+    },
+    "CHOOSE_THEME": {
+        "message": "Choose theme"
+    },
+    "LIGHT": {
+        "message": "Light"
+    },
+    "DARK": {
+        "message": "Dark"
+    },
+    "SEPIA": {
+        "message": "Sepia"
     }
 }

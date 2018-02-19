@@ -22,6 +22,10 @@
     --green-l: #50bcb6;
     --green-d: #4CAF50;
 
+    --theme-dark-bg: #1f1f1f;
+    --theme-dark-bg2: #292929;
+    --theme-dark-text: #ccc;
+
     --text-color: var(--black-l);
     --text-light: var(--grey);
     --body-bg: var(--grey-l);
@@ -51,6 +55,11 @@ body {
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+body.theme-dark {
+    background: var(--theme-dark-bg);
+    color: var(--white);
 }
 
 body.scroll-disabled {
@@ -198,6 +207,10 @@ a {
     font-size: 1.2em;
 }
 
+.theme-dark .menu__link {
+    color: var(--theme-dark-text);
+}
+
 .menu__link:hover {
     color: var(--menu-hover);
 }
@@ -263,6 +276,10 @@ a {
 
 .section-title__link:hover {
     color: var(--text-color);
+}
+
+.theme-dark .section-title__link:hover {
+    color: var(--white);
 }
 
 /* SEPARATOR */
@@ -346,9 +363,9 @@ a {
     }
 }
 
-.item--empty {
-    background: transparent;
-    border-color: transparent;
+.theme-dark .item__content {
+    background-color: var(--theme-dark-bg2);
+    border-color: var(--theme-dark-bg2) var(--theme-dark-bg2) #383737;
 }
 
 .item__link-fake {
@@ -378,6 +395,10 @@ a {
 
 .item--trending .item__title {
     font-size: 1.25em;
+}
+
+.theme-dark .item__title {
+    color: var(--theme-dark-text);
 }
 
 .item__time {
@@ -480,6 +501,15 @@ a {
 .item__delete:hover,
 .item__pocket-link:hover {
     color: var(--text-color);
+}
+
+.theme-dark .item__link-save:hover,
+.theme-dark .item__link:hover,
+.theme-dark .item__link-source:hover,
+.theme-dark .item__set-read:hover,
+.theme-dark .item__delete:hover,
+.theme-dark .item__pocket-link:hover {
+    color: var(--white);
 }
 
 .item__delete {
@@ -598,6 +628,10 @@ a {
     color: var(--text-color);
 }
 
+.theme-dark .btn--link:hover {
+    color: var(--white);
+}
+
 .btn > svg {
   pointer-events: none;
 }
@@ -673,9 +707,12 @@ a {
     display: none;
     overflow: auto;
     overflow-y: scroll;
-
     padding: 10px 10px 0;
     background: rgba(var(--grey-rgb), .8);
+}
+
+.theme-dark .modal-container {
+    background: rgba(var(--black-rgb), .6);
 }
 
 .modal-container.is-visible {
@@ -704,6 +741,10 @@ a {
     margin-bottom: 10px;
 }
 
+.theme-dark .modal {
+    background: var(--theme-dark-bg);
+}
+
 .modal__title {
     font-size: 1.46154em;
     font-weight: 600;
@@ -724,8 +765,16 @@ a {
     color: var(--text-color);
 }
 
+.theme-dark .modal__close {
+    color: var(--text-light);
+}
+
 .modal__close:hover {
     color: var(--text-light);
+}
+
+.theme-dark .modal__close:hover {
+    color: var(--white);
 }
 
 /* INPUT */
@@ -803,6 +852,10 @@ a {
     font-size: .8em;
 }
 
+.theme-dark .search__clear-link {
+    color: var(--theme-dark-text);
+}
+
 /* COLLAPSE */
 .collapse-toggle {
     color: var(--text-light);
@@ -810,6 +863,10 @@ a {
 
 .collapse-toggle:hover {
     color: var(--text-color);
+}
+
+.theme-dark .collapse-toggle:hover {
+    color: var(--white);
 }
 
 .collapse-toggle__icon {
@@ -831,6 +888,73 @@ a {
     display: block;
 }
 
+/* SELECTOR */
+.selector {
+    border: 0;
+    margin: 0 0 var(--grid-gutter);
+    padding: 0;
+}
+
+.selector__list {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: -4px;
+}
+
+.selector__label {
+    margin-bottom: .3333em;
+}
+
+.selector__item {
+    position: relative;
+    flex: 0 1 auto;
+    margin-top: 4px;
+    margin-left: 4px;
+    top: -4px;
+    left: -4px;
+}
+
+.selector__input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+}
+
+.selector__indicator {
+    position: relative;
+    display: block;
+    color: var(--text-color);
+    cursor: pointer;
+    padding: 5px 10px;
+    border: 1px solid var(--black);
+    background: var(--white);
+}
+
+.theme-dark .selector__indicator {
+    border-color: var(--white);
+}
+
+.selector__indicator:hover {
+    background-color: var(--green-d);
+    border-color: var(--green-d);
+    color: white;
+}
+
+.selector__input:checked ~ .selector__indicator {
+    background-color: var(--green-d);
+    border-color: var(--green-d);
+    color: white;
+}
+
+.selector__input:checked ~ .selector__indicator:hover {
+     background-color: var(--green-d);
+     border-color: var(--green-d);
+}
+
+/* HELPERS */
 .hidden {
     display: none;
 }
