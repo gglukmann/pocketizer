@@ -5,8 +5,22 @@ class Search {
      * constructor
      */
     constructor() {
+        this.state = {
+            hasSearched: false,
+        };
+
         this.makeSearchClick = false;
         this.closeSearchClick = false;
+    }
+
+    /**
+     * Initialize search plugin.
+     *
+     * @function init
+     * @return {void}
+     */
+    init() {
+        this.bindEvents();
     }
 
     /**
@@ -19,8 +33,6 @@ class Search {
         helper.addClass(document.querySelector('#js-searchForm'), 'is-active');
         document.querySelector('#js-searchInput').focus();
         helper.addClass(document.querySelector('#js-searchButton'), 'is-disabled');
-
-        this.bindEvents();
     }
 
     /**
@@ -56,6 +68,7 @@ class Search {
      * @return {void}
      */
     handleMakeSearchClick(e) {
+        this.state.hasSearched = true;
         this.search(e.target.value);
     }
 
@@ -102,9 +115,12 @@ class Search {
             trendingItem.showAll();
         }
 
-        pocket.render();
+        if (this.state.hasSearched) {
+            pocket.render();
+        }
 
         if (doHide) {
+            this.state.hasSearched = false;
             this.hide();
         }
     }

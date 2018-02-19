@@ -1043,6 +1043,7 @@ const pocket = new Pocket();
 
 window.onload = (() => {
     pocket.init();
+    search.init();
     modal.init();
     collapse.init();
     selector.init();
