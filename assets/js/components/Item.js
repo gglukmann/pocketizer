@@ -30,7 +30,7 @@ class Item {
             title = element.given_url;
         }
 
-        if (element.favorite === 1) {
+        if (element.favorite === '1') {
             favouriteElement.setAttribute('data-favourite', 'true');
         } else {
             favouriteElement.setAttribute('data-favourite', 'false');
@@ -95,7 +95,7 @@ class Item {
 
         excerptElement.setAttribute('class', 'item__excerpt');
 
-        if ((element.has_image === 1 || element.has_image === 2) && element.image) {
+        if ((element.has_image === '1' || element.has_image === '2') && element.image) {
             let imageElement = helper.createNode('img');
             imageElement.setAttribute('data-src', element.image.src);
             imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
