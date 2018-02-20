@@ -1,5 +1,58 @@
 class Item {
     /**
+     * constructor
+     */
+    constructor() {
+        this.timeout = false;
+        this.pageResize = false;
+    }
+
+    /**
+     * Initialize item.
+     *
+     * @function init
+     * @return {void}
+     */
+    init() {
+        this.bindEvents();
+    }
+
+    /**
+     * Bind all events.
+     *
+     * @function bindEvents
+     * @return {void}
+     */
+    bindEvents() {
+        this.pageResize = this.handlePageResize.bind(this);
+        window.addEventListener('resize', this.pageResize, false);
+    }
+
+    /**
+     * Remove all events.
+     *
+     * @function removeEvents
+     * @return {void}
+     */
+    removeEvents() {
+        window.removeEventListener('resize', this.pageResize, false);
+    }
+
+    /**
+     * Handle page resizing.
+     *
+     * @function handlePageResize
+     * @return {void}
+     */
+    handlePageResize() {
+        if (!this.timeout) {
+            window.requestAnimationFrame(this.calcBackgroundHeights.bind(this));
+
+            this.timeout = true;
+        }
+    }
+
+    /**
      * Create new item and append to list.
      *
      * @param {Object} element - Element from pocket.
@@ -96,12 +149,14 @@ class Item {
         excerptElement.setAttribute('class', 'item__excerpt');
 
         if ((element.has_image === '1' || element.has_image === '2') && element.image) {
-            let imageElement = helper.createNode('img');
-            imageElement.setAttribute('data-src', element.image.src);
-            imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-            imageElement.setAttribute('class', 'item__image js-lazyload');
-            excerptElement.className += ' item__excerpt--image';
-            helper.append(excerptElement, imageElement);
+            // let imageElement = helper.createNode('img');
+            // imageElement.setAttribute('data-src', element.image.src);
+            // imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
+            // imageElement.setAttribute('class', 'item__image js-lazyload');
+            // excerptElement.className += ' item__excerpt--image';
+            // helper.append(excerptElement, imageElement);
+            excerptElement.className += ' item__excerpt--background js-lazyload';
+            excerptElement.dataset.src = element.image.src;
         } else {
             if (element.excerpt) {
                 let excerptNode = helper.createTextNode(element.excerpt);
@@ -171,9 +226,9 @@ class Item {
 
         // background
         if (element.images[1]) {
-            backgroundElement.style.backgroundImage = 'url(' + element.images[1].src + ')';
+            backgroundElement.dataset.src = element.images[1].src;
         }
-        backgroundElement.setAttribute('class', 'item__background');
+        backgroundElement.setAttribute('class', 'item__background js-lazyload');
 
         // title
         let titleNode = helper.createTextNode(element.title);
@@ -330,6 +385,40 @@ class Item {
     handleDeleteClick(deleteItemEvent) {
         let id = deleteItemEvent.target.dataset.id;
         pocket.changeItemState(deleteItemEvent, 'delete', id, false);
+    }
+
+    /**
+     * Calculate items images heights.
+     *
+     * @function calcBackgroundHeights
+     * @return {void}
+     */
+    calcBackgroundHeights() {
+        const items = document.querySelectorAll('.item__content');
+
+        for (let item of [...items]) {
+            let titleHeight = 0;
+            for (let child of [...item.children]) {
+                if (child.classList.contains('item__title')) {
+                    titleHeight = child.offsetHeight;
+                }
+                if (child.classList.contains('item__excerpt--background')) {
+                    child.style.height = 300 - (titleHeight + 20 + 52) + 'px';
+                }
+            }
+        }
+
+        this.timeout = false;
+    }
+
+    /**
+     * Destroy plugin.
+     *
+     * @function destroy
+     * @return {void}
+     */
+    destroy() {
+        this.removeEvents();
     }
 }
 

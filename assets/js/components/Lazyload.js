@@ -130,7 +130,12 @@ class Lazyload {
         // Prevent this from being lazy loaded a second time.
         img.classList.remove('js-lazyload');
         img.classList.add('js-lazyloaded');
-        img.src = src;
+
+        if (img.tagName.toLowerCase() === 'img') {
+            img.src = src;
+        } else {
+            img.style.backgroundImage = 'url(' + src + ')';
+        }
     }
 }
 

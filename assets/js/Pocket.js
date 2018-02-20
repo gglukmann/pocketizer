@@ -189,6 +189,8 @@ class Pocket {
 
                 helper.append(list, sentinel);
             });
+
+        lazyload.load();
     }
 
     /**
@@ -383,6 +385,7 @@ class Pocket {
             this.createSentinel();
             this.createItemsObserver();
             lazyload.load();
+            item.calcBackgroundHeights();
         }
     }
 
@@ -460,6 +463,7 @@ class Pocket {
 
         this.createItems(array);
         lazyload.load();
+        item.calcBackgroundHeights();
     }
 
     /**
@@ -996,6 +1000,7 @@ class Pocket {
         modal.init();
         collapse.init();
         selector.init();
+        item.init();
 
         this.getContent();
     }
@@ -1046,6 +1051,7 @@ class Pocket {
         modal.destroy();
         collapse.destroy();
         selector.destroy();
+        item.destroy();
 
         helper.removeClass(document.body, ['theme-light', 'theme-dark', 'theme-sepia']);
 
