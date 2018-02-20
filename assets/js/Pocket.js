@@ -1,5 +1,3 @@
-'use strict';
-
 class Pocket {
     /**
      * @constructor
@@ -963,6 +961,12 @@ class Pocket {
         this.removeLoggedOutClickEvents();
         this.bindLoggedInClickEvents();
         this.bindAddNewItemEvents();
+
+        header.init();
+        search.init();
+        modal.init();
+        collapse.init();
+        selector.init();
     }
 
     /**
@@ -984,6 +988,12 @@ class Pocket {
 
         this.bindLoggedInClickEvents();
         this.bindAddNewItemEvents();
+
+        header.init();
+        search.init();
+        modal.init();
+        collapse.init();
+        selector.init();
 
         this.getContent();
     }
@@ -1029,6 +1039,8 @@ class Pocket {
         this.bindLoggedOutClickEvents();
         this.removeAdItemToPocketClicks();
 
+        header.destroy();
+        search.destroy();
         modal.destroy();
         collapse.destroy();
         selector.destroy();
@@ -1043,8 +1055,4 @@ const pocket = new Pocket();
 
 window.onload = (() => {
     pocket.init();
-    search.init();
-    modal.init();
-    collapse.init();
-    selector.init();
 });

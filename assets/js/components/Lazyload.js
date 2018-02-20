@@ -1,12 +1,10 @@
-'use strict';
-
 class Lazyload {
     /**
      * @constructor
      */
     constructor() {
         this.imageCount = 0;
-        this.observer;
+        this.observer = false;
     }
 
     /**

@@ -1,5 +1,3 @@
-'use strict';
-
 class Item {
     /**
      * Create new item and append to list.
@@ -32,7 +30,7 @@ class Item {
             title = element.given_url;
         }
 
-        if (element.favorite == 1) {
+        if (element.favorite === 1) {
             favouriteElement.setAttribute('data-favourite', 'true');
         } else {
             favouriteElement.setAttribute('data-favourite', 'false');
@@ -56,10 +54,10 @@ class Item {
                 isRead = false;
             break;
             case 'archive':
-                readNode = helper.createTextNode(chrome.i18n.getMessage('MARK_UNREAD'))
+                readNode = helper.createTextNode(chrome.i18n.getMessage('MARK_UNREAD'));
                 isRead = true;
             break;
-        };
+        }
 
         if (element.time_added) {
             timeElement.setAttribute('class', 'item__time');
@@ -97,7 +95,7 @@ class Item {
 
         excerptElement.setAttribute('class', 'item__excerpt');
 
-        if ((element.has_image == 1 || element.has_image == 2) && element.image) {
+        if ((element.has_image === 1 || element.has_image === 2) && element.image) {
             let imageElement = helper.createNode('img');
             imageElement.setAttribute('data-src', element.image.src);
             imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
@@ -199,7 +197,7 @@ class Item {
         saveElement.setAttribute('id', 'js-addNewFromAd');
         // span with text
         let saveNode = helper.createTextNode(chrome.i18n.getMessage('SAVE_TO_POCKET'));
-        saveElementText.setAttribute('class', 'item__link-text-child')
+        saveElementText.setAttribute('class', 'item__link-text-child');
         helper.append(saveElementText, saveNode);
         // svg
         let svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
@@ -225,6 +223,7 @@ class Item {
      * Append element to list.
      *
      * @param {HTMLElement} itemElement - Element to render.
+     * @param {String} list - List type.
      * @param {Boolean} doPrepend - If item has to be prepended.
      * @return {void}
      */
@@ -280,7 +279,7 @@ class Item {
         e.preventDefault();
         let id = e.target.dataset.id;
         let isFavourited = e.target.dataset.favourite;
-        isFavourited = (isFavourited == 'true'); // convert to boolean
+        isFavourited = (isFavourited === 'true'); // convert to boolean
 
         pocket.changeItemState(e, 'favourite', id, isFavourited);
     }
@@ -314,7 +313,7 @@ class Item {
 
         document.querySelector('#js-deleteSubmit').addEventListener('click', newEvent, false);
 
-        document.addEventListener('closed.modal', e => {
+        document.addEventListener('closed.modal', () => {
             document.querySelector('#js-deleteSubmit').removeEventListener('click', newEvent, false);
         }, false);
     }

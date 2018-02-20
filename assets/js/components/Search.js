@@ -1,5 +1,3 @@
-'use strict';
-
 class Search {
     /**
      * constructor
@@ -121,7 +119,7 @@ class Search {
 
         if (doHide) {
             this.state.hasSearched = false;
-            this.hide();
+            this.hide(true);
         }
     }
 
@@ -192,7 +190,8 @@ class Search {
      * @return {void}
      */
     destroy() {
-        this.reset(true);
+        this.state.hasSearched = false;
+        this.hide(true);
         this.removeEvents();
     }
 }

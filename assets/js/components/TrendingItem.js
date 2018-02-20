@@ -1,5 +1,3 @@
-'use strict';
-
 class TrendingItem {
     /**
      * Hide all trending elements.

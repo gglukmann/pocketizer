@@ -55,7 +55,7 @@ body {
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
     font-size: 1em;
     margin: 0;
-    padding: 0;
+    padding: 100px 0 0;
     background: var(--body-bg);
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
@@ -89,6 +89,7 @@ a {
 .container {
     max-width: var(--page-width);
     margin: 0 auto;
+    width: 100%;
 }
 
 .icon {
@@ -111,7 +112,7 @@ a {
     top: 8px;
     left: 50%;
     transform: translate(-50%, 0);
-    z-index: 20;
+    z-index: 120;
 }
 
 @media (min-width: 850px) {
@@ -120,18 +121,51 @@ a {
     }
 }
 
+.header.is-scrolled .status {
+    top: 70px;
+}
+
 /* HEADER */
 .header {
+    position: fixed;
+    top: 2px;
+    left: 0;
+    right: 0;
+    background: var(--body-bg);
+    z-index: 100;
+}
+
+.header.is-scrolled {
+    border-bottom: 1px solid var(--border-dark);
+}
+
+.theme-dark .header {
+    background: var(--theme-dark-bg);
+}
+
+.theme-dark .header.is-scrolled {
+    border-bottom: 1px solid var(--theme-dark-bg2);
+}
+
+.theme-sepia .header {
+    background: var(--theme-sepia-bg);
+}
+
+.header__inner {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: space-between;
-    position: relative;
 }
 
 .header__logo {
     height: auto;
     width: 25px;
+    transition: width .5s;
+}
+
+.header.is-scrolled .header__logo {
+    width: 15px;
 }
 
 .header__username {
@@ -145,12 +179,17 @@ a {
     line-height: 1.4;
     padding-left: 10px;
     padding-right: 10px;
+    transition: font-size .5s;
 }
 
 @media (min-width: 850px) {
     .header__title {
         font-size: 2.78em;
     }
+}
+
+.header.is-scrolled .header__title {
+    font-size: 1.5em;
 }
 
 .header__count {
@@ -162,6 +201,10 @@ a {
     .header__count {
         font-size: .6em;
     }
+}
+
+.header.is-scrolled .header__count {
+    font-size: 1em;
 }
 
 .header__right {
@@ -208,13 +251,19 @@ a {
 }
 
 .menu__item {
-    margin: 10px;
+    margin: 0 10px;
 }
 
 .menu__link {
     color: var(--text-color);
     font-weight: bold;
     font-size: 1.2em;
+    padding: 10px 0;
+}
+
+.header.is-scrolled .menu__link {
+    padding-top: 16px;
+    padding-bottom: 16px;
 }
 
 .theme-dark .menu__link {
@@ -228,6 +277,7 @@ a {
 .menu__link.is-active {
     color: var(--menu-hover);
     cursor: default;
+    border-bottom: 2px solid;
 }
 
 /* MESSAGE */
