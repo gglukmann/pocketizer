@@ -506,6 +506,7 @@ a > span {
     font-size: 1em;
     line-height: 1.45;
     padding: .5em 1em 0;
+    overflow: hidden;
 }
 
 @media (min-width: 720px) {
@@ -513,15 +514,6 @@ a > span {
         display: block;
     }
 }
-
-/*.item__excerpt--image {
-    position: relative;
-    padding-left: 0;
-    padding-right: 0;
-    padding-bottom: 72%;
-    max-height: 200px;
-    overflow: hidden;
-}*/
 
 .item__excerpt--background {
     background-position: center center;

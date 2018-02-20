@@ -143,18 +143,12 @@ class Item {
         fakeLinkElement.setAttribute('class', 'item__link-fake');
 
         titleElement.setAttribute('href', link);
-        titleElement.setAttribute('class', 'item__title');
+        titleElement.setAttribute('class', 'item__title js-itemTitle');
         helper.append(titleElement, textNode);
 
-        excerptElement.setAttribute('class', 'item__excerpt');
+        excerptElement.setAttribute('class', 'item__excerpt js-itemExcerpt');
 
         if ((element.has_image === '1' || element.has_image === '2') && element.image) {
-            // let imageElement = helper.createNode('img');
-            // imageElement.setAttribute('data-src', element.image.src);
-            // imageElement.src = "data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==";
-            // imageElement.setAttribute('class', 'item__image js-lazyload');
-            // excerptElement.className += ' item__excerpt--image';
-            // helper.append(excerptElement, imageElement);
             excerptElement.className += ' item__excerpt--background js-lazyload';
             excerptElement.dataset.src = element.image.src;
         } else {
@@ -399,10 +393,10 @@ class Item {
         for (let item of items) {
             let titleHeight = 0;
             for (let child of [...item.children[0].children]) {
-                if (child.classList.contains('item__title')) {
+                if (child.classList.contains('js-itemTitle')) {
                     titleHeight = child.offsetHeight;
                 }
-                if (child.classList.contains('item__excerpt--background')) {
+                if (child.classList.contains('js-itemExcerpt')) {
                     // 300 is item height, 20 is item__time, 52 is item__content padding bottom
                     child.style.height = 300 - (titleHeight + 20 + 52) + 'px';
                 }
