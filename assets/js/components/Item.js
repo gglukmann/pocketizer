@@ -393,16 +393,17 @@ class Item {
      * @function calcBackgroundHeights
      * @return {void}
      */
-    calcBackgroundHeights() {
-        const items = document.querySelectorAll('.item__content');
+    calcBackgroundHeights(array) {
+        const items = typeof array === 'object' ? array : [...document.querySelectorAll('.item')];
 
-        for (let item of [...items]) {
+        for (let item of items) {
             let titleHeight = 0;
-            for (let child of [...item.children]) {
+            for (let child of [...item.children[0].children]) {
                 if (child.classList.contains('item__title')) {
                     titleHeight = child.offsetHeight;
                 }
                 if (child.classList.contains('item__excerpt--background')) {
+                    // 300 is item height, 20 is item__time, 52 is item__content padding bottom
                     child.style.height = 300 - (titleHeight + 20 + 52) + 'px';
                 }
             }

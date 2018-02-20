@@ -381,11 +381,11 @@ class Pocket {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             this.showRecommendedPageLink();
 
-            this.createItems(array);
+            const domItemsArray = this.createItems(array);
             this.createSentinel();
             this.createItemsObserver();
             lazyload.load();
-            item.calcBackgroundHeights();
+            item.calcBackgroundHeights(domItemsArray);
         }
     }
 
@@ -397,10 +397,16 @@ class Pocket {
      * @return {void}
      */
     createItems(array) {
+        const newArray = [];
+        let newItem;
+
         for (let key in array) {
             let newItem = item.create(array[key]);
-            item.render(newItem);
+            newItem = item.render(newItem);
+            newArray.push(newItem);
         }
+
+        return newArray;
     }
 
     /**
@@ -461,9 +467,9 @@ class Pocket {
             helper.showMessage(chrome.i18n.getMessage('LOADING'));
         }
 
-        this.createItems(array);
+        const domItemsArray = this.createItems(array);
         lazyload.load();
-        item.calcBackgroundHeights();
+        item.calcBackgroundHeights(domItemsArray);
     }
 
     /**
