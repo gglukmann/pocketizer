@@ -826,6 +826,12 @@ a {
     width: 100%;
 }
 
+.theme-dark .textfield__input {
+    background-color: var(--theme-dark-bg2);
+    border-color: var(--theme-dark-bg);
+    color: var(--theme-dark-text);
+}
+
 /* SEARCH */
 .search {
     display: none;
