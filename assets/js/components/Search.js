@@ -67,7 +67,10 @@ class Search {
      */
     handleMakeSearchClick(e) {
         this.state.hasSearched = true;
-        this.search(e.target.value);
+
+        if (e.target.value.length >= 3) {
+            this.search(e.target.value);
+        }
     }
 
     /**
