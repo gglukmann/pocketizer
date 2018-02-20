@@ -528,9 +528,9 @@ class Pocket {
             item.delete(e);
         }
 
-        if (e.target.parentNode.classList.contains('js-changeMenu')) {
+        if (e.target.classList.contains('js-changeMenu')) {
             e.preventDefault();
-            let page = e.target.parentNode.dataset.page;
+            let page = e.target.dataset.page;
 
             this.changePage(page);
         }

@@ -92,6 +92,10 @@ a {
     text-decoration: none;
 }
 
+a > span {
+    pointer-events: none;
+}
+
 .container {
     max-width: var(--page-width);
     margin: 0 auto;
@@ -173,7 +177,7 @@ a {
 .header__logo {
     height: auto;
     width: 25px;
-    transition: width .5s;
+    transition: width .25s;
 }
 
 @media (min-width: 850px) {
@@ -194,7 +198,7 @@ a {
     padding-left: 10px;
     padding-right: 10px;
     margin: 13px 0;
-    transition: font-size .5s;
+    transition: font-size .25s;
 }
 
 @media (min-width: 850px) {
