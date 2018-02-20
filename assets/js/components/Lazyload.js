@@ -86,7 +86,9 @@ class Lazyload {
             return;
         }
 
-        return this.fetchImage(src).then(() => { this.applyImage(image, src); });
+        return this.fetchImage(src).then(() => {
+            this.applyImage(image, src);
+        });
     }
 
     /**

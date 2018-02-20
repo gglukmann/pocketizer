@@ -173,7 +173,7 @@ class Item {
         if (element.images[1]) {
             backgroundElement.style.backgroundImage = 'url(' + element.images[1].src + ')';
         }
-        backgroundElement.setAttribute('class', 'item__background js-lazyload');
+        backgroundElement.setAttribute('class', 'item__background');
 
         // title
         let titleNode = helper.createTextNode(element.title);
@@ -184,7 +184,9 @@ class Item {
 
         // source
         sourceElement.setAttribute('class', 'item__link-source');
-        let sourceNode = helper.createTextNode(element.resolved_url);
+        let domain = element.resolved_url.replace(/^(https?:|)\/\//, '');
+        domain = domain.split('/')[0];
+        let sourceNode = helper.createTextNode(domain);
         sourceElement.setAttribute('href', element.resolved_url);
         sourceElement.setAttribute('title', element.resolved_url);
         helper.append(sourceElement, sourceNode);

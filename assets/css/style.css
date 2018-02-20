@@ -123,7 +123,7 @@ a {
 
 @media (min-width: 850px) {
     .status {
-        top: 15px;
+        top: 12px;
     }
 
     .header.is-scrolled .status {
@@ -383,7 +383,6 @@ a {
 .item {
     display: flex;
     position: relative;
-    flex-grow: 1;
     width: 100%;
 }
 
