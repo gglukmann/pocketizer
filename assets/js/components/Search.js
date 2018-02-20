@@ -181,6 +181,7 @@ class Search {
         }
 
         lazyload.load();
+        item.calcBackgroundHeights();
     }
 
     /**
