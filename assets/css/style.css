@@ -140,6 +140,14 @@ a > span {
     position: relative;
 }
 
+.theme-dark .header {
+    background: var(--theme-dark-bg);
+}
+
+.theme-sepia .header {
+    background: var(--theme-sepia-bg);
+}
+
 @media (min-width: 850px) {
     .header {
         position: fixed;
@@ -156,15 +164,12 @@ a > span {
 
     .theme-dark .header.is-scrolled {
         border-bottom: 1px solid var(--theme-dark-bg2);
+        background: var(--theme-dark-bg2);
     }
-}
 
-.theme-dark .header {
-    background: var(--theme-dark-bg);
-}
-
-.theme-sepia .header {
-    background: var(--theme-sepia-bg);
+    .theme-sepia .header.is-scrolled {
+        background: var(--theme-sepia-bg2);
+    }
 }
 
 .header__inner {
