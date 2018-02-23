@@ -7,7 +7,7 @@ class Selector {
     }
 
     /**
-     * Initialize collapse.
+     * Initialize selector.
      *
      * @function init
      * @return {void}

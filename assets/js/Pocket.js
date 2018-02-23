@@ -21,6 +21,7 @@ class Pocket {
         this.searchButtonClick = false;
         this.fullSyncButtonClick = false;
         this.saveAdItemToPocketClick = false;
+        this.openTrendingCollapse = this.handleOpenTrendingCollapse.bind(this);
     }
 
     /**
@@ -33,11 +34,7 @@ class Pocket {
         helper.localizeHtml();
         this.setTheme();
 
-        if (localStorage.getItem('isTrendingShown') === 'true') {
-            collapse.open('#js-trendingCollapseTrigger', '#js-trendingCollapse');
-        } else {
-            collapse.close('#js-trendingCollapseTrigger', '#js-trendingCollapse');
-        }
+        this.handleTrendingSection();
 
         if (authService.isLoggedIn()) {
             this.startSync();
@@ -65,6 +62,37 @@ class Pocket {
                    selector.checked = true;
                }
            }
+        }
+    }
+
+    /**
+     * Check if trending list should be shown.
+     *
+     * @function handleTrendingSection
+     * @return {void}
+     */
+    handleTrendingSection() {
+        if (localStorage.getItem('isTrendingShown') === 'true') {
+            collapse.open('#js-trendingCollapseTrigger', '#js-trendingCollapse');
+        } else {
+            collapse.close('#js-trendingCollapseTrigger', '#js-trendingCollapse');
+        }
+
+        document.addEventListener('open.collapse', this.openTrendingCollapse, false);
+    }
+
+    /**
+     * Handle open trending collapse and load pictures.
+     *
+     * @function handleOpenTrendingCollapse
+     * @return {void}
+     */
+    handleOpenTrendingCollapse() {
+        for (const child of [...document.querySelector('#js-trendingCollapse').children]) {
+            if (child.id === 'js-trendingList') {
+                lazyload.load();
+                item.calcBackgroundHeights(child.children);
+            }
         }
     }
 
@@ -605,6 +633,7 @@ class Pocket {
         document.querySelector('#js-logout').removeEventListener('click', this.logoutButtonClick, false);
         document.querySelector('#js-searchButton').removeEventListener('click', this.searchButtonClick, false);
         document.querySelector('#js-fullSync').removeEventListener('click', this.fullSyncButtonClick, false);
+        document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
     }
 
     /**
