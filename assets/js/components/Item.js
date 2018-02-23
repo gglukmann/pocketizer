@@ -4,7 +4,7 @@ class Item {
      */
     constructor() {
         this.timeout = false;
-        this.pageResize = false;
+        this.pageResize = this.handlePageResize.bind(this);
     }
 
     /**
@@ -24,7 +24,6 @@ class Item {
      * @return {void}
      */
     bindEvents() {
-        this.pageResize = this.handlePageResize.bind(this);
         window.addEventListener('resize', this.pageResize, false);
     }
 

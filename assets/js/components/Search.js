@@ -7,8 +7,8 @@ class Search {
             hasSearched: false,
         };
 
-        this.makeSearchClick = false;
-        this.closeSearchClick = false;
+        this.makeSearchClick = this.handleMakeSearchClick.bind(this);
+        this.closeSearchClick = this.handleCloseSearchClick.bind(this);
     }
 
     /**
@@ -40,10 +40,7 @@ class Search {
      * @return {void}
      */
     bindEvents() {
-        this.makeSearchClick = this.handleMakeSearchClick.bind(this);
         document.querySelector('#js-searchInput').addEventListener('keyup', this.makeSearchClick, false);
-
-        this.closeSearchClick = this.handleCloseSearchClick.bind(this);
         document.querySelector('#js-emptySearch').addEventListener('click', this.closeSearchClick, false);
     }
 

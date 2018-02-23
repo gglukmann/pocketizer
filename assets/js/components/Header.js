@@ -8,7 +8,7 @@ class Header {
         };
 
         this.timeout = false;
-        this.scrollHeader = false;
+        this.scrollHeader = this.handleScrollHeader.bind(this);
     }
 
     /**
@@ -28,7 +28,6 @@ class Header {
      * @return {void}
      */
     bindEvents() {
-        this.scrollHeader = this.handleScrollHeader.bind(this);
         window.addEventListener('scroll', this.scrollHeader, false);
     }
 

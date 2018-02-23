@@ -6,9 +6,9 @@ class Modal {
         this.container = false;
         this.preventClose = false;
 
-        this.containerClick = false;
-        this.openModalClick = false;
-        this.modalKeydown = false;
+        this.containerClick = this.handleContainerClick.bind(this);
+        this.openModalClick = this.handleOpenModalClick.bind(this);
+        this.modalKeydown = this.handleModalKeydown.bind(this);
     }
 
     /**
@@ -28,10 +28,7 @@ class Modal {
      * @return {void}
      */
     bindEvents() {
-        this.openModalClick = this.handleOpenModalClick.bind(this);
         document.body.addEventListener('click', this.openModalClick, false);
-
-        this.modalKeydown = this.handleModalKeydown.bind(this);
         document.body.addEventListener('keydown', this.modalKeydown, false);
     }
 
@@ -113,7 +110,6 @@ class Modal {
             this.inner.setAttribute('class', 'modal-container__inner');
 
             if (!this.preventClose) {
-                this.containerClick = this.handleContainerClick.bind(this);
                 this.container.addEventListener('click', this.containerClick, false);
             }
 

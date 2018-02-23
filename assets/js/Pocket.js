@@ -15,12 +15,12 @@ class Pocket {
 
         this.fullSync = false;
 
-        this.menuAndItemClicks = false;
-        this.loggedOutClicks = false;
-        this.logoutButtonClick = false;
-        this.searchButtonClick = false;
-        this.fullSyncButtonClick = false;
-        this.saveAdItemToPocketClick = false;
+        this.menuAndItemClicks = this.handleMenuAndItemClicks.bind(this);
+        this.loggedOutClicks = this.handleLoginClick.bind(this);
+        this.logoutButtonClick = this.logout.bind(this);
+        this.searchButtonClick = this.handleSearchClick.bind(this);
+        this.fullSyncButtonClick = this.handleFullSyncClick.bind(this);
+        this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
         this.openTrendingCollapse = this.handleOpenTrendingCollapse.bind(this);
     }
 
@@ -527,16 +527,9 @@ class Pocket {
      * @return {void}
      */
     bindLoggedInClickEvents() {
-        this.menuAndItemClicks = this.handleMenuAndItemClicks.bind(this);
         document.body.addEventListener('click', this.menuAndItemClicks, false);
-
-        this.logoutButtonClick = this.logout.bind(this);
         document.querySelector('#js-logout').addEventListener('click', this.logoutButtonClick, false);
-
-        this.searchButtonClick = this.handleSearchClick.bind(this);
         document.querySelector('#js-searchButton').addEventListener('click', this.searchButtonClick, false);
-
-        this.fullSyncButtonClick = this.handleFullSyncClick.bind(this);
         document.querySelector('#js-fullSync').addEventListener('click', this.fullSyncButtonClick, false);
     }
 
@@ -643,7 +636,6 @@ class Pocket {
      * @return {void}
      */
     bindLoggedOutClickEvents() {
-        this.loggedOutClicks = this.handleLoginClick.bind(this);
         document.querySelector('#js-login').addEventListener('click', this.loggedOutClicks, false);
     }
 
@@ -676,7 +668,6 @@ class Pocket {
      * @return {void}
      */
     bindSaveAdItemToPocketClicks() {
-        this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
         document.body.addEventListener('click', this.saveAdItemToPocketClick, false);
     }
 

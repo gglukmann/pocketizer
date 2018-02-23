@@ -3,7 +3,7 @@ class Collapse {
      * constructor
      */
     constructor() {
-        this.openCollapseClick = false;
+        this.openCollapseClick = this.handleOpenCollapseClick.bind(this);
     }
 
     /**
@@ -23,7 +23,6 @@ class Collapse {
      * @return {void}
      */
     bindEvents() {
-        this.openCollapseClick = this.handleOpenCollapseClick.bind(this);
         document.body.addEventListener('click', this.openCollapseClick, false);
     }
 

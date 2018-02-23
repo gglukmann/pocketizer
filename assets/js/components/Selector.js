@@ -3,7 +3,7 @@ class Selector {
      * constructor
      */
     constructor() {
-        this.selectorClick = false;
+        this.selectorClick = this.handleSelectorClick.bind(this);
     }
 
     /**
@@ -23,7 +23,6 @@ class Selector {
      * @return {void}
      */
     bindEvents() {
-        this.selectorClick = this.handleSelectorClick.bind(this);
         document.body.addEventListener('change', this.selectorClick, false);
     }
 
