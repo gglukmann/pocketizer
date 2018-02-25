@@ -5,6 +5,9 @@ class Settings {
     constructor() {
         this.colorSelectorChange = this.handleColorSelectorChange.bind(this);
         this.pageSelectorChange = this.handlePageSelectorChange.bind(this);
+        this.focusAddInput = this.handleFocusAddInput.bind(this);
+        this.resetAddInput = this.handleResetAddInput.bind(this);
+        this.submitNewItem = this.handleSubmitNewItem.bind(this);
     }
 
     /**
@@ -26,6 +29,9 @@ class Settings {
     bindEvents() {
         document.addEventListener('select.selector', this.colorSelectorChange, false);
         document.addEventListener('select.selector', this.pageSelectorChange, false);
+        document.addEventListener('opened.modal', this.focusAddInput, false);
+        document.addEventListener('closed.modal', this.resetAddInput, false);
+        document.newItemForm.addEventListener('submit', this.submitNewItem, false);
     }
 
     /**
@@ -37,6 +43,9 @@ class Settings {
     removeEvents() {
         document.removeEventListener('select.selector', this.colorSelectorChange, false);
         document.removeEventListener('select.selector', this.pageSelectorChange, false);
+        document.removeEventListener('opened.modal', this.focusAddInput, false);
+        document.removeEventListener('closed.modal', this.resetAddInput, false);
+        document.newItemForm.removeEventListener('submit', this.submitNewItem, false);
     }
 
     /**
@@ -125,41 +134,52 @@ class Settings {
     }
 
     /**
-     * Add events to new item creating.
+     * Focus new item input when opening modal.
      *
-     * @function bindAddNewItemEvents
+     * @function handleFocusAddInput
      * @return {void}
      */
-    bindAddNewItemEvents() {
-        document.addEventListener('opened.modal', () => {
-            document.querySelector('#js-newItemInput').focus();
-        }, false);
+    handleFocusAddInput() {
+        document.querySelector('#js-newItemInput').focus();
+    }
 
-        document.addEventListener('closed.modal', () => {
-            document.querySelector('#js-newItemInput').value = '';
-        }, false);
+    /**
+     * Reset new item input value when closing modal.
+     *
+     * @function handleResetAddInput
+     * @return {void}
+     */
+    handleResetAddInput() {
+        document.querySelector('#js-newItemInput').value = '';
+    }
 
-        document.newItemForm.addEventListener('submit', e => {
-            const form = e.target;
+    /**
+     * Handle submitting new item adding form.
+     *
+     * @function handleSubmitNewItem
+     * @param {Event} e - Submit event.
+     * @return {void}
+     */
+    handleSubmitNewItem(e) {
+        const form = e.target;
 
-            if (form.checkValidity()) {
-                e.preventDefault();
-                helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
+        if (form.checkValidity()) {
+            e.preventDefault();
+            helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 
-                if (pocket.getActivePage() === 'list') {
-                    search.reset(true);
-                }
-
-                const rawData = new FormData(form);
-                let data = {};
-
-                for (let link of rawData.entries()) {
-                    data[link[0]] = link[1];
-                }
-
-                item.add(data);
+            if (pocket.getActivePage() === 'list') {
+                search.reset(true);
             }
-        }, false);
+
+            const rawData = new FormData(form);
+            let data = {};
+
+            for (let link of rawData.entries()) {
+                data[link[0]] = link[1];
+            }
+
+            item.add(data);
+        }
     }
 
     /**

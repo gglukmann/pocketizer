@@ -88,6 +88,16 @@ class Trending {
 
         recommend.bindSaveAdItemToPocketClicks();
     }
+
+    /**
+     * Destroy.
+     *
+     * @function destroy
+     * @return {void}
+     */
+    destroy() {
+        document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
+    }
 }
 
 const trending = new Trending();

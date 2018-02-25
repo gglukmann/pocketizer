@@ -338,7 +338,6 @@ class Pocket {
     removeLoggedInClickEvents() {
         document.body.removeEventListener('click', this.itemClicks, false);
         document.querySelector('#js-logout').removeEventListener('click', this.logoutButtonClick, false);
-        document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
     }
 
     /**
@@ -627,7 +626,6 @@ class Pocket {
 
         this.removeLoggedOutClickEvents();
         this.bindLoggedInEvents();
-        settings.bindAddNewItemEvents();
 
         header.init();
         search.init();
@@ -658,7 +656,6 @@ class Pocket {
         }
 
         this.bindLoggedInEvents();
-        settings.bindAddNewItemEvents();
 
         header.init();
         search.init();
@@ -721,6 +718,7 @@ class Pocket {
         selector.destroy();
         item.destroy();
         settings.destroy();
+        trending.destroy();
 
         helper.removeClass(document.body, ['theme-light', 'theme-dark', 'theme-sepia']);
 
