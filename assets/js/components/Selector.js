@@ -56,11 +56,8 @@ class Selector {
      * @return {void}
      */
     selectRadio() {
-        const value = document.querySelector('[name=selector-color]:checked').value;
-
-        document.body.classList.remove('theme-' + localStorage.getItem('theme'));
-        localStorage.setItem('theme', value);
-        document.body.classList.add('theme-' + value);
+        const eventSelect = new Event('select.selector');
+        document.dispatchEvent(eventSelect);
     }
 
     /**

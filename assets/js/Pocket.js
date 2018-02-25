@@ -22,6 +22,7 @@ class Pocket {
         this.fullSyncButtonClick = this.handleFullSyncClick.bind(this);
         this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
         this.openTrendingCollapse = this.handleOpenTrendingCollapse.bind(this);
+        this.colorSelectorChange = this.handleColorSelectorChange.bind(this);
     }
 
     /**
@@ -526,6 +527,21 @@ class Pocket {
         document.querySelector('#js-logout').addEventListener('click', this.logoutButtonClick, false);
         document.querySelector('#js-searchButton').addEventListener('click', this.searchButtonClick, false);
         document.querySelector('#js-fullSync').addEventListener('click', this.fullSyncButtonClick, false);
+        document.addEventListener('select.selector', this.colorSelectorChange, false);
+    }
+
+    /**
+     * Handle selector change event for color change.
+     *
+     * @function handleColorSelectorChange
+     * @return {void}
+     */
+    handleColorSelectorChange() {
+        const value = document.querySelector('[name=selector-color]:checked').value;
+
+        document.body.classList.remove('theme-' + localStorage.getItem('theme'));
+        localStorage.setItem('theme', value);
+        document.body.classList.add('theme-' + value);
     }
 
     /**
@@ -622,6 +638,7 @@ class Pocket {
         document.querySelector('#js-searchButton').removeEventListener('click', this.searchButtonClick, false);
         document.querySelector('#js-fullSync').removeEventListener('click', this.fullSyncButtonClick, false);
         document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
+        document.removeEventListener('select.selector', this.colorSelectorChange, false);
     }
 
     /**
