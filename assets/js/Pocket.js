@@ -28,7 +28,7 @@ class Pocket {
      */
     init() {
         helper.localizeHtml();
-        settings.setTheme();
+        settings.loadTheme();
 
         trending.handleTrendingSection();
 
@@ -720,7 +720,7 @@ class Pocket {
         settings.destroy();
         trending.destroy();
 
-        helper.removeClass(document.body, ['theme-light', 'theme-dark', 'theme-sepia']);
+        helper.removeClass(document.body, THEMES);
 
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }

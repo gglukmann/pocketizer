@@ -49,15 +49,16 @@ class Settings {
     }
 
     /**
-     * Set theme color on pocket load.
+     * Load and set theme color on pocket load.
      *
-     * @function setTheme
+     * @function loadTheme
      * @return {void}
      */
-    setTheme() {
+    loadTheme() {
         const theme = localStorage.getItem('theme');
-        if (theme) {
-            helper.addClass(document.body, 'theme-' + theme);
+
+        if (theme && THEMES.includes(theme)) {
+            helper.addClass(document.body, theme);
 
             const colorSelector = [...document.querySelectorAll('[name=selector-color]')];
             for (let selector of colorSelector) {
@@ -86,6 +87,7 @@ class Settings {
      */
     loadDefaultPage() {
         const defaultPage = settings.getDefaultPage();
+
         if (defaultPage && defaultPage !== 'list' && PAGES.includes(defaultPage)) {
             pocket.changePage(defaultPage);
         }
@@ -110,6 +112,7 @@ class Settings {
     handlePageSelectorChange(e) {
         if (e.detail.name === 'selector-page') {
             const page = e.detail.value.toString();
+
             if (PAGES.includes(page)) {
                 localStorage.setItem('defaultPage', page);
             }
@@ -127,9 +130,11 @@ class Settings {
         if (e.detail.name === 'selector-color') {
             const value = e.detail.value.toString();
 
-            document.body.classList.remove('theme-' + localStorage.getItem('theme'));
-            localStorage.setItem('theme', value);
-            document.body.classList.add('theme-' + value);
+            if (THEMES.includes(value)) {
+                document.body.classList.remove(localStorage.getItem('theme'));
+                localStorage.setItem('theme', value);
+                document.body.classList.add(value);
+            }
         }
     }
 

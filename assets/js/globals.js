@@ -14,3 +14,4 @@ const API = {
 };
 
 const PAGES = ['list', 'archive', 'recommend'];
+const THEMES = ['theme-light', 'theme-dark', 'theme-sepia'];
