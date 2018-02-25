@@ -86,7 +86,7 @@ class Trending {
 
         // TODO: if already added to list. add is-saved class and Saved text to button
 
-        pocket.bindSaveAdItemToPocketClicks();
+        recommend.bindSaveAdItemToPocketClicks();
     }
 }
 
