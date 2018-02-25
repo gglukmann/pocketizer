@@ -88,12 +88,7 @@ class Pocket {
      * @return {void}
      */
     handleOpenTrendingCollapse() {
-        for (const child of [...document.querySelector('#js-trendingCollapse').children]) {
-            if (child.id === 'js-trendingList') {
-                lazyload.load();
-                item.calcBackgroundHeights(child.children);
-            }
-        }
+        lazyload.load();
     }
 
     /**
