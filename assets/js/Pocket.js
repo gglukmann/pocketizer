@@ -19,7 +19,6 @@ class Pocket {
         this.loggedOutClicks = this.handleLoginClick.bind(this);
         this.logoutButtonClick = this.logout.bind(this);
         this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
-        this.openTrendingCollapse = this.handleOpenTrendingCollapse.bind(this);
     }
 
     /**
@@ -32,7 +31,7 @@ class Pocket {
         helper.localizeHtml();
         settings.setTheme();
 
-        this.handleTrendingSection();
+        trending.handleTrendingSection();
 
         if (authService.isLoggedIn()) {
             this.startSync();
@@ -40,34 +39,6 @@ class Pocket {
             document.querySelector('#js-default-message').style.display = 'block';
             this.bindLoggedOutClickEvents();
         }
-
-        this.getTrending();
-    }
-
-    /**
-     * Check if trending list should be shown.
-     *
-     * @function handleTrendingSection
-     * @return {void}
-     */
-    handleTrendingSection() {
-        if (localStorage.getItem('isTrendingShown') === 'true') {
-            collapse.open('#js-trendingCollapseTrigger', '#js-trendingCollapse');
-        } else {
-            collapse.close('#js-trendingCollapseTrigger', '#js-trendingCollapse');
-        }
-
-        document.addEventListener('open.collapse', this.openTrendingCollapse, false);
-    }
-
-    /**
-     * Handle open trending collapse and load pictures.
-     *
-     * @function handleOpenTrendingCollapse
-     * @return {void}
-     */
-    handleOpenTrendingCollapse() {
-        lazyload.load();
     }
 
     /**
@@ -89,41 +60,6 @@ class Pocket {
      */
     setActivePage(page) {
         return this.active_page = page;
-    }
-
-    /**
-     * Get trending stories.
-     *
-     * @function getTrending
-     * @return {void}
-     */
-    getTrending() {
-        const trendingItemsCount = 4;
-
-        apiService.getTrending(trendingItemsCount)
-            .then(response => {
-                this.handleTrendingResponse(response);
-            });
-    }
-
-    /**
-     * Handle trending fetch response.
-     *
-     * @function handleTrendingResponse
-     * @param {Object} response - Response from fetch.
-     * @return {void}
-     */
-    handleTrendingResponse(response) {
-        let items = response.list;
-
-        for (let key in items) {
-            let newItem = item.createAdItem(items[key]);
-            item.render(newItem, 'trendingList');
-        }
-
-        // TODO: if already added to list. add is-saved class and Saved text to button
-
-        this.bindSaveAdItemToPocketClicks();
     }
 
     /**
@@ -509,6 +445,18 @@ class Pocket {
     }
 
     /**
+     * Remove all logged in elements click events.
+     *
+     * @function removeLoggedInClickEvents
+     * @return {void}
+     */
+    removeLoggedInClickEvents() {
+        document.body.removeEventListener('click', this.itemClicks, false);
+        document.querySelector('#js-logout').removeEventListener('click', this.logoutButtonClick, false);
+        document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
+    }
+
+    /**
      * Handle item clicks.
      *
      * @function handleItemClicks
@@ -526,18 +474,6 @@ class Pocket {
     }
 
     /**
-     * Remove all logged in elements click events.
-     *
-     * @function removeLoggedInClickEvents
-     * @return {void}
-     */
-    removeLoggedInClickEvents() {
-        document.body.removeEventListener('click', this.itemClicks, false);
-        document.querySelector('#js-logout').removeEventListener('click', this.logoutButtonClick, false);
-        document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
-    }
-
-    /**
      * Bind logged out buttons click events.
      *
      * @function bindLoggedOutClickEvents
@@ -545,6 +481,16 @@ class Pocket {
      */
     bindLoggedOutClickEvents() {
         document.querySelector('#js-login').addEventListener('click', this.loggedOutClicks, false);
+    }
+
+    /**
+     * Remove logged out buttons clicks.
+     *
+     * @function removeLoggedOutClickEvents
+     * @return {void}
+     */
+    removeLoggedOutClickEvents() {
+        document.querySelector('#js-login').removeEventListener('click', this.loggedOutClicks, false);
     }
 
     /**
@@ -560,16 +506,6 @@ class Pocket {
     }
 
     /**
-     * Remove logged out buttons clicks.
-     *
-     * @function removeLoggedOutClickEvents
-     * @return {void}
-     */
-    removeLoggedOutClickEvents() {
-        document.querySelector('#js-login').removeEventListener('click', this.loggedOutClicks, false);
-    }
-
-    /**
      * Bind ad items save to pocket links
      *
      * @function bindSaveAdItemToPocketClicks
@@ -577,6 +513,16 @@ class Pocket {
      */
     bindSaveAdItemToPocketClicks() {
         document.body.addEventListener('click', this.saveAdItemToPocketClick, false);
+    }
+
+    /**
+     * Remove save ad item to pocket clicks.
+     *
+     * @function removeSaveAdItemToPocketClicks
+     * @return {void}
+     */
+    removeSaveAdItemToPocketClicks() {
+        document.body.removeEventListener('click', this.saveAdItemToPocketClick, false);
     }
 
     /**
@@ -600,16 +546,6 @@ class Pocket {
             helper.addClass(e.target, 'is-saved');
             e.target.childNodes[1].innerText = chrome.i18n.getMessage('SAVED');
         }
-    }
-
-    /**
-     * Remove save ad item to pocket clicks.
-     *
-     * @function removeAdItemToPocketClicks
-     * @return {void}
-     */
-    removeAdItemToPocketClicks() {
-        document.body.removeEventListener('click', this.saveAdItemToPocketClick, false);
     }
 
     /**
@@ -790,7 +726,7 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
                 document.querySelector('#js-searchButton').removeAttribute('style');
                 document.querySelector('#js-fullSync').removeAttribute('style');
-                trendingItem.showAll();
+                trending.showAll();
 
                 this.render();
                 this.getContent();
@@ -803,7 +739,7 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
                 document.querySelector('#js-searchButton').removeAttribute('style');
                 document.querySelector('#js-fullSync').removeAttribute('style');
-                trendingItem.hideAll();
+                trending.hideAll();
 
                 if (this.isArchiveLoaded()) {
                     this.render();
@@ -819,7 +755,7 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('RECOMMENDED');
                 document.querySelector('#js-searchButton').style.display = 'none';
                 document.querySelector('#js-fullSync').style.display = 'none';
-                trendingItem.hideAll();
+                trending.hideAll();
 
                 this.loadRecommendations();
             break;
@@ -848,7 +784,7 @@ class Pocket {
             document.querySelector('#js-fullSync').removeAttribute('style');
             document.querySelector('#js-trendingCollapseTrigger').removeAttribute('style');
             document.querySelector('#js-trendingSeparator').removeAttribute('style');
-            trendingItem.showAll();
+            trending.showAll();
         } else {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
@@ -865,7 +801,7 @@ class Pocket {
             document.querySelector('#js-fullSync').style.display = 'none';
             document.querySelector('#js-trendingCollapseTrigger').style.display = 'none';
             document.querySelector('#js-trendingSeparator').style.display = 'none';
-            trendingItem.hideAll();
+            trending.hideAll();
         }
     }
 
@@ -972,7 +908,7 @@ class Pocket {
 
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();
-        this.removeAdItemToPocketClicks();
+        this.removeSaveAdItemToPocketClicks();
 
         header.destroy();
         search.destroy();

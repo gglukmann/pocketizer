@@ -110,7 +110,7 @@ class Search {
         document.querySelector('#js-results-message').style.display = 'none';
 
         if (pocket.getActivePage() === 'list') {
-            trendingItem.showAll();
+            trending.showAll();
         }
 
         if (this.state.hasSearched) {
@@ -136,7 +136,7 @@ class Search {
             return;
         }
 
-        trendingItem.hideAll();
+        trending.hideAll();
         document.querySelector('#js-results-message').removeAttribute('style');
         document.querySelector('#js-searchValue').innerText = value;
         document.querySelector('#js-list').innerHTML = '';
