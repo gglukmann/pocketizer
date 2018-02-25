@@ -22,8 +22,6 @@ class Pocket {
         this.fullSyncButtonClick = this.handleFullSyncClick.bind(this);
         this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
         this.openTrendingCollapse = this.handleOpenTrendingCollapse.bind(this);
-        this.colorSelectorChange = this.handleColorSelectorChange.bind(this);
-        this.pageSelectorChange = this.handlePageSelectorChange.bind(this);
     }
 
     /**
@@ -34,7 +32,7 @@ class Pocket {
      */
     init() {
         helper.localizeHtml();
-        this.setTheme();
+        settings.setTheme();
 
         this.handleTrendingSection();
 
@@ -46,58 +44,6 @@ class Pocket {
         }
 
         this.getTrending();
-    }
-
-    /**
-     * Set theme color on pocket load.
-     *
-     * @function setTheme
-     * @return {void}
-     */
-    setTheme() {
-        const theme = localStorage.getItem('theme');
-        if (theme) {
-           helper.addClass(document.body, 'theme-' + theme);
-
-           const colorSelector = [...document.querySelectorAll('[name=selector-color]')];
-           for (let selector of colorSelector) {
-               if (selector.value === theme) {
-                   selector.checked = true;
-               }
-           }
-        }
-    }
-
-    /**
-     * Get default page to load on extension load.
-     *
-     * @function getDefaultPage
-     * @return {String | null}
-     */
-    getDefaultPage() {
-        return localStorage.getItem('defaultPage');
-    }
-
-    /**
-     * Set default page on pocket load.
-     *
-     * @function loadDefaultPage
-     * @return {void}
-     */
-    loadDefaultPage() {
-        const defaultPage = this.getDefaultPage();
-        if (defaultPage && defaultPage !== 'list' && PAGES.includes(defaultPage)) {
-            this.changePage(defaultPage);
-        }
-
-        if (defaultPage) {
-            const pageSelector = [...document.querySelectorAll('[name=selector-page]')];
-            for (let selector of pageSelector) {
-                if (selector.value === defaultPage) {
-                    selector.checked = true;
-                }
-            }
-        }
     }
 
     /**
@@ -543,9 +489,9 @@ class Pocket {
     }
 
     /**
-     * Show Recommended page in menu.
+     * Show Recommended page links.
      *
-     * @function showRecommendedPage
+     * @function showRecommendedPageLink
      * @return {void}
      */
     showRecommendedPageLink() {
@@ -556,49 +502,14 @@ class Pocket {
     /**
      * Binds click events for logged in buttons.
      *
-     * @function bindLoggedInClickEvents
+     * @function bindLoggedInEvents
      * @return {void}
      */
-    bindLoggedInClickEvents() {
+    bindLoggedInEvents() {
         document.body.addEventListener('click', this.menuAndItemClicks, false);
         document.querySelector('#js-logout').addEventListener('click', this.logoutButtonClick, false);
         document.querySelector('#js-searchButton').addEventListener('click', this.searchButtonClick, false);
         document.querySelector('#js-fullSync').addEventListener('click', this.fullSyncButtonClick, false);
-        document.addEventListener('select.selector', this.colorSelectorChange, false);
-        document.addEventListener('select.selector', this.pageSelectorChange, false);
-    }
-
-    /**
-     * Handle default page selector in settings.
-     *
-     * @function handlePageSelectorChange
-     * @param {Event} e - Selector change event.
-     * @return {void}
-     */
-    handlePageSelectorChange(e) {
-        if (e.detail.name === 'selector-page') {
-            const page = e.detail.value.toString();
-            if (PAGES.includes(page)) {
-                localStorage.setItem('defaultPage', page);
-            }
-        }
-    }
-
-    /**
-     * Handle selector change event for color change.
-     *
-     * @function handleColorSelectorChange
-     * @param {Event} e - Selector change event.
-     * @return {void}
-     */
-    handleColorSelectorChange(e) {
-        if (e.detail.name === 'selector-color') {
-            const value = e.detail.value.toString();
-
-            document.body.classList.remove('theme-' + localStorage.getItem('theme'));
-            localStorage.setItem('theme', value);
-            document.body.classList.add('theme-' + value);
-        }
     }
 
     /**
@@ -695,8 +606,6 @@ class Pocket {
         document.querySelector('#js-searchButton').removeEventListener('click', this.searchButtonClick, false);
         document.querySelector('#js-fullSync').removeEventListener('click', this.fullSyncButtonClick, false);
         document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
-        document.removeEventListener('select.selector', this.colorSelectorChange, false);
-        document.removeEventListener('select.selector', this.pageSelectorChange, false);
     }
 
     /**
@@ -1048,7 +957,7 @@ class Pocket {
         this.getContent();
 
         this.removeLoggedOutClickEvents();
-        this.bindLoggedInClickEvents();
+        this.bindLoggedInEvents();
         this.bindAddNewItemEvents();
 
         header.init();
@@ -1069,17 +978,17 @@ class Pocket {
 
         this.toggleLoggedInContent(true);
 
-        if (this.getDefaultPage() === null || (this.getDefaultPage() && this.getDefaultPage() === 'list')) {
+        if (settings.getDefaultPage() === null || (settings.getDefaultPage() && settings.getDefaultPage() === 'list')) {
             this.render();
         } else {
-            this.loadDefaultPage();
+            settings.loadDefaultPage();
         }
 
         if (localStorage.getItem('username')) {
             document.querySelector('#js-username').innerText = localStorage.getItem('username');
         }
 
-        this.bindLoggedInClickEvents();
+        this.bindLoggedInEvents();
         this.bindAddNewItemEvents();
 
         header.init();
@@ -1088,8 +997,9 @@ class Pocket {
         collapse.init();
         selector.init();
         item.init();
+        settings.init();
 
-        if (!this.getDefaultPage() || this.getDefaultPage() === 'list') {
+        if (!settings.getDefaultPage() || settings.getDefaultPage() === 'list') {
             this.getContent();
         }
     }
@@ -1141,6 +1051,7 @@ class Pocket {
         collapse.destroy();
         selector.destroy();
         item.destroy();
+        settings.destroy();
 
         helper.removeClass(document.body, ['theme-light', 'theme-dark', 'theme-sepia']);
 
