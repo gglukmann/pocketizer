@@ -500,44 +500,6 @@ class Pocket {
     }
 
     /**
-     * Add events to new item creating.
-     *
-     * @function bindAddNewItemEvents
-     * @return {void}
-     */
-    bindAddNewItemEvents() {
-        document.addEventListener('opened.modal', () => {
-            document.querySelector('#js-newItemInput').focus();
-        }, false);
-
-        document.addEventListener('closed.modal', () => {
-            document.querySelector('#js-newItemInput').value = '';
-        }, false);
-
-        document.newItemForm.addEventListener('submit', e => {
-            const form = e.target;
-
-            if (form.checkValidity()) {
-                e.preventDefault();
-                helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
-
-                if (pocket.getActivePage() === 'list') {
-                    search.reset(true);
-                }
-
-                const rawData = new FormData(form);
-                let data = {};
-
-                for (let link of rawData.entries()) {
-                    data[link[0]] = link[1];
-                }
-
-                item.add(data);
-            }
-        }, false);
-    }
-
-    /**
      * Change page between list and archive.
      *
      * @function changePage
@@ -665,7 +627,7 @@ class Pocket {
 
         this.removeLoggedOutClickEvents();
         this.bindLoggedInEvents();
-        this.bindAddNewItemEvents();
+        settings.bindAddNewItemEvents();
 
         header.init();
         search.init();
@@ -696,7 +658,7 @@ class Pocket {
         }
 
         this.bindLoggedInEvents();
-        this.bindAddNewItemEvents();
+        settings.bindAddNewItemEvents();
 
         header.init();
         search.init();
