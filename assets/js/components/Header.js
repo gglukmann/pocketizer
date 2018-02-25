@@ -9,6 +9,9 @@ class Header {
 
         this.timeout = false;
         this.scrollHeader = this.handleScrollHeader.bind(this);
+        this.menuClicks = this.handleMenuClicks.bind(this);
+        this.searchButtonClick = this.handleSearchClick.bind(this);
+        this.fullSyncButtonClick = this.handleFullSyncClick.bind(this);
     }
 
     /**
@@ -29,6 +32,9 @@ class Header {
      */
     bindEvents() {
         window.addEventListener('scroll', this.scrollHeader, false);
+        document.body.addEventListener('click', this.menuClicks, false);
+        document.querySelector('#js-searchButton').addEventListener('click', this.searchButtonClick, false);
+        document.querySelector('#js-fullSync').addEventListener('click', this.fullSyncButtonClick, false);
     }
 
     /**
@@ -39,6 +45,9 @@ class Header {
      */
     removeEvents() {
         window.removeEventListener('scroll', this.scrollHeader, false);
+        document.body.removeEventListener('click', this.menuClicks, false);
+        document.querySelector('#js-searchButton').removeEventListener('click', this.searchButtonClick, false);
+        document.querySelector('#js-fullSync').removeEventListener('click', this.fullSyncButtonClick, false);
     }
 
     /**
@@ -90,6 +99,80 @@ class Header {
                 helper.addClass(menuLink, 'is-active');
             }
         }
+    }
+
+    /**
+     * Handle menu clicks.
+     *
+     * @function handleMenuClicks
+     * @param {Event} e - Event from click.
+     * @return {void}
+     */
+    handleMenuClicks(e) {
+        if (e.target.classList.contains('js-changeMenu')) {
+            e.preventDefault();
+            let page = e.target.dataset.page;
+
+            pocket.changePage(page);
+        }
+    }
+
+    /**
+     * Handle search button click.
+     *
+     * @function handleSearchClick
+     * @return {void}
+     */
+    handleSearchClick() {
+        search.show();
+    }
+
+    /**
+     * Handle full sync button click.
+     *
+     * @function handleFullSyncClick
+     * @param {Event} e - Click event.
+     * @return {void}
+     */
+    handleFullSyncClick(e) {
+        helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+
+        const target = e.target;
+        const syncClass = 'is-syncing';
+
+        helper.addClass(target, syncClass);
+        pocket.fullSync = true;
+
+        pocket.getContent();
+
+        this.removeSyncedClassHandler = this.handleRemoveSyncedClass.bind(this, target, syncClass);
+        document.addEventListener('synced', this.removeSyncedClassHandler, false);
+    }
+
+    /**
+     * Handle full synced event.
+     *
+     * @function handleRemoveSyncedClass
+     * @param {HTMLElement} target - Target HTMLElement.
+     * @param {String} syncClass - Syncing class.
+     * @returns {void}
+     */
+    handleRemoveSyncedClass(target, syncClass) {
+        const syncedClass = 'is-synced';
+
+        helper.removeClass(target, syncClass);
+        helper.addClass(target, syncedClass);
+
+        helper.addClass(target.children[0], 'hidden');
+        helper.removeClass(target.children[1], 'hidden');
+
+        setTimeout(() => {
+            helper.removeClass(target, syncedClass);
+            helper.addClass(target.children[1], 'hidden');
+            helper.removeClass(target.children[0], 'hidden');
+        }, 1500);
+
+        document.removeEventListener('synced', this.removeSyncedClassHandler, false);
     }
 
     /**

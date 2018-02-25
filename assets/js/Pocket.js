@@ -15,11 +15,9 @@ class Pocket {
 
         this.fullSync = false;
 
-        this.menuAndItemClicks = this.handleMenuAndItemClicks.bind(this);
+        this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
         this.logoutButtonClick = this.logout.bind(this);
-        this.searchButtonClick = this.handleSearchClick.bind(this);
-        this.fullSyncButtonClick = this.handleFullSyncClick.bind(this);
         this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
         this.openTrendingCollapse = this.handleOpenTrendingCollapse.bind(this);
     }
@@ -506,20 +504,18 @@ class Pocket {
      * @return {void}
      */
     bindLoggedInEvents() {
-        document.body.addEventListener('click', this.menuAndItemClicks, false);
+        document.body.addEventListener('click', this.itemClicks, false);
         document.querySelector('#js-logout').addEventListener('click', this.logoutButtonClick, false);
-        document.querySelector('#js-searchButton').addEventListener('click', this.searchButtonClick, false);
-        document.querySelector('#js-fullSync').addEventListener('click', this.fullSyncButtonClick, false);
     }
 
     /**
-     * Handle menu and item clicks.
+     * Handle item clicks.
      *
-     * @function handleMenuAndItemClicks
+     * @function handleItemClicks
      * @param {Event} e - Event from click.
      * @return {void}
      */
-    handleMenuAndItemClicks(e) {
+    handleItemClicks(e) {
         if (e.target.classList.contains('js-toggleFavouriteButton')) {
             item.favourite(e);
         } else if (e.target.classList.contains('js-toggleReadButton')) {
@@ -527,71 +523,6 @@ class Pocket {
         } else if (e.target.classList.contains('js-deleteButton')) {
             item.delete(e);
         }
-
-        if (e.target.classList.contains('js-changeMenu')) {
-            e.preventDefault();
-            let page = e.target.dataset.page;
-
-            this.changePage(page);
-        }
-    }
-
-    /**
-     * Handle search button click.
-     *
-     * @function handleSearchClick
-     * @return {void}
-     */
-    handleSearchClick() {
-        search.show();
-    }
-
-    /**
-     * Handle full sync button click.
-     *
-     * @function handleFullSyncClick
-     * @param {Event} e - Click event.
-     * @return {void}
-     */
-    handleFullSyncClick(e) {
-        helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
-
-        const target = e.target;
-        const syncClass = 'is-syncing';
-
-        helper.addClass(target, syncClass);
-        this.fullSync = true;
-
-        this.getContent();
-
-        this.removeSyncedClassHandler = this.handleRemoveSyncedClass.bind(this, target, syncClass);
-        document.addEventListener('synced', this.removeSyncedClassHandler, false);
-    }
-
-    /**
-     * Handle full synced event.
-     *
-     * @function handleRemoveSyncedClass
-     * @param {HTMLElement} target - Target HTMLElement.
-     * @param {String} syncClass - Syncing class.
-     * @returns {void}
-     */
-    handleRemoveSyncedClass(target, syncClass) {
-        const syncedClass = 'is-synced';
-
-        helper.removeClass(target, syncClass);
-        helper.addClass(target, syncedClass);
-
-        helper.addClass(target.children[0], 'hidden');
-        helper.removeClass(target.children[1], 'hidden');
-
-        setTimeout(() => {
-            helper.removeClass(target, syncedClass);
-            helper.addClass(target.children[1], 'hidden');
-            helper.removeClass(target.children[0], 'hidden');
-        }, 1500);
-
-        document.removeEventListener('synced', this.removeSyncedClassHandler, false);
     }
 
     /**
@@ -601,10 +532,8 @@ class Pocket {
      * @return {void}
      */
     removeLoggedInClickEvents() {
-        document.body.removeEventListener('click', this.menuAndItemClicks, false);
+        document.body.removeEventListener('click', this.itemClicks, false);
         document.querySelector('#js-logout').removeEventListener('click', this.logoutButtonClick, false);
-        document.querySelector('#js-searchButton').removeEventListener('click', this.searchButtonClick, false);
-        document.querySelector('#js-fullSync').removeEventListener('click', this.fullSyncButtonClick, false);
         document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
     }
 
