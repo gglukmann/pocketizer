@@ -81,10 +81,10 @@ class Pocket {
     /**
      * Set default page on pocket load.
      *
-     * @function setDefaultPage
+     * @function loadDefaultPage
      * @return {void}
      */
-    setDefaultPage() {
+    loadDefaultPage() {
         const defaultPage = this.getDefaultPage();
         if (defaultPage && defaultPage !== 'list' && PAGES.includes(defaultPage)) {
             this.changePage(defaultPage);
@@ -550,6 +550,7 @@ class Pocket {
      */
     showRecommendedPageLink() {
         document.querySelector('[data-page="recommend"]').removeAttribute('style');
+        document.querySelector('#js-recommendSelector').removeAttribute('style');
     }
 
     /**
@@ -1071,7 +1072,7 @@ class Pocket {
         if (this.getDefaultPage() === null || (this.getDefaultPage() && this.getDefaultPage() === 'list')) {
             this.render();
         } else {
-            this.setDefaultPage();
+            this.loadDefaultPage();
         }
 
         if (localStorage.getItem('username')) {
