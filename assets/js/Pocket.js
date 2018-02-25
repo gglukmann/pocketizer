@@ -23,6 +23,7 @@ class Pocket {
         this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
         this.openTrendingCollapse = this.handleOpenTrendingCollapse.bind(this);
         this.colorSelectorChange = this.handleColorSelectorChange.bind(this);
+        this.pageSelectorChange = this.handlePageSelectorChange.bind(this);
     }
 
     /**
@@ -54,15 +55,48 @@ class Pocket {
      * @return {void}
      */
     setTheme() {
-        if (localStorage.getItem('theme')) {
-           helper.addClass(document.body, 'theme-' + localStorage.getItem('theme'));
+        const theme = localStorage.getItem('theme');
+        if (theme) {
+           helper.addClass(document.body, 'theme-' + theme);
 
            const colorSelector = [...document.querySelectorAll('[name=selector-color]')];
            for (let selector of colorSelector) {
-               if (selector.value === localStorage.getItem('theme')) {
+               if (selector.value === theme) {
                    selector.checked = true;
                }
            }
+        }
+    }
+
+    /**
+     * Get default page to load on extension load.
+     *
+     * @function getDefaultPage
+     * @return {String | null}
+     */
+    getDefaultPage() {
+        return localStorage.getItem('defaultPage');
+    }
+
+    /**
+     * Set default page on pocket load.
+     *
+     * @function setDefaultPage
+     * @return {void}
+     */
+    setDefaultPage() {
+        const defaultPage = this.getDefaultPage();
+        if (defaultPage && defaultPage !== 'list' && PAGES.includes(defaultPage)) {
+            this.changePage(defaultPage);
+        }
+
+        if (defaultPage) {
+            const pageSelector = [...document.querySelectorAll('[name=selector-page]')];
+            for (let selector of pageSelector) {
+                if (selector.value === defaultPage) {
+                    selector.checked = true;
+                }
+            }
         }
     }
 
@@ -181,6 +215,8 @@ class Pocket {
             .then(() => {
                 this.createSentinel();
                 this.createAdItemsObserver();
+                lazyload.load();
+                helper.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
             });
     }
 
@@ -528,20 +564,40 @@ class Pocket {
         document.querySelector('#js-searchButton').addEventListener('click', this.searchButtonClick, false);
         document.querySelector('#js-fullSync').addEventListener('click', this.fullSyncButtonClick, false);
         document.addEventListener('select.selector', this.colorSelectorChange, false);
+        document.addEventListener('select.selector', this.pageSelectorChange, false);
+    }
+
+    /**
+     * Handle default page selector in settings.
+     *
+     * @function handlePageSelectorChange
+     * @param {Event} e - Selector change event.
+     * @return {void}
+     */
+    handlePageSelectorChange(e) {
+        if (e.detail.name === 'selector-page') {
+            const page = e.detail.value.toString();
+            if (PAGES.includes(page)) {
+                localStorage.setItem('defaultPage', page);
+            }
+        }
     }
 
     /**
      * Handle selector change event for color change.
      *
      * @function handleColorSelectorChange
+     * @param {Event} e - Selector change event.
      * @return {void}
      */
-    handleColorSelectorChange() {
-        const value = document.querySelector('[name=selector-color]:checked').value;
+    handleColorSelectorChange(e) {
+        if (e.detail.name === 'selector-color') {
+            const value = e.detail.value.toString();
 
-        document.body.classList.remove('theme-' + localStorage.getItem('theme'));
-        localStorage.setItem('theme', value);
-        document.body.classList.add('theme-' + value);
+            document.body.classList.remove('theme-' + localStorage.getItem('theme'));
+            localStorage.setItem('theme', value);
+            document.body.classList.add('theme-' + value);
+        }
     }
 
     /**
@@ -639,6 +695,7 @@ class Pocket {
         document.querySelector('#js-fullSync').removeEventListener('click', this.fullSyncButtonClick, false);
         document.removeEventListener('open.collapse', this.openTrendingCollapse, false);
         document.removeEventListener('select.selector', this.colorSelectorChange, false);
+        document.removeEventListener('select.selector', this.pageSelectorChange, false);
     }
 
     /**
@@ -873,9 +930,13 @@ class Pocket {
     changePage(page) {
         page = page ? page : 'list';
 
+        if (!PAGES.includes(page)) {
+            return;
+        }
+
         helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
-        this.changeMenuActiveState(page);
+        header.changeMenuActiveState(page);
 
         this.items_shown = 0;
         document.querySelector('#js-list').innerHTML = '';
@@ -914,6 +975,7 @@ class Pocket {
             case 'recommend':
                 this.setActivePage('recommend');
 
+                this.showRecommendedPageLink();
                 document.querySelector('#js-count-wrapper').style.display = 'none';
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('RECOMMENDED');
                 document.querySelector('#js-searchButton').style.display = 'none';
@@ -925,24 +987,6 @@ class Pocket {
         }
 
         window.scrollTo(0, 0);
-    }
-
-    /**
-     * Show right menu item active state.
-     *
-     * @function changeMenuActiveState
-     * @return {void}
-     */
-    changeMenuActiveState(page) {
-        let menuLinkElements = document.querySelectorAll('.menu__link');
-
-        for (let menuLink of menuLinkElements) {
-            helper.removeClass(menuLink, 'is-active');
-
-            if (menuLink.dataset.page === page) {
-                helper.addClass(menuLink, 'is-active');
-            }
-        }
     }
 
     /**
@@ -1022,9 +1066,13 @@ class Pocket {
     startSync() {
         helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
-        this.render();
-
         this.toggleLoggedInContent(true);
+
+        if (this.getDefaultPage() === null || (this.getDefaultPage() && this.getDefaultPage() === 'list')) {
+            this.render();
+        } else {
+            this.setDefaultPage();
+        }
 
         if (localStorage.getItem('username')) {
             document.querySelector('#js-username').innerText = localStorage.getItem('username');
@@ -1040,7 +1088,9 @@ class Pocket {
         selector.init();
         item.init();
 
-        this.getContent();
+        if (!this.getDefaultPage() || this.getDefaultPage() === 'list') {
+            this.getContent();
+        }
     }
 
     /**
@@ -1076,7 +1126,7 @@ class Pocket {
         helper.showMessage(`${chrome.i18n.getMessage('LOGGING_OUT')}...`, true, false, false);
         localStorage.clear();
         this.setActivePage('list');
-        this.changeMenuActiveState('list');
+        header.changeMenuActiveState('list');
 
         this.toggleLoggedInContent(false);
 

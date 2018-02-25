@@ -183,5 +183,8 @@
     },
     "SEPIA": {
         "message": "Sepia"
+    },
+    "CHOOSE_DEFAULT_PAGE": {
+        "message": "Choose default page"
     }
 }

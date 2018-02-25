@@ -75,6 +75,24 @@ class Header {
     }
 
     /**
+     * Show right menu item active state.
+     *
+     * @function changeMenuActiveState
+     * @return {void}
+     */
+    changeMenuActiveState(page) {
+        let menuLinkElements = document.querySelectorAll('.menu__link');
+
+        for (let menuLink of menuLinkElements) {
+            helper.removeClass(menuLink, 'is-active');
+
+            if (menuLink.dataset.page === page) {
+                helper.addClass(menuLink, 'is-active');
+            }
+        }
+    }
+
+    /**
      * Destroy plugin.
      *
      * @function destroy

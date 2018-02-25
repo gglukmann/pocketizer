@@ -45,7 +45,7 @@ class Selector {
      */
     handleSelectorClick(e) {
         if (e.target.classList.contains('selector__input')) {
-            this.selectRadio();
+            this.selectRadio(e);
         }
     }
 
@@ -55,9 +55,9 @@ class Selector {
      * @function selectRadio
      * @return {void}
      */
-    selectRadio() {
-        const eventSelect = new Event('select.selector');
-        document.dispatchEvent(eventSelect);
+    selectRadio(e) {
+        const eventSelector = new CustomEvent('select.selector', { detail: e.target });
+        document.dispatchEvent(eventSelector);
     }
 
     /**

@@ -12,3 +12,5 @@ const API = {
     url_getTrending: API_URL + API_VERSION + '/getGlobalRecs',
     url_getRecommendations: API_URL + API_VERSION + '/getSuggestedItems'
 };
+
+const PAGES = ['list', 'archive', 'recommend'];
