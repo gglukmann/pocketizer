@@ -5,6 +5,7 @@ class Recommend {
     constructor() {
         this.items_shown = 0;
         this.load_count_ad = 1;
+
         this.saveAdItemToPocketClick = this.handleSaveAdItemToPocketClick.bind(this);
     }
 
@@ -52,6 +53,8 @@ class Recommend {
             .then(() => {
                 pocket.createSentinel();
                 this.createAdItemsObserver();
+                // load one more because sentinel might be already shown and can't be used to load
+                this.infiniteScrollRecommendations();
                 helper.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
             });
     }
