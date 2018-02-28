@@ -6,7 +6,6 @@ class Pocket {
         this.active_page = 'list';
         this.items_shown = 0;
         this.load_count = 18;
-        this.load_count_ad = 1;
 
         this.scroll = {
             lastKnownScrollY: 0,
