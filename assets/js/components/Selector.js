@@ -106,13 +106,15 @@ class Selector {
             }
         }
 
-        if (count === 0) {
-            helper.append(component, messageNode);
-
-            setTimeout(() => {
-                messageNode.remove();
-            }, 2000);
+        if (count !== 0) {
+            messageNode.remove();
         }
+
+        helper.append(component, messageNode);
+
+        setTimeout(() => {
+            messageNode.remove();
+        }, 2000);
     }
 
     /**
