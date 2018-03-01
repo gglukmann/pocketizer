@@ -1009,9 +1009,10 @@ a > span {
 
 /* SELECTOR */
 .selector {
+    position: relative;
     border: 0;
     margin: 0 0 var(--grid-gutter);
-    padding: 0;
+    padding: 0 0 var(--grid-gutter);
 }
 
 .selector__list {
@@ -1071,6 +1072,22 @@ a > span {
 .selector__input:checked ~ .selector__indicator:hover {
      background-color: var(--green-d);
      border-color: var(--green-d);
+}
+
+.selector__message {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin-top: 5px;
+}
+
+.selector__message--success {
+    color: var(--green-d);
+}
+
+.selector__message--error {
+    color: var(--red);
 }
 
 /* HELPERS */

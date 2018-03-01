@@ -115,6 +115,8 @@ class Settings {
 
             if (PAGES.includes(page)) {
                 localStorage.setItem('defaultPage', page);
+
+                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
             }
         }
     }
@@ -134,6 +136,8 @@ class Settings {
                 document.body.classList.remove(localStorage.getItem('theme'));
                 localStorage.setItem('theme', value);
                 document.body.classList.add(value);
+
+                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
             }
         }
     }
