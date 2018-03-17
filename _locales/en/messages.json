@@ -1,6 +1,6 @@
 {
     "EXTENSION_NAME": {
-        "message": "New Tab - Pocket",
+        "message": "New Tab - Pocketizer",
         "description": "Name of the extension."
     },
     "EXTENSION_DESCRIPTION": {
@@ -55,9 +55,6 @@
     "ACTION": {
         "message": "Action"
     },
-    "MY_POCKET_LIST": {
-        "message": "My Pocket List"
-    },
     "MY_LIST": {
         "message": "My List"
     },
@@ -102,9 +99,6 @@
     },
     "RESULTS_MESSAGE": {
         "message": "results found for"
-    },
-    "POCKET_HOMEPAGE": {
-        "message": "Pocket homepage"
     },
     "LOADING": {
         "message": "Loading"
