@@ -1,6 +1,6 @@
 [![alt text](http://gglukmann.github.io/pocket/icon64.png)](http://gglukmann.github.io/pocket/)
 
-# New tab - Pocket
+# New tab - Pocketizer
 
 > Browser extension - Unofficial Pocket new tab extension for Chrome and Firefox
 
