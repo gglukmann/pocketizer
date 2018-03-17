@@ -631,6 +631,8 @@ class Pocket {
         modal.init();
         collapse.init();
         selector.init();
+        item.init();
+        settings.init();
     }
 
     /**
