@@ -525,7 +525,7 @@ class Pocket {
 
                 document.querySelector('#js-count-wrapper').removeAttribute('style');
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
-                document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_POCKET_LIST');
+                document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
                 document.querySelector('#js-searchButton').removeAttribute('style');
                 document.querySelector('#js-fullSync').removeAttribute('style');
                 trending.showAll();
