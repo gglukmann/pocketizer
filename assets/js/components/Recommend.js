@@ -154,7 +154,7 @@ class Recommend {
      * @return {void}
      */
     handleSaveAdItemToPocketClick(e) {
-        if (e.target.id === 'js-addNewFromAd') {
+        if (e.target.classList.contains('js-addNewFromAd')) {
             e.preventDefault();
             helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 

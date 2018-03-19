@@ -240,11 +240,10 @@ class Item {
         helper.append(sourceElement, sourceNode);
 
         // save to pocket
-        saveElement.setAttribute('class', 'item__link-save');
+        saveElement.setAttribute('class', 'item__link-save js-addNewFromAd');
         saveElement.setAttribute('href', '#0');
         saveElement.dataset.link = element.resolved_url;
         saveElement.setAttribute('title', chrome.i18n.getMessage('SAVE_TO_POCKET'));
-        saveElement.setAttribute('id', 'js-addNewFromAd');
         // span with text
         let saveNode = helper.createTextNode(chrome.i18n.getMessage('SAVE_TO_POCKET'));
         saveElementText.setAttribute('class', 'item__link-text-child');
