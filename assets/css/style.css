@@ -25,8 +25,8 @@
     --pink: #cc796f;
     --pink-d: #b64d41;
 
-    --theme-dark-bg: #1f1f1f;
-    --theme-dark-bg2: #292929;
+    --theme-dark-bg: #141d26;
+    --theme-dark-bg2: #182430;
     --theme-dark-text: #ccc;
 
     --theme-sepia-bg: #fbf0d9;
@@ -466,7 +466,7 @@ a > span {
 
 .theme-dark .item__content {
     background-color: var(--theme-dark-bg2);
-    border-color: var(--theme-dark-bg2) var(--theme-dark-bg2) #383737;
+    border: none;
 }
 
 .theme-sepia .item__content {
