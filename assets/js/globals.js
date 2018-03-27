@@ -9,9 +9,7 @@ const API = {
     url_get: API_URL + API_VERSION + '/get',
     url_send: API_URL + API_VERSION + '/send',
     url_add: API_URL + API_VERSION + '/add',
-    url_getTrending: API_URL + API_VERSION + '/getGlobalRecs',
-    url_getRecommendations: API_URL + API_VERSION + '/getSuggestedItems'
 };
 
-const PAGES = ['list', 'archive', 'recommend'];
+const PAGES = ['list', 'archive'];
 const THEMES = ['theme-light', 'theme-dark', 'theme-sepia'];

@@ -111,53 +111,6 @@ class ApiService {
                 helper.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
             });
     }
-
-    /**
-     * Get trending stories.
-     *
-     * @function getTrending
-     * @return {Promise} - Response from pocket api.
-     */
-    async getTrending(count) {
-        this._fetchData.body = JSON.stringify({
-            consumer_key: __consumer_key,
-            count: count,
-            lang: chrome.i18n.getUILanguage(),
-            version: 2
-        });
-
-        return await helper.makeFetch(API.url_getTrending, this._fetchData)
-            .then(response => response.json())
-            .catch(error => {
-                console.log(error);
-                helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_TRENDING'), false);
-            });
-    }
-
-    /**
-     * Get recommended stories.
-     *
-     * @function getRecommendations
-     * @param {String} resolved_id - Id to get recommended items to.
-     * @return {Promise} - Response from pocket api.
-     */
-    async getRecommendations(resolved_id) {
-        this._fetchData.body = JSON.stringify({
-            access_token: authService.getToken(),
-            consumer_key: __consumer_key,
-            count: 10,
-            locale_lang: chrome.i18n.getUILanguage(),
-            version: 4,
-            resolved_id: resolved_id
-        });
-
-        return await helper.makeFetch(API.url_getRecommendations, this._fetchData)
-            .then(response => response.json())
-            .catch(error => {
-                console.log(error);
-                helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_RECOMMENDED'), false);
-            });
-    }
 }
 
 const apiService = new ApiService();

@@ -29,8 +29,6 @@ class Pocket {
         helper.localizeHtml();
         settings.loadTheme();
 
-        trending.handleTrendingSection();
-
         if (authService.isLoggedIn()) {
             this.startSync();
         } else {
@@ -214,7 +212,6 @@ class Pocket {
         } else {
             array = array.filter((item, index) => (index < this.load_count));
             document.querySelector('#js-empty-list-message').style.display = 'none';
-            recommend.showRecommendedPageLink();
 
             const domItemsArray = this.createItems(array);
             this.createSentinel();
@@ -528,7 +525,6 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
                 document.querySelector('#js-searchButton').removeAttribute('style');
                 document.querySelector('#js-fullSync').removeAttribute('style');
-                trending.showAll();
 
                 this.render();
                 this.getContent();
@@ -541,25 +537,12 @@ class Pocket {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
                 document.querySelector('#js-searchButton').removeAttribute('style');
                 document.querySelector('#js-fullSync').removeAttribute('style');
-                trending.hideAll();
 
                 if (this.isArchiveLoaded()) {
                     this.render();
                 }
 
                 this.getContent();
-            break;
-            case 'recommend':
-                this.setActivePage('recommend');
-
-                recommend.showRecommendedPageLink();
-                document.querySelector('#js-count-wrapper').style.display = 'none';
-                document.querySelector('#js-title').innerText = chrome.i18n.getMessage('RECOMMENDED');
-                document.querySelector('#js-searchButton').style.display = 'none';
-                document.querySelector('#js-fullSync').style.display = 'none';
-                trending.hideAll();
-
-                recommend.loadRecommendations();
             break;
         }
 
@@ -584,9 +567,6 @@ class Pocket {
             document.querySelector('#js-searchButton').removeAttribute('style');
             document.querySelector('#js-settings').removeAttribute('style');
             document.querySelector('#js-fullSync').removeAttribute('style');
-            document.querySelector('#js-trendingCollapseTrigger').removeAttribute('style');
-            document.querySelector('#js-trendingSeparator').removeAttribute('style');
-            trending.showAll();
         } else {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
@@ -601,9 +581,6 @@ class Pocket {
             document.querySelector('#js-searchButton').style.display = 'none';
             document.querySelector('#js-settings').style.display = 'none';
             document.querySelector('#js-fullSync').style.display = 'none';
-            document.querySelector('#js-trendingCollapseTrigger').style.display = 'none';
-            document.querySelector('#js-trendingSeparator').style.display = 'none';
-            trending.hideAll();
         }
     }
 
@@ -629,7 +606,6 @@ class Pocket {
         header.init();
         search.init();
         modal.init();
-        collapse.init();
         selector.init();
         item.init();
         settings.init();
@@ -661,7 +637,6 @@ class Pocket {
         header.init();
         search.init();
         modal.init();
-        collapse.init();
         selector.init();
         item.init();
         settings.init();
@@ -710,16 +685,13 @@ class Pocket {
 
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();
-        recommend.removeSaveAdItemToPocketClicks();
 
         header.destroy();
         search.destroy();
         modal.destroy();
-        collapse.destroy();
         selector.destroy();
         item.destroy();
         settings.destroy();
-        trending.destroy();
 
         helper.removeClass(document.body, THEMES);
 
