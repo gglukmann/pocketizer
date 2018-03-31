@@ -1140,6 +1140,10 @@ a > span {
     min-width: 150px;
 }
 
+.theme-dark .tags__tooltip {
+    background: var(--theme-dark-bg2);
+}
+
 .tags__tooltip.is-visible {
     display: block;
 }
