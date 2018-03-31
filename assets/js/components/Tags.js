@@ -130,6 +130,12 @@ class Tags {
      */
     renderTags() {
         const tagsArray = JSON.parse(localStorage.getItem('tags'));
+
+        if (!tagsArray.length) {
+            return;
+        }
+        
+        document.querySelector('#js-tags').removeAttribute('style');
         const tagsElement = document.querySelector('#js-tagsList');
         const tagsTooltipElement = document.querySelector('#js-tagsTooltipList');
 
@@ -184,8 +190,6 @@ class Tags {
             return helper.append(tagsElement, tagElement);
         }
 
-        const moreLink = document.querySelector('#js-tagsMoreLink');
-        moreLink.removeAttribute('style');
         return helper.append(tagsTooltipElement, tagElement);
     }
 

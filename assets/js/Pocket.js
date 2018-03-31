@@ -573,7 +573,6 @@ class Pocket {
             document.querySelector('#js-searchButton').removeAttribute('style');
             document.querySelector('#js-settings').removeAttribute('style');
             document.querySelector('#js-fullSync').removeAttribute('style');
-            document.querySelector('#js-tags').removeAttribute('style');
         } else {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
