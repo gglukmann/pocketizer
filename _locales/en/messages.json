@@ -91,6 +91,12 @@
     "RESULTS_MESSAGE": {
         "message": "results found for"
     },
+    "RESULT_MESSAGE": {
+        "message": "result found for"
+    },
+    "TAG": {
+        "message": "tag"
+    },
     "LOADING": {
         "message": "Loading"
     },
@@ -159,5 +165,23 @@
     },
     "CHOOSE_DEFAULT_PAGE": {
         "message": "Choose default page"
+    },
+    "TAGS": {
+        "message": "Tags:"
+    },
+    "IN": {
+        "message": "in"
+    },
+    "SHOW_TAGS": {
+        "message": "Show more tags"
+    },
+    "MORE": {
+        "message": "More"
+    },
+    "ALL_ITEMS": {
+        "message": "All items"
+    },
+    "UNTAGGED": {
+        "message": "Untagged"
     }
 }

@@ -63,8 +63,6 @@ class Search {
      * @return {void}
      */
     handleMakeSearchClick(e) {
-        this.state.hasSearched = true;
-
         if (e.target.value.length >= 3) {
             this.search(e.target.value);
         }
@@ -132,45 +130,85 @@ class Search {
             return;
         }
 
+        const isTag = value.startsWith('#') || value.startsWith('tag:');
+
+        this.state.hasSearched = true;
+
         document.querySelector('#js-results-message').removeAttribute('style');
         document.querySelector('#js-searchValue').innerText = value;
         document.querySelector('#js-list').innerHTML = '';
-        value = value.toLowerCase();
+
+        if (isTag) {
+            document.querySelector('#js-searchInput').value = value;
+
+            if (value.startsWith('#')) {
+                value = value.substr(1);
+            } else if (value.startsWith('tag:')) {
+                value = value.substr(4);
+            }
+        } else {
+            value = value.toLowerCase();
+        }
 
         let array = JSON.parse(localStorage.getItem(`${pocket.getActivePage()}FromLocalStorage`));
         let count = 0;
 
-        for (let arrayItem of array) {
-            let searchableTitle = '';
-            let searchableUrl = '';
+        if (isTag) {
+            for (const arrayItem of array) {
+                if (value !== 'untagged' && arrayItem.tags) {
+                    for (const tag in arrayItem.tags) {
+                        if (tag === value) {
+                            const newItem = item.create(arrayItem);
+                            item.render(newItem);
 
-            if (arrayItem.resolved_title && arrayItem.resolved_title !== '') {
-                searchableTitle = arrayItem.resolved_title;
-            } else if (arrayItem.given_title && arrayItem.given_title !== '') {
-                searchableTitle = arrayItem.given_title;
+                            count++;
+                        }
+                    }
+                } else if (value === 'untagged' && !arrayItem.tags) {
+                    const newItem = item.create(arrayItem);
+                    item.render(newItem);
+
+                    count++;
+                }
             }
+        } else {
+            for (const arrayItem of array) {
+                let searchableTitle = '';
+                let searchableUrl = '';
 
-            if (arrayItem.resolved_url && arrayItem.resolved_url !== '') {
-                searchableUrl = arrayItem.resolved_url;
-            } else {
-                searchableUrl = arrayItem.given_url;
-            }
+                if (arrayItem.resolved_title && arrayItem.resolved_title !== '') {
+                    searchableTitle = arrayItem.resolved_title;
+                } else if (arrayItem.given_title && arrayItem.given_title !== '') {
+                    searchableTitle = arrayItem.given_title;
+                }
 
-            if (searchableTitle.toLowerCase().indexOf(value) > -1 || searchableUrl.toLowerCase().indexOf(value) > -1) {
-                let newItem = item.create(arrayItem);
-                item.render(newItem);
+                if (arrayItem.resolved_url && arrayItem.resolved_url !== '') {
+                    searchableUrl = arrayItem.resolved_url;
+                } else {
+                    searchableUrl = arrayItem.given_url;
+                }
 
-                count++;
+                if (searchableTitle.toLowerCase().indexOf(value) > -1 || searchableUrl.toLowerCase().indexOf(value) > -1) {
+                    const newItem = item.create(arrayItem);
+                    item.render(newItem);
+
+                    count++;
+                }
             }
         }
 
         const resultsStringElement = document.querySelector('#js-resultsString');
         const searchCountElement = document.querySelector('#js-searchCount');
+        const resultsStringPrefix = document.querySelector('#js-resultsStringPrefix');
+        const tagString = isTag ? ` ${chrome.i18n.getMessage('TAG')}` : '';
+        const currentListString = pocket.getActivePage() === 'list' ? ` ${chrome.i18n.getMessage('MY_LIST')}` : ` ${chrome.i18n.getMessage('ARCHIVE')}`;
         if (count === 0) {
-            resultsStringElement.innerText = chrome.i18n.getMessage('NO_RESULTS_MESSAGE');
+            resultsStringElement.innerText = chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
+            resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
             searchCountElement.style.display = 'none';
         } else {
-            resultsStringElement.innerText = chrome.i18n.getMessage('RESULTS_MESSAGE');
+            resultsStringElement.innerText = (count === 1 ? chrome.i18n.getMessage('RESULT_MESSAGE') : chrome.i18n.getMessage('RESULTS_MESSAGE')) + tagString;
+            resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
             searchCountElement.removeAttribute('style');
             searchCountElement.innerText = count;
         }

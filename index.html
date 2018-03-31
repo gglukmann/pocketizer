@@ -66,7 +66,7 @@
                 </a>
                 <div class="header__username">
                     <span id="js-username"></span>
-                    <button type="button" id="js-logout" class="btn btn--link" title="__MSG_LOGOUT__" style="display: none;">
+                    <button type="button" id="js-logout" class="btn btn--link header__logout" title="__MSG_LOGOUT__" style="display: none;">
                         <svg viewBox="-99.8 166.4 89.5 96.7" class="icon">
                             <path class="st0" d="M-11.6,212.5l-28.6-17.1c-0.5-0.3-0.9-0.4-1.4-0.4c-1.2,0-2,1-2,2.8V209h-21.3c-3.2,0-5.8,2.6-5.8,5.8
                             c0,3.2,2.6,5.8,5.8,5.8h21.3v11.3c0,1.7,0.8,2.8,2,2.8c0.4,0,0.9-0.1,1.4-0.4l28.6-17.1C-9.8,215.8-9.8,213.7-11.6,212.5z
@@ -100,7 +100,35 @@
                 <span id="js-searchCount"></span>
                 <span id="js-resultsString" data-translate="__MSG_RESULTS_MESSAGE__">results for</span>
                 "<span id="js-searchValue"></span>"
+                <span id="js-resultsStringPrefix"></span>
             </h2>
+        </div>
+        <div id="js-tags" class="tags" style="display: none;">
+            <span class="tags__title" data-translate="__MSG_TAGS__">Tags:</span>
+            <ul id="js-tagsList" class="tags__list"></ul>
+            <a href="#0" id="js-tagsMoreLink" class="btn btn--link btn--small" style="display: none;">
+                <span title="__MSG_SHOW_TAGS__" data-translate="__MSG_MORE__">More</span>
+                <svg viewBox="0 0 32 32" class="icon btn__icon">
+                    <path d="M15.999 27.199l-15.123-16.733c-1.168-1.296-1.168-3.398 0-4.694 1.171-1.296 3.072-1.296 4.243 0l10.88 12.038 10.88-12.038c1.171-1.296 3.069-1.296 4.24 0 1.174 1.296 1.174 3.398 0 4.694l-15.12 16.733z"></path>
+                </svg>
+            </a>
+            <div id="js-tagsTooltip" class="tags__tooltip">
+                <ul class="tags__list tags__list--column">
+                    <li>
+                        <ul>
+                            <li class="tags__item">
+                                <a href="#0" id="js-tagsAllLink" class="btn btn--link tags__link" title="__MSG_ALL_ITEMS__" data-translate="__MSG_ALL_ITEMS__">All items</a>
+                            </li>
+                            <li class="tags__item">
+                                <a href="#untagged" class="btn btn--link js-tagsLink tags__link" title="__MSG_UNTAGGED__" data-translate="__MSG_UNTAGGED__">Untagged</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <ul id="js-tagsTooltipList"></ul>
+                    </li>
+                </ul>
+            </div>
         </div>
         <ol id="js-list" class="list"></ol>
     </div>
@@ -203,6 +231,7 @@
     <script src="assets/js/components/Item.js"></script>
     <script src="assets/js/components/Search.js"></script>
     <script src="assets/js/components/Settings.js"></script>
+    <script src="assets/js/components/Tags.js"></script>
     <script src="assets/js/Pocket.js"></script>
 </body>
 </html>

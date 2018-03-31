@@ -113,6 +113,8 @@ class Pocket {
             localStorage.setItem(`${this.getActivePage()}Count`, array.length);
             localStorage.setItem(`${this.getActivePage()}Since`, response.since);
 
+            tags.createTags(array);
+
             if (this.fullSync) {
                 const eventFullSync = new Event('synced');
                 document.dispatchEvent(eventFullSync);
@@ -139,6 +141,8 @@ class Pocket {
                         }
 
                         newArray = helper.prependArray(newArray, newItem);
+
+                        tags.createTags(newArray);
 
                         localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
                         localStorage.setItem('listCount', newArray.length);
@@ -210,6 +214,8 @@ class Pocket {
         } else if (array.length === 0) {
             document.querySelector('#js-empty-list-message').style.display = 'block';
         } else {
+            tags.createTags(array);
+
             array = array.filter((item, index) => (index < this.load_count));
             document.querySelector('#js-empty-list-message').style.display = 'none';
 
@@ -567,6 +573,7 @@ class Pocket {
             document.querySelector('#js-searchButton').removeAttribute('style');
             document.querySelector('#js-settings').removeAttribute('style');
             document.querySelector('#js-fullSync').removeAttribute('style');
+            document.querySelector('#js-tags').removeAttribute('style');
         } else {
             document.querySelector('#js-empty-list-message').style.display = 'none';
             document.querySelector('#js-default-message').style.display = 'block';
@@ -581,6 +588,7 @@ class Pocket {
             document.querySelector('#js-searchButton').style.display = 'none';
             document.querySelector('#js-settings').style.display = 'none';
             document.querySelector('#js-fullSync').style.display = 'none';
+            document.querySelector('#js-tags').style.display = 'none';
         }
     }
 
@@ -609,6 +617,7 @@ class Pocket {
         selector.init();
         item.init();
         settings.init();
+        tags.init();
     }
 
     /**
@@ -640,6 +649,7 @@ class Pocket {
         selector.init();
         item.init();
         settings.init();
+        tags.init();
 
         if (!settings.getDefaultPage() || settings.getDefaultPage() === 'list') {
             this.getContent();
@@ -692,6 +702,7 @@ class Pocket {
         selector.destroy();
         item.destroy();
         settings.destroy();
+        tags.destroy();
 
         helper.removeClass(document.body, THEMES);
 

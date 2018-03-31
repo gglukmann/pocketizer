@@ -73,7 +73,7 @@ body {
 
 @media (min-width: 850px) {
     body {
-        padding-top: 100px;
+        padding-top: 90px;
     }
 }
 
@@ -206,6 +206,10 @@ a > span {
     padding: 0 10px;
 }
 
+.header__logout {
+    vertical-align: middle;
+}
+
 .header__title {
     font-size: 2em;
     font-weight: 200;
@@ -328,6 +332,7 @@ a > span {
 
 .message--padding-small {
     margin-top: 0;
+    margin-bottom: 4em;
 }
 
 .message__text {
@@ -705,16 +710,22 @@ a > span {
     padding: 0;
     box-shadow: none;
     border: 0;
-    vertical-align: middle;
     color: var(--text-light);
     text-shadow: none;
 }
 
-.btn--link:hover {
+.btn--link:hover,
+.btn--link:hover .btn__icon{
     color: var(--text-color);
 }
 
-.theme-dark .btn--link:hover {
+.btn--small {
+    font-size: small;
+    font-weight: normal;
+}
+
+.theme-dark .btn--link:hover,
+.theme-dark .btn--link:hover .btn__icon {
     color: var(--white);
 }
 
@@ -753,6 +764,12 @@ a > span {
     100% {
         transform: scale(1);
     }
+}
+
+.btn__icon {
+    color: var(--text-light);
+    vertical-align: middle;
+    font-size: .8em;
 }
 
 /* BUTTON-GROUP */
@@ -1058,6 +1075,82 @@ a > span {
 
 .selector__message--error {
     color: var(--red);
+}
+
+.tags {
+    position: relative;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 calc(var(--grid-gutter) / 2);
+}
+
+.tags__title {
+    font-weight: bold;
+}
+
+.tags__list {
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+    padding: 0;
+    margin: 0 calc(var(--grid-gutter) / 2);
+}
+
+.tags__list--column {
+    flex-direction: column;
+    margin: 10px 0;
+}
+
+.tags__list--column ul {
+    list-style: none;
+    padding: 0;
+}
+
+.tags__item {
+    margin-left: calc(var(--grid-gutter) / 4);
+    margin-right: calc(var(--grid-gutter) / 4);
+}
+
+.tags__list--column .tags__item {
+    margin-left: 0;
+    margin-right: 0;
+}
+
+.tags__link {
+    font-size: 1em;
+    line-height: 1.2;
+}
+
+.tags__list--column .tags__link {
+    display: block;
+    text-align: right;
+    padding: 5px 10px;
+}
+
+.tags__tooltip {
+    display: none;
+    position: absolute;
+    background: var(--white);
+    top: calc(100% + 5px);
+    right: 0;
+    z-index: 100;
+    border: 1px solid var(--border-light);
+    box-shadow: 0 2px 5px 0 rgba(var(--black-rgb), .1);
+    min-width: 150px;
+}
+
+.tags__tooltip.is-visible {
+    display: block;
+}
+
+.tags__more-link {
+    font-size: small;
+    color: var(--text-light);
+}
+
+.tags__more-link:hover {
+    color: var(--text-color);
 }
 
 /* HELPERS */
