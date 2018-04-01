@@ -254,6 +254,42 @@ class Helper {
 
         element.classList.remove(className);
     }
+
+    /**
+     * Hide element.
+     *
+     * @function hide
+     * @param {HTMLElement} element - Element to hide.
+     * @return {void}
+     */
+    hide(element) {
+        element.style.display = 'none';
+    }
+
+    /**
+     * Show element.
+     *
+     * @function hide
+     * @param {HTMLElement} element - Element to show.
+     * @param {String} display - CSS display property.
+     * @return {void}
+     */
+    show(element, display = 'block') {
+        element.style.display = display;
+    }
+
+    /**
+     * Clear HTML inside element.
+     *
+     * @function clearChildren
+     * @param {HTMLElement} element - Element to clear children.
+     * @return {void}
+     */
+    clearChildren(element) {
+        while (element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+    }
 }
 
 const helper = new Helper();

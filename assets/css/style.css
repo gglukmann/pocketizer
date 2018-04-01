@@ -875,6 +875,10 @@ a > svg {
         left: auto;
         right: calc(100% - 52px);
     }
+
+    .header.is-scrolled .search {
+        top: -8px;
+    }
 }
 
 .search.is-active {

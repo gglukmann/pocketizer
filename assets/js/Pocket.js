@@ -32,7 +32,7 @@ class Pocket {
         if (authService.isLoggedIn()) {
             this.startSync();
         } else {
-            document.querySelector('#js-default-message').style.display = 'block';
+            helper.show(document.querySelector('#js-default-message'));
             this.bindLoggedOutClickEvents();
         }
     }
@@ -207,17 +207,17 @@ class Pocket {
         this.items_shown = this.load_count;
 
         document.querySelector('#js-count').innerText = localStorage.getItem(`${this.getActivePage()}Count`);
-        document.querySelector('#js-list').innerHTML = '';
+        helper.clearChildren(document.querySelector('#js-list'));
 
         if (array === null) {
             this.getContent();
         } else if (array.length === 0) {
-            document.querySelector('#js-empty-list-message').style.display = 'block';
+            helper.show(document.querySelector('#js-empty-list-message'));
         } else {
             tags.createTags(array);
 
             array = array.filter((item, index) => (index < this.load_count));
-            document.querySelector('#js-empty-list-message').style.display = 'none';
+            helper.hide(document.querySelector('#js-empty-list-message'));
 
             const domItemsArray = this.createItems(array);
             this.createSentinel();
@@ -535,7 +535,7 @@ class Pocket {
         header.changeMenuActiveState(page);
 
         this.items_shown = 0;
-        document.querySelector('#js-list').innerHTML = '';
+        helper.clearChildren(document.querySelector('#js-list'));
         search.hide(true);
 
         switch (page) {
@@ -579,7 +579,7 @@ class Pocket {
      */
     toggleLoggedInContent(isShown = false) {
         if (isShown) {
-            document.querySelector('#js-default-message').style.display = 'none';
+            helper.hide(document.querySelector('#js-default-message'));
             document.querySelector('#js-count-wrapper').removeAttribute('style');
             document.querySelector('#js-menu').removeAttribute('style');
             document.querySelector('#js-list').removeAttribute('style');
@@ -590,20 +590,20 @@ class Pocket {
             document.querySelector('#js-settings').removeAttribute('style');
             document.querySelector('#js-fullSync').removeAttribute('style');
         } else {
-            document.querySelector('#js-empty-list-message').style.display = 'none';
-            document.querySelector('#js-default-message').style.display = 'block';
-            document.querySelector('#js-list').style.display = 'none';
-            document.querySelector('#js-list').innerHTML = '';
-            document.querySelector('#js-menu').style.display = 'none';
-            document.querySelector('#js-username').style.display = 'none';
-            document.querySelector('#js-logout').style.display = 'none';
-            document.querySelector('#js-count-wrapper').style.display = 'none';
-            document.querySelector('#js-count').innerHTML = '';
-            document.querySelector('#js-addNewItemButton').style.display = 'none';
-            document.querySelector('#js-searchButton').style.display = 'none';
-            document.querySelector('#js-settings').style.display = 'none';
-            document.querySelector('#js-fullSync').style.display = 'none';
-            document.querySelector('#js-tags').style.display = 'none';
+            helper.hide(document.querySelector('#js-empty-list-message'));
+            helper.show(document.querySelector('#js-default-message'));
+            helper.hide(document.querySelector('#js-list'));
+            helper.hide(document.querySelector('#js-menu'));
+            helper.hide(document.querySelector('#js-username'));
+            helper.hide(document.querySelector('#js-logout'));
+            helper.hide(document.querySelector('#js-count-wrapper'));
+            document.querySelector('#js-count').innerText = '0';
+            helper.hide(document.querySelector('#js-addNewItemButton'));
+            helper.hide(document.querySelector('#js-searchButton'));
+            helper.hide(document.querySelector('#js-settings'));
+            helper.hide(document.querySelector('#js-fullSync'));
+            helper.hide(document.querySelector('#js-tags'));
+            helper.clearChildren(document.querySelector('#js-list'));
         }
     }
 

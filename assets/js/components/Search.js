@@ -92,7 +92,7 @@ class Search {
         helper.removeClass(document.querySelector('#js-searchButton'), 'is-disabled');
 
         if (hideMessage) {
-            document.querySelector('#js-results-message').style.display = 'none';
+            helper.hide(document.querySelector('#js-results-message'));
         }
     }
 
@@ -105,7 +105,7 @@ class Search {
      */
     reset(doHide) {
         document.querySelector('#js-searchInput').value = '';
-        document.querySelector('#js-results-message').style.display = 'none';
+        helper.hide(document.querySelector('#js-results-message'));
 
         if (this.state.hasSearched) {
             pocket.render();
@@ -136,7 +136,7 @@ class Search {
 
         document.querySelector('#js-results-message').removeAttribute('style');
         document.querySelector('#js-searchValue').innerText = value;
-        document.querySelector('#js-list').innerHTML = '';
+        helper.clearChildren(document.querySelector('#js-list'));
 
         if (isTag) {
             document.querySelector('#js-searchInput').value = value;
@@ -205,7 +205,7 @@ class Search {
         if (count === 0) {
             resultsStringElement.innerText = chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
-            searchCountElement.style.display = 'none';
+            helper.hide(searchCountElement);
         } else {
             resultsStringElement.innerText = (count === 1 ? chrome.i18n.getMessage('RESULT_MESSAGE') : chrome.i18n.getMessage('RESULTS_MESSAGE')) + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;

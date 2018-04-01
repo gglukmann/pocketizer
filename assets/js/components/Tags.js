@@ -133,13 +133,8 @@ class Tags {
         const tagsElement = document.querySelector('#js-tagsList');
         const tagsTooltipElement = document.querySelector('#js-tagsTooltipList');
 
-        // Make list empty before render
-        while (tagsElement.firstChild) {
-            tagsElement.removeChild(tagsElement.firstChild);
-        }
-        while (tagsTooltipElement.firstChild) {
-            tagsTooltipElement.removeChild(tagsTooltipElement.firstChild);
-        }
+        helper.clearChildren(tagsElement);
+        helper.clearChildren(tagsTooltipElement);
 
         for (const tag of tagsArray) {
             const tagElement = this.createTag(tag);
