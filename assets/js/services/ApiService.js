@@ -60,7 +60,7 @@ class ApiService {
 
         this._fetchData.body = JSON.stringify(this._fetchData.body);
 
-        return await helper.makeFetch(API.url_get, this._fetchData)
+        return await Helper.makeFetch(API.url_get, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
@@ -82,7 +82,7 @@ class ApiService {
             actions: actions
         });
 
-        return await helper.makeFetch(API.url_send, this._fetchData)
+        return await Helper.makeFetch(API.url_send, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
@@ -104,7 +104,7 @@ class ApiService {
             url: data.url
         });
 
-        return await helper.makeFetch(API.url_add, this._fetchData)
+        return await Helper.makeFetch(API.url_add, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);

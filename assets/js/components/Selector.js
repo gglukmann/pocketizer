@@ -69,7 +69,7 @@ class Selector {
      * @return {ActiveX.IXMLDOMNode}
      */
     createMessageNode(isSuccess, message) {
-        let element = helper.createNode('div');
+        let element = Helper.createNode('div');
 
         element.setAttribute('class', 'selector__message');
 
@@ -79,9 +79,9 @@ class Selector {
             element.classList.add('selector__message--error');
         }
 
-        let messageNode = helper.createTextNode(message);
+        let messageNode = Helper.createTextNode(message);
 
-        helper.append(element, messageNode);
+        Helper.append(element, messageNode);
 
         return element;
     }
@@ -110,7 +110,7 @@ class Selector {
             messageNode.remove();
         }
 
-        helper.append(component, messageNode);
+        Helper.append(component, messageNode);
 
         setTimeout(() => {
             messageNode.remove();

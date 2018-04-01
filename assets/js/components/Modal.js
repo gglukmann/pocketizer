@@ -104,22 +104,22 @@ class Modal {
         document.dispatchEvent(eventOpen);
 
         if (!this.container.length) {
-            this.container = helper.createNode('div');
+            this.container = Helper.createNode('div');
             this.container.setAttribute('class', 'modal-container');
-            this.inner = helper.createNode('div');
+            this.inner = Helper.createNode('div');
             this.inner.setAttribute('class', 'modal-container__inner');
 
             if (!this.preventClose) {
                 this.container.addEventListener('click', this.containerClick, false);
             }
 
-            helper.append(this.inner, this.element);
-            helper.append(this.container, this.inner);
-            helper.append(document.body, this.container);
+            Helper.append(this.inner, this.element);
+            Helper.append(this.container, this.inner);
+            Helper.append(document.body, this.container);
         }
 
         this.container.classList.add('is-visible');
-        helper.disableScroll(true);
+        Helper.disableScroll(true);
 
         const eventOpened = new Event('opened.modal');
         document.dispatchEvent(eventOpened);
@@ -148,7 +148,7 @@ class Modal {
     close() {
         if (this.container && this.container.classList.contains('is-visible')) {
             this.container.removeEventListener('click', this.containerClick, false);
-            helper.enableScroll();
+            Helper.enableScroll();
             this.container.classList.remove('is-visible');
 
             const event = new Event('closed.modal');

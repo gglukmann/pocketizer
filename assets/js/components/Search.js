@@ -28,9 +28,9 @@ class Search {
      * @return {void}
      */
     show() {
-        helper.addClass(document.querySelector('#js-searchForm'), 'is-active');
+        Helper.addClass(document.querySelector('#js-searchForm'), 'is-active');
         document.querySelector('#js-searchInput').focus();
-        helper.addClass(document.querySelector('#js-searchButton'), 'is-disabled');
+        Helper.addClass(document.querySelector('#js-searchButton'), 'is-disabled');
     }
 
     /**
@@ -88,11 +88,11 @@ class Search {
      * @return {void}
      */
     hide(hideMessage) {
-        helper.removeClass(document.querySelector('#js-searchForm'), 'is-active');
-        helper.removeClass(document.querySelector('#js-searchButton'), 'is-disabled');
+        Helper.removeClass(document.querySelector('#js-searchForm'), 'is-active');
+        Helper.removeClass(document.querySelector('#js-searchButton'), 'is-disabled');
 
         if (hideMessage) {
-            helper.hide(document.querySelector('#js-results-message'));
+            Helper.hide(document.querySelector('#js-results-message'));
         }
     }
 
@@ -105,7 +105,7 @@ class Search {
      */
     reset(doHide) {
         document.querySelector('#js-searchInput').value = '';
-        helper.hide(document.querySelector('#js-results-message'));
+        Helper.hide(document.querySelector('#js-results-message'));
 
         if (this.state.hasSearched) {
             pocket.render();
@@ -136,7 +136,7 @@ class Search {
 
         document.querySelector('#js-results-message').removeAttribute('style');
         document.querySelector('#js-searchValue').innerText = value;
-        helper.clearChildren(document.querySelector('#js-list'));
+        Helper.clearChildren(document.querySelector('#js-list'));
 
         if (isTag) {
             document.querySelector('#js-searchInput').value = value;
@@ -146,9 +146,9 @@ class Search {
             } else if (value.startsWith('tag:')) {
                 value = value.substr(4);
             }
-        } else {
-            value = value.toLowerCase();
         }
+
+        value = value.toLowerCase();
 
         let array = JSON.parse(localStorage.getItem(`${pocket.getActivePage()}FromLocalStorage`));
         let count = 0;
@@ -157,7 +157,7 @@ class Search {
             for (const arrayItem of array) {
                 if (value !== 'untagged' && arrayItem.tags) {
                     for (const tag in arrayItem.tags) {
-                        if (tag === value) {
+                        if (tag.toLowerCase() === value) {
                             const newItem = item.create(arrayItem);
                             item.render(newItem);
 
@@ -205,7 +205,7 @@ class Search {
         if (count === 0) {
             resultsStringElement.innerText = chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
-            helper.hide(searchCountElement);
+            Helper.hide(searchCountElement);
         } else {
             resultsStringElement.innerText = (count === 1 ? chrome.i18n.getMessage('RESULT_MESSAGE') : chrome.i18n.getMessage('RESULTS_MESSAGE')) + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;

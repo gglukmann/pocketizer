@@ -75,9 +75,9 @@ class Header {
         const header = document.querySelector('#js-header');
 
         if (scrollPosition > 10) {
-            helper.addClass(header, this.options.scrolledClass);
+            Helper.addClass(header, this.options.scrolledClass);
         } else {
-            helper.removeClass(header, this.options.scrolledClass);
+            Helper.removeClass(header, this.options.scrolledClass);
         }
 
         this.timeout = false;
@@ -93,10 +93,10 @@ class Header {
         let menuLinkElements = document.querySelectorAll('.menu__link');
 
         for (const menuLink of menuLinkElements) {
-            helper.removeClass(menuLink, 'is-active');
+            Helper.removeClass(menuLink, 'is-active');
 
             if (menuLink.dataset.page === page) {
-                helper.addClass(menuLink, 'is-active');
+                Helper.addClass(menuLink, 'is-active');
             }
         }
     }
@@ -140,7 +140,7 @@ class Header {
         const target = e.target;
         const syncClass = 'is-syncing';
 
-        helper.addClass(target, syncClass);
+        Helper.addClass(target, syncClass);
         pocket.fullSync = true;
 
         pocket.getContent();
@@ -160,16 +160,16 @@ class Header {
     handleRemoveSyncedClass(target, syncClass) {
         const syncedClass = 'is-synced';
 
-        helper.removeClass(target, syncClass);
-        helper.addClass(target, syncedClass);
+        Helper.removeClass(target, syncClass);
+        Helper.addClass(target, syncedClass);
 
-        helper.addClass(target.children[0], 'hidden');
-        helper.removeClass(target.children[1], 'hidden');
+        Helper.addClass(target.children[0], 'hidden');
+        Helper.removeClass(target.children[1], 'hidden');
 
         setTimeout(() => {
-            helper.removeClass(target, syncedClass);
-            helper.addClass(target.children[1], 'hidden');
-            helper.removeClass(target.children[0], 'hidden');
+            Helper.removeClass(target, syncedClass);
+            Helper.addClass(target.children[1], 'hidden');
+            Helper.removeClass(target.children[0], 'hidden');
         }, 1500);
 
         document.removeEventListener('synced', this.removeSyncedClassHandler, false);

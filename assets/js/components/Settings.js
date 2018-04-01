@@ -58,7 +58,7 @@ class Settings {
         const theme = localStorage.getItem('theme');
 
         if (theme && THEMES.includes(theme)) {
-            helper.addClass(document.body, theme);
+            Helper.addClass(document.body, theme);
 
             const colorSelector = [...document.querySelectorAll('[name=selector-color]')];
             for (const selector of colorSelector) {

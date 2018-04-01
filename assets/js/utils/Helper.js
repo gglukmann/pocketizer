@@ -1,91 +1,5 @@
 class Helper {
     /**
-     * Create HTMLElement.
-     *
-     * @function createNode
-     * @param {String} element - Element type.
-     * @return {HTMLElement} - Created HTMLElement.
-     */
-    createNode(element) {
-        return document.createElement(element);
-    }
-
-    /**
-     * Create text node.
-     *
-     * @function createTextNode
-     * @param {String} element - Text to add to HTMLElement.
-     * @return {Object} - Created text node.
-     */
-    createTextNode(element) {
-        return document.createTextNode(element);
-    }
-
-    /**
-     * Append element to parent.
-     *
-     * @function append
-     * @param {HTMLElement} parent - Parent element.
-     * @param {HTMLElement} el - Child element.
-     * @return {HTMLElement} - Element with appended child.
-     */
-    append(parent, el) {
-        return parent.appendChild(el);
-    }
-
-    /**
-     * Prepent element to parent.
-     *
-     * @function prepend
-     * @param {HTMLElement} parent - Parent element.
-     * @param {HTMLElement} el - Child element.
-     * @return {HTMLElement} - Element with appended child.
-     */
-    prepend(parent, el) {
-        return parent.prepend(el);
-    }
-
-    /**
-     * Prepend element to array.
-     *
-     * @function prepend
-     * @param {Array[]} array - Array where to add.
-     * @param {Any} value - Value to add to array.
-     * @return {Array[]} - Array with prepended item.
-     */
-    prependArray(array, value) {
-        let newArray = array.slice();
-        newArray.unshift(value);
-
-        return newArray;
-    }
-
-    /**
-     * Convert unix time to datetime format dd.mm.yyyy.
-     *
-     * @function timeConverter
-     * @param {Number} UNIX - Unix timestamp.
-     * @return {Number} - dd.mm.yyyy.
-     */
-    timeConverter(UNIX){
-        let d = new Date(UNIX * 1000);
-        let year = d.getFullYear();
-        let month = ('0' + (d.getMonth() + 1)).slice(-2);
-        let date = ('0' + d.getDate()).slice(-2);
-        return date + '.' + month + '.' + year;
-    }
-
-    /**
-     * Returns current unix timestamp
-     *
-     * @function getCurrentUNIX
-     * @return {Number} - Current time unix timestamp.
-     */
-    getCurrentUNIX() {
-        return Math.floor(Date.now() / 1000);
-    }
-
-    /**
      * Shows success message.
      *
      * @function showMessage
@@ -120,10 +34,10 @@ class Helper {
      * @function replaceI18n
      * @param {HTMLElement} obj Element with message.
      * @param {String} tag Message string.
-     * @param {String} attribute Attribute name if used for translation.
+     * @param {String|Boolean} attribute Attribute name if used for translation.
      * @return {void}
      */
-    replaceI18n(obj, tag, attribute) {
+    replaceI18n(obj, tag, attribute = false) {
         let msg = tag.replace(/__MSG_(\w+)__/g, (match, v1) => {
             return v1 ? chrome.i18n.getMessage(v1) : '';
         });
@@ -179,7 +93,7 @@ class Helper {
      * @param {Object} options - Fetch body.
      * @return {JSON} Fetch response in JSON.
      */
-    async makeFetch(url, options) {
+    static async makeFetch(url, options) {
         try {
             return await fetch(url, options);
         } catch (e) {
@@ -189,13 +103,99 @@ class Helper {
     }
 
     /**
+     * Create HTMLElement.
+     *
+     * @function createNode
+     * @param {String} element - Element type.
+     * @return {HTMLElement} - Created HTMLElement.
+     */
+    static createNode(element) {
+        return document.createElement(element);
+    }
+
+    /**
+     * Create text node.
+     *
+     * @function createTextNode
+     * @param {String} element - Text to add to HTMLElement.
+     * @return {Object} - Created text node.
+     */
+    static createTextNode(element) {
+        return document.createTextNode(element);
+    }
+
+    /**
+     * Append element to parent.
+     *
+     * @function append
+     * @param {Element} parent - Parent element.
+     * @param {Element} el - Child element.
+     * @return {Element} - Element with appended child.
+     */
+    static append(parent, el) {
+        return parent.appendChild(el);
+    }
+
+    /**
+     * Prepent element to parent.
+     *
+     * @function prepend
+     * @param {Element} parent - Parent element.
+     * @param {Element} el - Child element.
+     * @return {Element} - Element with appended child.
+     */
+    static prepend(parent, el) {
+        return parent.prepend(el);
+    }
+
+    /**
+     * Prepend element to array.
+     *
+     * @function prepend
+     * @param {Array[]} array - Array where to add.
+     * @param {Any} value - Value to add to array.
+     * @return {Array[]} - Array with prepended item.
+     */
+    static prependArray(array, value) {
+        let newArray = array.slice();
+        newArray.unshift(value);
+
+        return newArray;
+    }
+
+    /**
+     * Convert unix time to datetime format dd.mm.yyyy.
+     *
+     * @function timeConverter
+     * @param {Number} UNIX - Unix timestamp.
+     * @return {String} - dd.mm.yyyy.
+     */
+    static timeConverter(UNIX){
+        let d = new Date(UNIX * 1000);
+        let year = d.getFullYear();
+        let month = ('0' + (d.getMonth() + 1)).slice(-2);
+        let date = ('0' + d.getDate()).slice(-2);
+        return date + '.' + month + '.' + year;
+    }
+
+    /**
+     * Returns current unix timestamp
+     *
+     * @function getCurrentUNIX
+     * @return {Number} - Current time unix timestamp.
+     */
+    static getCurrentUNIX() {
+        return Math.floor(Date.now() / 1000);
+    }
+
+    /**
      * Disable window scrolling.
      *
      * @function disableScroll
      * @param {Boolean} hideScrollbar - If scrollbar should be hidden.
      * @returns {void}
      */
-    disableScroll(hideScrollbar) {
+    static disableScroll(hideScrollbar) {
         if (!document.body.classList.contains('scroll-disabled')) {
             const curScroll = window.scrollY;
 
@@ -214,7 +214,7 @@ class Helper {
      * @function enableScroll
     * @returns {void}
     */
-    enableScroll() {
+    static enableScroll() {
         const bodyScroll = parseInt(document.body.style.top, 10);
 
         this.removeClass(document.body, 'scroll-disabled');
@@ -230,11 +230,11 @@ class Helper {
      * Add class to HTMLElement.
      *
      * @function addClass
-     * @param {HTMLElement} element - HTMLElement.
+     * @param {Element} element - HTMLElement.
      * @param {String} className - Class name to add.
      * @returns {void}
      */
-    addClass(element, className) {
+    static addClass(element, className) {
         element.classList.add(className);
     }
 
@@ -242,11 +242,11 @@ class Helper {
      * Remove class from HTMLElement.
      *
      * @function removeClass
-     * @param {HTMLElement} element - HTMLElement.
+     * @param {Element} element - HTMLElement.
      * @param {String} className - Class name to remove.
      * @returns {void}
      */
-    removeClass(element, className) {
+    static removeClass(element, className) {
         if (typeof className === 'object') {
             element.classList.remove(...className);
             return;
@@ -259,10 +259,10 @@ class Helper {
      * Hide element.
      *
      * @function hide
-     * @param {HTMLElement} element - Element to hide.
+     * @param {Element|HTMLElement} element - Element to hide.
      * @return {void}
      */
-    hide(element) {
+    static hide(element) {
         element.style.display = 'none';
     }
 
@@ -270,11 +270,11 @@ class Helper {
      * Show element.
      *
      * @function hide
-     * @param {HTMLElement} element - Element to show.
+     * @param {Element|HTMLElement} element - Element to show.
      * @param {String} display - CSS display property.
      * @return {void}
      */
-    show(element, display = 'block') {
+    static show(element, display = 'block') {
         element.style.display = display;
     }
 
@@ -282,10 +282,10 @@ class Helper {
      * Clear HTML inside element.
      *
      * @function clearChildren
-     * @param {HTMLElement} element - Element to clear children.
+     * @param {Element|HTMLElement} element - Element to clear children.
      * @return {void}
      */
-    clearChildren(element) {
+    static clearChildren(element) {
         while (element.firstChild) {
             element.removeChild(element.firstChild);
         }

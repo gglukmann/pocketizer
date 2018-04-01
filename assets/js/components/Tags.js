@@ -82,7 +82,7 @@ class Tags {
      */
     showTooltip() {
         const tagsTooltip = document.querySelector('#js-tagsTooltip');
-        return helper.addClass(tagsTooltip, 'is-visible');
+        return Helper.addClass(tagsTooltip, 'is-visible');
     }
 
     /**
@@ -93,7 +93,7 @@ class Tags {
      */
     closeTooltip() {
         const tagsTooltip = document.querySelector('#js-tagsTooltip');
-        return helper.removeClass(tagsTooltip, 'is-visible');
+        return Helper.removeClass(tagsTooltip, 'is-visible');
     }
 
     /**
@@ -133,8 +133,8 @@ class Tags {
         const tagsElement = document.querySelector('#js-tagsList');
         const tagsTooltipElement = document.querySelector('#js-tagsTooltipList');
 
-        helper.clearChildren(tagsElement);
-        helper.clearChildren(tagsTooltipElement);
+        Helper.clearChildren(tagsElement);
+        Helper.clearChildren(tagsTooltipElement);
 
         for (const tag of tagsArray) {
             const tagElement = this.createTag(tag);
@@ -150,17 +150,17 @@ class Tags {
      * @return {HTMLElement}
      */
     createTag(tag) {
-        let listElement = helper.createNode('li');
-        let linkElement = helper.createNode('a');
-        let tagNode = helper.createTextNode(tag);
+        let listElement = Helper.createNode('li');
+        let linkElement = Helper.createNode('a');
+        let tagNode = Helper.createTextNode(tag);
 
         listElement.setAttribute('class', 'tags__item');
         linkElement.setAttribute('href', `#${tag}`);
         linkElement.setAttribute('class', 'btn btn--link tags__link js-tagsLink');
         linkElement.setAttribute('title', `${chrome.i18n.getMessage('TAG')}: ${tag}`);
 
-        helper.append(linkElement, tagNode);
-        helper.append(listElement, linkElement);
+        Helper.append(linkElement, tagNode);
+        Helper.append(listElement, linkElement);
 
         return listElement;
     }
@@ -176,10 +176,10 @@ class Tags {
      */
     renderTag(tagsElement, tagElement, tagsTooltipElement) {
         if (tagsElement.children.length < 5) {
-            return helper.append(tagsElement, tagElement);
+            return Helper.append(tagsElement, tagElement);
         }
 
-        return helper.append(tagsTooltipElement, tagElement);
+        return Helper.append(tagsTooltipElement, tagElement);
     }
 
     /**

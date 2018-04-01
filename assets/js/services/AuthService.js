@@ -50,7 +50,7 @@ class AuthService {
         });
 
         return new Promise((resolve, reject) => {
-            let code = helper.makeFetch(API.url_request, this._fetchData)
+            let code = Helper.makeFetch(API.url_request, this._fetchData)
                 .then(response => response.json())
                 .then(response => {
                     return response;
@@ -102,7 +102,7 @@ class AuthService {
         });
 
         return new Promise((resolve, reject) => {
-            let user = helper.makeFetch(API.url_authorize, this._fetchData)
+            let user = Helper.makeFetch(API.url_authorize, this._fetchData)
                 .then(response => response.json())
                 .then(response => {
                     this.setToken(response.access_token);

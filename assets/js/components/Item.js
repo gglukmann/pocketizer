@@ -58,19 +58,19 @@ class Item {
      * @return {HTMLElement} - Created element.
      */
     create(element) {
-        let itemElement = helper.createNode('li');
-        let contentElement = helper.createNode('div');
-        let fakeLinkElement = helper.createNode('a');
-        let favouriteElement = helper.createNode('a');
-        let titleElement = helper.createNode('div');
-        let timeAndTagsWrapperElement = helper.createNode('div');
-        let tagLinkElement = helper.createNode('a');
-        let timeElement = helper.createNode('div');
-        let excerptElement = helper.createNode('div');
-        let linkElement = helper.createNode('a');
-        let readButtonElement = helper.createNode('a');
-        let deleteButtonElement = helper.createNode('a');
-        let pocketLinkElement = helper.createNode('a');
+        let itemElement = Helper.createNode('li');
+        let contentElement = Helper.createNode('div');
+        let fakeLinkElement = Helper.createNode('a');
+        let favouriteElement = Helper.createNode('a');
+        let titleElement = Helper.createNode('div');
+        let timeAndTagsWrapperElement = Helper.createNode('div');
+        let tagLinkElement = Helper.createNode('a');
+        let timeElement = Helper.createNode('div');
+        let excerptElement = Helper.createNode('div');
+        let linkElement = Helper.createNode('a');
+        let readButtonElement = Helper.createNode('a');
+        let deleteButtonElement = Helper.createNode('a');
+        let pocketLinkElement = Helper.createNode('a');
 
         let link;
         if (element.resolved_url && element.resolved_url !== '') {
@@ -102,19 +102,19 @@ class Item {
             title = element.given_url;
         }
 
-        let titleTextNode = helper.createTextNode(title);
+        let titleTextNode = Helper.createTextNode(title);
 
         titleElement.setAttribute('class', 'item__title js-itemTitle');
-        helper.append(titleElement, titleTextNode);
+        Helper.append(titleElement, titleTextNode);
 
         // time and tags wrapper
         timeAndTagsWrapperElement.setAttribute('class', 'item__time-and-tags');
 
         //time
         if (element.time_added) {
-            let timeNode = helper.createTextNode(helper.timeConverter(element.time_added));
+            let timeNode = Helper.createTextNode(Helper.timeConverter(element.time_added));
             timeElement.setAttribute('title', chrome.i18n.getMessage('DATE_ADDED'));
-            helper.append(timeElement, timeNode);
+            Helper.append(timeElement, timeNode);
         }
 
         // tags
@@ -134,11 +134,11 @@ class Item {
         svgElement.setAttribute('class', 'icon item__tags-svg');
         let pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
         pathElement.setAttribute('d', 'M84.7,121.2c-20.1,0-36.4-16.3-36.4-36.4c0-20.1,16.3-36.5,36.5-36.5c20.1,0,36.4,16.3,36.4,36.4C121.2,104.9,104.9,121.3,84.7,121.2z M526.3,299.6c-1.6-2.4-3.4-4.7-5.6-6.9L260.2,32.3c-17-17-50.6-31.5-74.7-32.3L42.4,0C18.4-0.7-0.7,18.4,0,42.4l0,143.1c0.8,24.1,15.3,57.7,32.3,74.7l260.5,260.5c2.1,2.1,4.4,4,6.8,5.6c28.6,22.3,70.1,20.6,96.3-5.6l124.8-124.9C547,369.7,548.6,328.2,526.3,299.6z');
-        helper.append(svgElement, pathElement);
-        helper.append(tagLinkElement, svgElement);
+        Helper.append(svgElement, pathElement);
+        Helper.append(tagLinkElement, svgElement);
 
-        helper.append(timeAndTagsWrapperElement, timeElement);
-        helper.append(timeAndTagsWrapperElement, tagLinkElement);
+        Helper.append(timeAndTagsWrapperElement, timeElement);
+        Helper.append(timeAndTagsWrapperElement, tagLinkElement);
 
         // excerpt or background image
         excerptElement.setAttribute('class', 'item__excerpt js-itemExcerpt');
@@ -148,8 +148,8 @@ class Item {
             excerptElement.dataset.src = element.image.src;
         } else {
             if (element.excerpt) {
-                let excerptNode = helper.createTextNode(element.excerpt);
-                helper.append(excerptElement, excerptNode);
+                let excerptNode = Helper.createTextNode(element.excerpt);
+                Helper.append(excerptElement, excerptNode);
             }
         }
 
@@ -159,11 +159,11 @@ class Item {
 
         switch (pocket.getActivePage()) {
             case 'list':
-                readNode = helper.createTextNode(chrome.i18n.getMessage('MARK_READ'));
+                readNode = Helper.createTextNode(chrome.i18n.getMessage('MARK_READ'));
                 isRead = false;
                 break;
             case 'archive':
-                readNode = helper.createTextNode(chrome.i18n.getMessage('MARK_UNREAD'));
+                readNode = Helper.createTextNode(chrome.i18n.getMessage('MARK_UNREAD'));
                 isRead = true;
                 break;
         }
@@ -173,47 +173,47 @@ class Item {
         readButtonElement.setAttribute('data-id', element.item_id);
         readButtonElement.setAttribute('data-read', isRead);
         readButtonElement.setAttribute('title', isRead ? chrome.i18n.getMessage('MARK_UNREAD') : chrome.i18n.getMessage('MARK_READ'));
-        helper.append(readButtonElement, readNode);
+        Helper.append(readButtonElement, readNode);
 
         // delete link
-        let deleteNode = helper.createTextNode(chrome.i18n.getMessage('DELETE'));
+        let deleteNode = Helper.createTextNode(chrome.i18n.getMessage('DELETE'));
         deleteButtonElement.setAttribute('href', '#0');
         deleteButtonElement.setAttribute('class', 'item__link item__link--delete js-deleteButton');
         deleteButtonElement.setAttribute('data-id', element.item_id);
         deleteButtonElement.setAttribute('title', chrome.i18n.getMessage('DELETE'));
-        helper.append(deleteButtonElement, deleteNode);
+        Helper.append(deleteButtonElement, deleteNode);
 
         // open in pocket link
-        let pocketLinkNode = helper.createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
+        let pocketLinkNode = Helper.createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
         pocketLinkElement.setAttribute('href', 'https://getpocket.com/a/read/' + element.item_id);
         pocketLinkElement.setAttribute('class', 'item__link item__link--open-pocket');
         pocketLinkElement.setAttribute('title', chrome.i18n.getMessage('OPEN_IN_POCKET'));
-        helper.append(pocketLinkElement, pocketLinkNode);
+        Helper.append(pocketLinkElement, pocketLinkNode);
 
         // domain link
         let domain = link.replace(/^(https?:|)\/\//, '');
         domain = domain.split('/')[0];
-        let linkNode = helper.createTextNode(domain);
+        let linkNode = Helper.createTextNode(domain);
         linkElement.setAttribute('href', link);
         linkElement.setAttribute('class', 'item__link');
         linkElement.setAttribute('title', link);
-        helper.append(linkElement, linkNode);
+        Helper.append(linkElement, linkNode);
 
         // item and item__content
         itemElement.setAttribute('class', 'item');
         contentElement.setAttribute('class', 'item__content');
-        helper.append(itemElement, contentElement);
+        Helper.append(itemElement, contentElement);
 
         // append everything to item__content
-        helper.append(contentElement, fakeLinkElement);
-        helper.append(contentElement, favouriteElement);
-        helper.append(contentElement, titleElement);
-        helper.append(contentElement, timeAndTagsWrapperElement);
-        helper.append(contentElement, excerptElement);
-        helper.append(contentElement, linkElement);
-        helper.append(contentElement, pocketLinkElement);
-        helper.append(contentElement, readButtonElement);
-        helper.append(contentElement, deleteButtonElement);
+        Helper.append(contentElement, fakeLinkElement);
+        Helper.append(contentElement, favouriteElement);
+        Helper.append(contentElement, titleElement);
+        Helper.append(contentElement, timeAndTagsWrapperElement);
+        Helper.append(contentElement, excerptElement);
+        Helper.append(contentElement, linkElement);
+        Helper.append(contentElement, pocketLinkElement);
+        Helper.append(contentElement, readButtonElement);
+        Helper.append(contentElement, deleteButtonElement);
 
         return itemElement;
     }
@@ -224,17 +224,17 @@ class Item {
      * @param {HTMLElement} itemElement - Element to render.
      * @param {String} list - List type.
      * @param {Boolean} doPrepend - If item has to be prepended.
-     * @return {void}
+     * @return {*}
      */
     render(itemElement, list = 'list', doPrepend = false) {
         const listSelector = '#js-' + list;
         const listElement = document.querySelector(listSelector);
 
         if (doPrepend) {
-            return helper.prepend(listElement, itemElement);
+            return Helper.prepend(listElement, itemElement);
         }
 
-        return helper.append(listElement, itemElement);
+        return Helper.append(listElement, itemElement);
     }
 
     /**
@@ -250,15 +250,15 @@ class Item {
                 modal.close();
 
                 if (pocket.getActivePage() === 'list') {
-                    const createdItem = this.create(response.item, 'list');
+                    const createdItem = this.create(response.item);
                     this.render(createdItem, 'list', true);
                 }
 
                 let array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
-                array = helper.prependArray(array, response.item);
+                array = Helper.prependArray(array, response.item);
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(array));
 
-                localStorage.setItem('listCount', parseInt(localStorage.getItem('listCount'), 10) + 1);
+                localStorage.setItem('listCount', (parseInt(localStorage.getItem('listCount'), 10) + 1).toString());
                 if (pocket.getActivePage() === 'list') {
                     document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 }
@@ -339,7 +339,10 @@ class Item {
     addTags(e) {
         e.preventDefault();
         modal.open('#js-tagsModal');
+
         const tagsInput = document.querySelector('#js-tagsInput');
+        const autocomplete = new Autocomplete('#js-tagsInput', JSON.parse(localStorage.getItem('tags')));
+
         if (e.target.dataset.tags) {
             tagsInput.value = e.target.dataset.tags;
         }
@@ -352,6 +355,7 @@ class Item {
         // TODO: remove event
         document.addEventListener('closed.modal', () => {
             tagsInput.value = '';
+            autocomplete.destroy();
             document.querySelector('#js-tagsSubmit').removeEventListener('click', newEvent, false);
         }, false);
     }
