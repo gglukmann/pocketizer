@@ -162,7 +162,7 @@ class Tags {
         listElement.setAttribute('class', 'tags__item');
         linkElement.setAttribute('href', `#${tag}`);
         linkElement.setAttribute('class', 'btn btn--link tags__link js-tagsLink');
-        linkElement.setAttribute('title', tag);
+        linkElement.setAttribute('title', `${chrome.i18n.getMessage('TAG')}: ${tag}`);
 
         helper.append(linkElement, tagNode);
         helper.append(listElement, linkElement);

@@ -852,7 +852,7 @@ a > svg {
     border-radius: 4px;
     font-size: 1.2em;
     padding: 5px 10px;
-    min-width: 200px;
+    min-width: 220px;
     width: 100%;
 }
 
@@ -909,6 +909,14 @@ a > svg {
 
 .search__input::placeholder {
     font-size: 1rem;
+}
+
+.search__info {
+    position: absolute;
+    left: 0;
+    bottom: -15px;
+    font-size: 10px;
+    color: var(--text-light);
 }
 
 .search__clear {

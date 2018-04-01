@@ -143,7 +143,10 @@
         "message": "Search"
     },
     "SEARCH_FROM": {
-        "message": "Search from title or url"
+        "message": "Search from title, url or tags"
+    },
+    "SEARCH_INFO": {
+        "message": "Tags start with '#' or 'tag:'"
     },
     "EMPTY_SEARCH": {
         "message": "Empty search"
