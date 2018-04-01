@@ -58,19 +58,19 @@ class Item {
      * @return {HTMLElement} - Created element.
      */
     create(element) {
-        let itemElement = Helper.createNode('li');
-        let contentElement = Helper.createNode('div');
-        let fakeLinkElement = Helper.createNode('a');
-        let favouriteElement = Helper.createNode('a');
-        let titleElement = Helper.createNode('div');
-        let timeAndTagsWrapperElement = Helper.createNode('div');
-        let tagLinkElement = Helper.createNode('a');
-        let timeElement = Helper.createNode('div');
-        let excerptElement = Helper.createNode('div');
-        let linkElement = Helper.createNode('a');
-        let readButtonElement = Helper.createNode('a');
-        let deleteButtonElement = Helper.createNode('a');
-        let pocketLinkElement = Helper.createNode('a');
+        const itemElement = Helper.createNode('li');
+        const contentElement = Helper.createNode('div');
+        const fakeLinkElement = Helper.createNode('a');
+        const favouriteElement = Helper.createNode('a');
+        const titleElement = Helper.createNode('div');
+        const timeAndTagsWrapperElement = Helper.createNode('div');
+        const tagLinkElement = Helper.createNode('a');
+        const timeElement = Helper.createNode('div');
+        const excerptElement = Helper.createNode('div');
+        const linkElement = Helper.createNode('a');
+        const readButtonElement = Helper.createNode('a');
+        const deleteButtonElement = Helper.createNode('a');
+        const pocketLinkElement = Helper.createNode('a');
 
         let link;
         if (element.resolved_url && element.resolved_url !== '') {
@@ -102,7 +102,7 @@ class Item {
             title = element.given_url;
         }
 
-        let titleTextNode = Helper.createTextNode(title);
+        const titleTextNode = Helper.createTextNode(title);
 
         titleElement.setAttribute('class', 'item__title js-itemTitle');
         Helper.append(titleElement, titleTextNode);
@@ -124,15 +124,17 @@ class Item {
         if (element.tags) {
             const tagsArray = [];
             for (const tag in element.tags) {
-                tagsArray.push(tag);
+                if (element.tags.hasOwnProperty(tag)) {
+                    tagsArray.push(tag);
+                }
             }
             tagLinkElement.setAttribute('data-tags', tagsArray);
         }
         tagLinkElement.setAttribute('title', chrome.i18n.getMessage('TAGS'));
-        let svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
         svgElement.setAttribute('viewBox', '0 0 541.9 541.9');
         svgElement.setAttribute('class', 'icon item__tags-svg');
-        let pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        const pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
         pathElement.setAttribute('d', 'M84.7,121.2c-20.1,0-36.4-16.3-36.4-36.4c0-20.1,16.3-36.5,36.5-36.5c20.1,0,36.4,16.3,36.4,36.4C121.2,104.9,104.9,121.3,84.7,121.2z M526.3,299.6c-1.6-2.4-3.4-4.7-5.6-6.9L260.2,32.3c-17-17-50.6-31.5-74.7-32.3L42.4,0C18.4-0.7-0.7,18.4,0,42.4l0,143.1c0.8,24.1,15.3,57.7,32.3,74.7l260.5,260.5c2.1,2.1,4.4,4,6.8,5.6c28.6,22.3,70.1,20.6,96.3-5.6l124.8-124.9C547,369.7,548.6,328.2,526.3,299.6z');
         Helper.append(svgElement, pathElement);
         Helper.append(tagLinkElement, svgElement);
@@ -176,7 +178,7 @@ class Item {
         Helper.append(readButtonElement, readNode);
 
         // delete link
-        let deleteNode = Helper.createTextNode(chrome.i18n.getMessage('DELETE'));
+        const deleteNode = Helper.createTextNode(chrome.i18n.getMessage('DELETE'));
         deleteButtonElement.setAttribute('href', '#0');
         deleteButtonElement.setAttribute('class', 'item__link item__link--delete js-deleteButton');
         deleteButtonElement.setAttribute('data-id', element.item_id);
@@ -184,7 +186,7 @@ class Item {
         Helper.append(deleteButtonElement, deleteNode);
 
         // open in pocket link
-        let pocketLinkNode = Helper.createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
+        const pocketLinkNode = Helper.createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
         pocketLinkElement.setAttribute('href', 'https://getpocket.com/a/read/' + element.item_id);
         pocketLinkElement.setAttribute('class', 'item__link item__link--open-pocket');
         pocketLinkElement.setAttribute('title', chrome.i18n.getMessage('OPEN_IN_POCKET'));
@@ -193,7 +195,7 @@ class Item {
         // domain link
         let domain = link.replace(/^(https?:|)\/\//, '');
         domain = domain.split('/')[0];
-        let linkNode = Helper.createTextNode(domain);
+        const linkNode = Helper.createTextNode(domain);
         linkElement.setAttribute('href', link);
         linkElement.setAttribute('class', 'item__link');
         linkElement.setAttribute('title', link);

@@ -843,6 +843,7 @@ a > svg {
 
 /* INPUT */
 .textfield {
+    position: relative;
     margin: 0 0 var(--grid-gutter);
 }
 
@@ -1053,6 +1054,7 @@ a > svg {
     color: var(--red);
 }
 
+/* TAGS */
 .tags {
     position: relative;
     display: flex;
@@ -1133,6 +1135,52 @@ a > svg {
 
 .tags__more-link:hover {
     color: var(--text-color);
+}
+
+/* AUTOCOMPLETE */
+.autocomplete {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--white);
+    box-shadow: 0 2px 5px 0 rgba(var(--black-rgb), .1);
+}
+
+.autocomplete.is-open {
+    display: block;
+}
+
+.autocomplete__list {
+    list-style: none;
+    padding: 1em 0;
+    margin: 0;
+}
+
+.autocomplete__link {
+    position: relative;
+    display: block;
+    padding: 8px 1em;
+    color: var(--black);
+}
+
+.autocomplete__link:hover {
+    background: var(--grey-m);
+}
+
+.autocomplete__link:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 1em;
+    right: 1em;
+    height: 1px;
+    background: var(--border-light);
+}
+
+.autocomplete__item:last-child .autocomplete__link:after {
+    display: none;
 }
 
 /* HELPERS */

@@ -108,7 +108,9 @@ class Tags {
         for (const item of array) {
             if (item.tags) {
                 for (const tag in item.tags) {
-                    this.addTag(tag, isFullSync);
+                    if (item.tags.hasOwnProperty(tag)) {
+                        this.addTag(tag, isFullSync);
+                    }
                 }
             }
         }
@@ -150,9 +152,9 @@ class Tags {
      * @return {HTMLElement}
      */
     createTag(tag) {
-        let listElement = Helper.createNode('li');
-        let linkElement = Helper.createNode('a');
-        let tagNode = Helper.createTextNode(tag);
+        const listElement = Helper.createNode('li');
+        const linkElement = Helper.createNode('a');
+        const tagNode = Helper.createTextNode(tag);
 
         listElement.setAttribute('class', 'tags__item');
         linkElement.setAttribute('href', `#${tag}`);

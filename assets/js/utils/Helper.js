@@ -128,8 +128,8 @@ class Helper {
      * Append element to parent.
      *
      * @function append
-     * @param {Element} parent - Parent element.
-     * @param {Element} el - Child element.
+     * @param {Element|Node} parent - Parent element.
+     * @param {Element|Node|Object} el - Child element.
      * @return {Element} - Element with appended child.
      */
     static append(parent, el) {
@@ -153,7 +153,7 @@ class Helper {
      *
      * @function prepend
      * @param {Array[]} array - Array where to add.
-     * @param {Any} value - Value to add to array.
+     * @param {*} value - Value to add to array.
      * @return {Array[]} - Array with prepended item.
      */
     static prependArray(array, value) {
