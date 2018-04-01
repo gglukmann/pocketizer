@@ -61,7 +61,7 @@ class Settings {
             helper.addClass(document.body, theme);
 
             const colorSelector = [...document.querySelectorAll('[name=selector-color]')];
-            for (let selector of colorSelector) {
+            for (const selector of colorSelector) {
                 if (selector.value === theme) {
                     selector.checked = true;
                 }
@@ -94,7 +94,7 @@ class Settings {
 
         if (defaultPage) {
             const pageSelector = [...document.querySelectorAll('[name=selector-page]')];
-            for (let selector of pageSelector) {
+            for (const selector of pageSelector) {
                 if (selector.value === defaultPage) {
                     selector.checked = true;
                 }
@@ -183,7 +183,7 @@ class Settings {
             const rawData = new FormData(form);
             let data = {};
 
-            for (let link of rawData.entries()) {
+            for (const link of rawData.entries()) {
                 data[link[0]] = link[1];
             }
 

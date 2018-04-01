@@ -102,7 +102,7 @@ class Pocket {
                 break;
         }
 
-        for (let key in items) {
+        for (const key in items) {
             array.push(items[key]);
         }
 
@@ -113,7 +113,7 @@ class Pocket {
             localStorage.setItem(`${this.getActivePage()}Count`, array.length);
             localStorage.setItem(`${this.getActivePage()}Since`, response.since);
 
-            tags.createTags(array);
+            tags.createTags(array, true);
 
             if (this.fullSync) {
                 const eventFullSync = new Event('synced');
@@ -124,7 +124,7 @@ class Pocket {
         } else {
             array.sort((x, y) => y.sort_id - x.sort_id);
 
-            for (let key in array) {
+            for (const key in array) {
                 let newItem = array[key];
                 let newArray;
 
@@ -134,7 +134,7 @@ class Pocket {
                         newArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
 
                         // delete old item, if it is added from this extension
-                        for (let i in newArray) {
+                        for (const i in newArray) {
                             if (newArray[i].item_id === newItem.item_id) {
                                 newArray.splice(i, 1);
                             }
@@ -232,13 +232,13 @@ class Pocket {
      *
      * @function createItems
      * @param {Array} array - Array of items.
-     * @return {void}
+     * @return {Array[]}
      */
     createItems(array) {
         const newArray = [];
         let newItem;
 
-        for (let key in array) {
+        for (const key in array) {
             let newItem = item.create(array[key]);
             newItem = item.render(newItem);
             newArray.push(newItem);
@@ -356,6 +356,8 @@ class Pocket {
             item.archive(e);
         } else if (e.target.classList.contains('js-deleteButton')) {
             item.delete(e);
+        } else if (e.target.classList.contains('js-tagsButton')) {
+            item.addTags(e);
         }
     }
 
@@ -399,9 +401,10 @@ class Pocket {
      * @param  {String}  state - Current state.
      * @param  {Number}  id - Item id.
      * @param  {Boolean} isFavourited - If should be favourited.
+     * @param  {String}  tags - Tags to replace.
      * @return {void}
      */
-    changeItemState(e, state, id, isFavourited) {
+    changeItemState(e, state, id, isFavourited = false, tags) {
         let action;
 
         if (state === 'read') {
@@ -421,18 +424,25 @@ class Pocket {
         } else if (state === 'delete') {
             action = 'delete';
             helper.showMessage(`${chrome.i18n.getMessage('DELETING')}...`, true, false, false);
+        } else if (state === 'tags') {
+            action = 'tags_replace';
+            helper.showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
         }
 
-        let actions = [{
+        const actions = [{
             "action": action,
             "item_id": id,
             "time": helper.getCurrentUNIX()
         }];
 
+        if (state === 'tags') {
+            actions[0].tags = tags;
+        }
+
         apiService.send(actions)
             .then(response => {
                 if (response.status === 1) {
-                    this.handleActionResponse(e, state, id, isFavourited, response);
+                    this.handleActionResponse(e, state, id, isFavourited, response, tags);
                 }
             })
             .catch(error => {
@@ -449,13 +459,14 @@ class Pocket {
      * @param {String} state - Current state.
      * @param {Number} id - Item id.
      * @param {Boolean} isFavourited - If should be favourited.
-     * @param {response} response - Response from Pocket api.
+     * @param {Object} response - Response from Pocket api.
+     * @param {String} tags - Tags, if they are added.
      * @return {void}
      */
-    handleActionResponse(e, state, id, isFavourited, response) {
+    handleActionResponse(e, state, id, isFavourited, response, tags) {
         let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
 
-        for (let i in array) {
+        for (const i in array) {
             if (array[i].item_id === id) {
                 switch (state) {
                     case 'read':
@@ -478,6 +489,11 @@ class Pocket {
                         isFavourited = !isFavourited;
                         e.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite = isFavourited;
                     break;
+                    case 'tags':
+                        if (tags.length) {
+                            e.target.dataset.tags = tags;
+                        }
+                    break;
                 }
             }
         }
@@ -493,7 +509,7 @@ class Pocket {
                     helper.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
                     break;
             }
-        } else if (state === 'favourite') {
+        } else if (state === 'favourite' || state === 'tags') {
             helper.showMessage(chrome.i18n.getMessage('PROCESSING'));
         } else if (state === 'delete') {
             helper.showMessage(chrome.i18n.getMessage('DELETING'));

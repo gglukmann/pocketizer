@@ -39,7 +39,7 @@ class AuthService {
      * Get Request token from Pocket.
      *
      * @function getRequestToken
-     * @return {void}
+     * @return {Promise}
      */
     getRequestToken() {
         helper.showMessage(`${chrome.i18n.getMessage('AUTHENTICATING')}...`, true, false, false);
@@ -68,7 +68,7 @@ class AuthService {
      *
      * @function launchChromeWebAuthFlow
      * @param {String} requestToken - Request token from Pocket.
-     * @return {void}
+     * @return {Promise}
      */
     launchChromeWebAuthFlow(requestToken) {
         let options = {
@@ -93,7 +93,7 @@ class AuthService {
      *
      * @function getAccessToken
      * @param {String} requestToken - Request token from Pocket.
-     * @return {void}
+     * @return {Promise}
      */
     getAccessToken(requestToken) {
         this._fetchData.body = JSON.stringify({

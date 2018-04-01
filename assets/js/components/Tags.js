@@ -100,21 +100,15 @@ class Tags {
      * Add all tags to localStorage.
      *
      * @function createTags
-     * @param array {Array} - Array of items to find tags.
+     * @param {Array} array - Array of items to find tags.
+     * @param {Boolean} isFullSync - Is array coming from full sync.
      * @return {void}
      */
-    createTags(array) {
-        const tagsArray = JSON.parse(localStorage.getItem('tags')) || [];
-
+    createTags(array, isFullSync) {
         for (const item of array) {
             if (item.tags) {
                 for (const tag in item.tags) {
-                    if (!tagsArray.includes(tag)) {
-                        tagsArray.push(tag);
-                        tagsArray.sort();
-
-                        localStorage.setItem('tags', JSON.stringify(tagsArray));
-                    }
+                    this.addTag(tag, isFullSync);
                 }
             }
         }
@@ -134,7 +128,7 @@ class Tags {
         if (!tagsArray.length) {
             return;
         }
-        
+
         document.querySelector('#js-tags').removeAttribute('style');
         const tagsElement = document.querySelector('#js-tagsList');
         const tagsTooltipElement = document.querySelector('#js-tagsTooltipList');
@@ -191,6 +185,25 @@ class Tags {
         }
 
         return helper.append(tagsTooltipElement, tagElement);
+    }
+
+    /**
+     * Add tags to localStorage.
+     *
+     * @function addTag
+     * @param {String} tag - Tag string.
+     * @param {Boolean} isFullSync - If is full sync, remove all tags from localStorage and add from server.
+     * @return {void}
+     */
+    addTag(tag, isFullSync) {
+        const tagsArray = isFullSync ? [] : (JSON.parse(localStorage.getItem('tags')) || []);
+
+        if (!tagsArray.includes(tag)) {
+            tagsArray.push(tag);
+            tagsArray.sort();
+
+            localStorage.setItem('tags', JSON.stringify(tagsArray));
+        }
     }
 
     /**

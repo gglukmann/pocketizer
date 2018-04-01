@@ -13,8 +13,11 @@
     "SYNCHRONIZING": {
         "message": "Synchronizing"
     },
-    "TOGGLE_FAVOURITED_STATE": {
-        "message": "Toggle favourited state"
+    "FAVOURITE": {
+        "message": "Favourite"
+    },
+    "UNFAVOURITE": {
+        "message": "Unfavourite"
     },
     "OPEN_IN_POCKET": {
         "message": "Open in Pocket"
@@ -167,7 +170,7 @@
         "message": "Choose default page"
     },
     "TAGS": {
-        "message": "Tags:"
+        "message": "Tags"
     },
     "IN": {
         "message": "in"
@@ -183,5 +186,11 @@
     },
     "UNTAGGED": {
         "message": "Untagged"
+    },
+    "EDIT_TAGS": {
+        "message": "Edit tags"
+    },
+    "SAVE": {
+        "message": "Save"
     }
 }

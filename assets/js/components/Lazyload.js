@@ -35,7 +35,7 @@ class Lazyload {
                 }
 
                 // Loop through the entries
-                for (let entry of entries) {
+                for (const entry of entries) {
                     // Are we in viewport?
                     if (entry.intersectionRatio > 0) {
                         this.imageCount--;
@@ -47,7 +47,7 @@ class Lazyload {
                 }
             }, config);
 
-            for (let image of images) {
+            for (const image of images) {
                 if (image.classList.contains('js-lazyloaded')) {
                     continue;
                 }
@@ -62,7 +62,7 @@ class Lazyload {
     *
     * @function fetchImage
     * @param {String} url - Url from data-src.
-    * @return {void}
+    * @return {Promise}
     */
     fetchImage(url) {
         return new Promise((resolve, reject) => {
@@ -78,7 +78,7 @@ class Lazyload {
     *
     * @function preloadImage
     * @param {Object} image - Image to preload.
-    * @return {void}
+    * @return {*}
     */
     preloadImage(image) {
         const src = image.dataset.src;
@@ -99,7 +99,7 @@ class Lazyload {
     * @return {void}
     */
     loadImagesImmediately(images) {
-        for (let image of images) {
+        for (const image of images) {
             this.preloadImage(image);
         }
     }

@@ -101,7 +101,8 @@ a {
     text-decoration: none;
 }
 
-a > span {
+a > span,
+a > svg {
     pointer-events: none;
 }
 
@@ -429,7 +430,7 @@ a > span {
     position: relative;
     border: 1px solid var(--border-light);
     background-color: var(--white);
-    padding: 0 0 4em;
+    padding: 0;
     transition: opacity .2s ease-out;
     width: 100%;
     overflow: hidden;
@@ -486,10 +487,26 @@ a > span {
     color: var(--theme-sepia-text);
 }
 
-.item__time {
-    padding: 0 1em .5em 1em;
+.item__time-and-tags {
+    display: flex;
+    justify-content: space-between;
     color: var(--text-light);
     font-size: 12px;
+    padding: 0 1em .5em 1em;
+}
+
+.item__tags {
+    color: var(--text-light);
+    font-size: 14px;
+    z-index: 10;
+}
+
+.item__tags:hover {
+    color: var(--text-color);
+}
+
+.theme-dark .item__tags:hover {
+    color: var(--white);
 }
 
 .item__excerpt {
@@ -514,94 +531,41 @@ a > span {
 
 .item__link {
     position: absolute;
-    bottom: .7em;
     left: 1em;
     right: 90px;
-    color: var(--text-light);
-    font-size: 12px;
-    text-decoration: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    z-index: 10;
-}
-
-.item__link-source {
-    position: absolute;
-    bottom: 60px;
-    left: 1em;
-    right: 1em;
-    color: var(--text-light);
-    font-size: 12px;
-    text-decoration: none;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    z-index: 10;
-}
-
-.item__link-save {
-    position: absolute;
-    left: 1em;
-    right: 1em;
-    bottom: 1em;
-    padding-top: 1em;
-    border-top: 1px solid var(--border-light);
-    color: var(--text-light);
-    z-index: 10;
-}
-
-.item__link-save.is-saved:hover,
-.item__link-save.is-saved {
-    color: var(--color-primary-d);
-}
-
-.item__link-text-child {
-    pointer-events: none;
-}
-
-.item__link-svg {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-    vertical-align: middle;
-}
-
-.item__set-read {
-    z-index: 10;
-    position: absolute;
     bottom: .7em;
-    right: 1em;
     color: var(--text-light);
     font-size: 12px;
-    padding-top: .7em;
+    text-decoration: none;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    z-index: 10;
 }
 
-.item__link-save:hover,
-.item__link:hover,
-.item__link-source:hover,
-.item__set-read:hover,
-.item__delete:hover,
-.item__pocket-link:hover {
+.item__link:hover {
     color: var(--text-color);
 }
 
-.theme-dark .item__link-save:hover,
-.theme-dark .item__link:hover,
-.theme-dark .item__link-source:hover,
-.theme-dark .item__set-read:hover,
-.theme-dark .item__delete:hover,
-.theme-dark .item__pocket-link:hover {
+.theme-dark .item__link:hover {
     color: var(--white);
 }
 
-.item__delete {
-    position: absolute;
-    bottom: 2.2em;
+.item__link--set-read {
+    left: auto;
     right: 1em;
-    color: var(--text-light);
-    font-size: 12px;
-    z-index: 10;
+    bottom: .7em;
+}
+
+.item__link--delete {
+    left: auto;
+    right: 1em;
+    bottom: 2.2em;
+}
+
+.item__link--open-pocket {
+    left: 1em;
+    bottom: 2.2em;
 }
 
 .item__favourite {
@@ -621,7 +585,12 @@ a > span {
 }
 
 .item__favourite:hover {
-    box-shadow: 0 2px 1px rgba(var(--black-rgb), .1);
+    box-shadow: 0 2px 2px rgba(var(--black-rgb), .1);
+    background: var(--yellow);
+}
+
+.item__favourite[data-favourite="true"]:hover {
+    background: transparent;
 }
 
 .theme-dark .item__favourite {
@@ -650,15 +619,6 @@ a > span {
     .item__background {
         display: block;
     }
-}
-
-.item__pocket-link {
-    position: absolute;
-    left: 1em;
-    bottom: 2.2em;
-    color: var(--text-light);
-    font-size: 12px;
-    z-index: 10;
 }
 
 /* BUTTON */
@@ -770,6 +730,10 @@ a > span {
     color: var(--text-light);
     vertical-align: middle;
     font-size: .8em;
+}
+
+.btn--small .btn__icon {
+    font-size: .6em;
 }
 
 /* BUTTON-GROUP */
@@ -1138,6 +1102,8 @@ a > span {
     border: 1px solid var(--border-light);
     box-shadow: 0 2px 5px 0 rgba(var(--black-rgb), .1);
     min-width: 150px;
+    max-height: 250px;
+    overflow: auto;
 }
 
 .theme-dark .tags__tooltip {

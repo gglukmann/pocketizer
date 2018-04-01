@@ -92,7 +92,7 @@ class Header {
     changeMenuActiveState(page) {
         let menuLinkElements = document.querySelectorAll('.menu__link');
 
-        for (let menuLink of menuLinkElements) {
+        for (const menuLink of menuLinkElements) {
             helper.removeClass(menuLink, 'is-active');
 
             if (menuLink.dataset.page === page) {
