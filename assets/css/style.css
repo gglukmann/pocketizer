@@ -1148,6 +1148,10 @@ a > svg {
     box-shadow: 0 2px 5px 0 rgba(var(--black-rgb), .1);
 }
 
+.theme-dark .autocomplete {
+    background: var(--theme-dark-bg2);
+}
+
 .autocomplete.is-open {
     display: block;
 }
@@ -1165,8 +1169,16 @@ a > svg {
     color: var(--black);
 }
 
+.theme-dark .autocomplete__link {
+    color: var(--white);
+}
+
 .autocomplete__link:hover {
     background: var(--grey-m);
+}
+
+.theme-dark .autocomplete__link:hover {
+    background: var(--theme-dark-bg);
 }
 
 .autocomplete__link:after {
@@ -1177,6 +1189,10 @@ a > svg {
     right: 1em;
     height: 1px;
     background: var(--border-light);
+}
+
+.theme-dark .autocomplete__link:after {
+    background: var(--theme-dark-bg);
 }
 
 .autocomplete__item:last-child .autocomplete__link:after {
