@@ -935,6 +935,10 @@ a > svg {
     font-size: .8em;
 }
 
+.search__clear-link:hover {
+    text-decoration: underline;
+}
+
 .theme-dark .search__clear-link {
     color: var(--theme-dark-text);
 }
@@ -1146,6 +1150,8 @@ a > svg {
     right: 0;
     background: var(--white);
     box-shadow: 0 2px 5px 0 rgba(var(--black-rgb), .1);
+    max-height: 250px;
+    overflow: auto;
 }
 
 .theme-dark .autocomplete {
