@@ -373,7 +373,6 @@ class Item {
      * @return {void}
      */
     handleSaveTagsClick(e) {
-        console.log(e);
         const form = e.target;
 
         if (form.checkValidity()) {
@@ -393,10 +392,25 @@ class Item {
                 tags.addTag(tag.trim());
             });
 
-            pocket.changeItemState(e, 'tags', id, false, newTags.join(','));
+            const newTagsString = newTags.join(',');
+
+            pocket.changeItemState(e, 'tags', id, false, newTagsString);
             tags.renderTags();
+            this.addTagsToItem(id, newTagsString);
             modal.close();
         }
+    }
+
+    /**
+     * Add new tags back to item in DOM.
+     *
+     * @function addTagsToItem
+     * @param {String} id - Id of item.
+     * @param {String} tags - New tags for item.
+     * @return {void}
+     */
+    addTagsToItem(id, tags) {
+        pocket.getContent();
     }
 
     /**

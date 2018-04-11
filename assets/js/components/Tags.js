@@ -46,6 +46,7 @@ class Tags {
             search.search(e.target.hash);
             search.show();
         } else if (e.target.id === 'js-tagsAllLink') {
+            e.preventDefault();
             search.reset(true);
         }
 
