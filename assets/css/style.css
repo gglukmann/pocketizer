@@ -430,7 +430,7 @@ a > svg {
     position: relative;
     border: 1px solid var(--border-light);
     background-color: var(--white);
-    padding: 0;
+    padding: 0 0 4em;
     transition: opacity .2s ease-out;
     width: 100%;
     overflow: hidden;
@@ -441,6 +441,7 @@ a > svg {
         margin: calc(var(--grid-gutter) / 2);
         border-bottom: 1px solid var(--border-dark);
         height: 300px;
+        padding-bottom: 0;
     }
 }
 
@@ -498,6 +499,8 @@ a > svg {
 .item__tags {
     color: var(--text-light);
     font-size: 14px;
+    padding: 5px;
+    margin: -5px;
     z-index: 10;
 }
 
