@@ -74,10 +74,14 @@ class Modal {
      * @return {void}
      */
     handleModalKeydown(e) {
-        if (!this.preventClose) {
-            if (e.keyCode === 27) {
-                this.close();
-            }
+        if (
+            !this.preventClose &&
+            (e.target.id !== 'js-tagsInput' ||
+            e.target.parentNode.querySelector('.autocomplete') === null ||
+            !e.target.parentNode.querySelector('.autocomplete').classList.contains('is-open')) &&
+            e.keyCode === 27
+        ) {
+            this.close();
         }
     }
 
@@ -89,7 +93,7 @@ class Modal {
      * @param {Boolean} preventClose - If close should be prevented with enter, esc or backdrop click.
      * @return {void}
      */
-    open(target, preventClose) {
+    open(target, preventClose = false) {
         this.preventClose = preventClose ? preventClose : this.preventClose;
         this.element = document.querySelector(target);
 

@@ -9,23 +9,39 @@ class Autocomplete {
 
         this.makeSearchClick = this.handleSearchClick.bind(this);
         this.clickAutocomplete = this.handleClickAutocomplete.bind(this);
+        this.autocompleteKeydown = this.handleAutocompleteKeydown.bind(this);
         this.bindEvents();
     }
 
     bindEvents() {
         document.body.addEventListener('click', this.clickAutocomplete, false);
         this.input.addEventListener('keyup', this.makeSearchClick, false);
+        document.body.addEventListener('keydown', this.autocompleteKeydown, false);
     }
 
     removeEvents() {
         document.body.removeEventListener('click', this.clickAutocomplete, false);
         this.input.removeEventListener('keyup', this.makeSearchClick, false);
+        document.body.removeEventListener('keydown', this.autocompleteKeydown, false);
+    }
+
+    handleAutocompleteKeydown(e) {
+        if (
+            e.target.id === 'js-tagsInput' &&
+            this.isOpen() &&
+            e.keyCode === 27
+        ) {
+            return this.hide();
+        }
     }
 
     handleClickAutocomplete(e) {
-        if (!e.target.classList.contains('autocomplete__list') && !e.target.classList.contains('js-autocompleteLink')) {
+        if (
+            !e.target.classList.contains(`${this.componentClass}__list`) &&
+            !e.target.classList.contains(`js-${this.componentClass}Link`)
+        ) {
             this.hide();
-        } else if (e.target.classList.contains('js-autocompleteLink')) {
+        } else if (e.target.classList.contains(`js-${this.componentClass}Link`)) {
             this.setValue(e);
             this.hide();
             this.input.focus();
@@ -33,16 +49,24 @@ class Autocomplete {
     }
 
     handleSearchClick(e) {
+        if (e.keyCode === 27) {
+            return;
+        }
+
         const inputCurrentArray = e.target.value.split(',');
         this.searchableString = inputCurrentArray.pop();
         const foundArray = [];
 
         if (this.searchableString.length <= 1) {
-            return;
+            return this.hide();
         }
 
         for (const item of this.searchArray) {
-            if ((item.toLowerCase()).includes(this.searchableString) && !inputCurrentArray.includes(item)) {
+            if (
+                (item.toLowerCase()).includes(this.searchableString) &&
+                (item.toLowerCase()) !== this.searchableString &&
+                !inputCurrentArray.includes(item)
+            ) {
                 foundArray.push(item);
             }
         }
@@ -50,7 +74,7 @@ class Autocomplete {
         if (foundArray.length > 0) {
             this.show(foundArray);
         } else {
-            this.close();
+            this.hide();
         }
     }
 
@@ -68,6 +92,10 @@ class Autocomplete {
         if (this.autocomplete) {
             Helper.removeClass(this.autocomplete, 'is-open');
         }
+    }
+
+    isOpen() {
+        return this.autocomplete && this.autocomplete.classList.contains('is-open');
     }
 
     renderWrapper() {
