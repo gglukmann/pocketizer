@@ -193,6 +193,9 @@
     "EDIT_TAGS": {
         "message": "Edit tags"
     },
+    "TAGS_INFO": {
+        "message": "Add tags as comma separated list."
+    },
     "SAVE": {
         "message": "Save"
     }

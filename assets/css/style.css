@@ -27,6 +27,7 @@
 
     --theme-dark-bg: #141d26;
     --theme-dark-bg2: #182430;
+    --theme-dark-bg3: #1b2836;
     --theme-dark-text: #ccc;
 
     --theme-sepia-bg: #fbf0d9;
@@ -850,6 +851,14 @@ a > svg {
     margin: 0 0 var(--grid-gutter);
 }
 
+.textfield__label {
+    display: block;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 .textfield__input {
     display: block;
     border: 1px solid var(--border-dark);
@@ -861,7 +870,7 @@ a > svg {
 }
 
 .theme-dark .textfield__input {
-    background-color: var(--theme-dark-bg2);
+    background-color: var(--theme-dark-bg3);
     border-color: var(--theme-dark-bg);
     color: var(--theme-dark-text);
 }
