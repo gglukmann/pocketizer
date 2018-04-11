@@ -166,7 +166,7 @@ a > svg {
         left: 0;
         right: 0;
         background: var(--body-bg);
-        z-index: 100;
+        z-index: 200;
     }
 
     .header.is-scrolled {

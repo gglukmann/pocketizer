@@ -371,12 +371,20 @@ class Item {
      */
     handleSaveTagsClick(e) {
         const id = e.target.dataset.id;
-        const newTags = document.querySelector('#js-tagsInput').value;
-        pocket.changeItemState(e, 'tags', id, false, newTags);
+        const allTags = document.querySelector('#js-tagsInput').value;
+        const newTags = [];
 
-        newTags.split(/\s*,\s*/).forEach(tag => {
+        allTags.split(/\s*,\s*/).forEach(tag => {
+            if (!tag.length) {
+                return;
+            }
+
+            tag = tag.trim();
+            newTags.push(tag);
             tags.addTag(tag.trim());
         });
+
+        pocket.changeItemState(e, 'tags', id, false, newTags.join(','));
         tags.renderTags();
     }
 
