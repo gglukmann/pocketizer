@@ -128,7 +128,7 @@ class Tags {
     renderTags() {
         const tagsArray = JSON.parse(localStorage.getItem('tags'));
 
-        if (!tagsArray.length) {
+        if (tagsArray === null || !tagsArray.length) {
             return;
         }
 
