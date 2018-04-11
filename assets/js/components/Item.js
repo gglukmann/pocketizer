@@ -5,6 +5,7 @@ class Item {
     constructor() {
         this.timeout = false;
         this.pageResize = this.handlePageResize.bind(this);
+        this.submitTags = this.handleSaveTagsClick.bind(this);
     }
 
     /**
@@ -25,6 +26,7 @@ class Item {
      */
     bindEvents() {
         window.addEventListener('resize', this.pageResize, false);
+        document.tagsForm.addEventListener('submit', this.submitTags, false);
     }
 
     /**
@@ -35,6 +37,7 @@ class Item {
      */
     removeEvents() {
         window.removeEventListener('resize', this.pageResize, false);
+        document.tagsForm.removeEventListener('submit', this.submitTags, false);
     }
 
     /**
@@ -240,7 +243,7 @@ class Item {
     }
 
     /**
-     * Add new item Pocket.
+     * Add new item to Pocket.
      *
      * @function addNewItem
      * @param {Object} data - Link in object.
@@ -342,23 +345,23 @@ class Item {
         e.preventDefault();
         modal.open('#js-tagsModal');
 
-        const tagsInput = document.querySelector('#js-tagsInput');
+        const tagsFormElements = document.tagsForm.elements;
+        const tagsItemIdInput = tagsFormElements.namedItem('tagsItemId');
+        const tagsInput = tagsFormElements.namedItem('tags');
         const autocomplete = new Autocomplete('#js-tagsInput', JSON.parse(localStorage.getItem('tags')));
+
+        tagsItemIdInput.value = e.target.dataset.id;
 
         if (e.target.dataset.tags) {
             tagsInput.value = e.target.dataset.tags;
         }
         tagsInput.focus();
 
-        const newEvent = this.handleSaveTagsClick.bind(this, e);
-
-        document.querySelector('#js-tagsSubmit').addEventListener('click', newEvent, false);
-
         // TODO: remove event
         document.addEventListener('closed.modal', () => {
+            tagsItemIdInput.value = '';
             tagsInput.value = '';
             autocomplete.destroy();
-            document.querySelector('#js-tagsSubmit').removeEventListener('click', newEvent, false);
         }, false);
     }
 
@@ -370,22 +373,30 @@ class Item {
      * @return {void}
      */
     handleSaveTagsClick(e) {
-        const id = e.target.dataset.id;
-        const allTags = document.querySelector('#js-tagsInput').value;
-        const newTags = [];
+        console.log(e);
+        const form = e.target;
 
-        allTags.split(/\s*,\s*/).forEach(tag => {
-            if (!tag.length) {
-                return;
-            }
+        if (form.checkValidity()) {
+            e.preventDefault();
 
-            tag = tag.trim();
-            newTags.push(tag);
-            tags.addTag(tag.trim());
-        });
+            const id = form.elements.namedItem('tagsItemId').value;
+            const allTags = form.elements.namedItem('tags').value;
+            const newTags = [];
 
-        pocket.changeItemState(e, 'tags', id, false, newTags.join(','));
-        tags.renderTags();
+            allTags.split(/\s*,\s*/).forEach(tag => {
+                if (!tag.length) {
+                    return;
+                }
+
+                tag = tag.trim();
+                newTags.push(tag);
+                tags.addTag(tag.trim());
+            });
+
+            pocket.changeItemState(e, 'tags', id, false, newTags.join(','));
+            tags.renderTags();
+            modal.close();
+        }
     }
 
     /**

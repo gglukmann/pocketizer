@@ -96,6 +96,7 @@ class Modal {
     open(target, preventClose = false) {
         this.preventClose = preventClose ? preventClose : this.preventClose;
         this.element = document.querySelector(target);
+        let oldParent = false;
 
         let previousModals = document.querySelectorAll('.modal-container.is-visible');
         if (previousModals.length > 0) {
@@ -107,19 +108,25 @@ class Modal {
         const eventOpen = new Event('open.modal');
         document.dispatchEvent(eventOpen);
 
-        if (!this.container.length) {
-            this.container = Helper.createNode('div');
-            this.container.setAttribute('class', 'modal-container');
-            this.inner = Helper.createNode('div');
-            this.inner.setAttribute('class', 'modal-container__inner');
+        this.container = Helper.createNode('div');
+        this.container.setAttribute('class', 'modal-container');
+        this.inner = Helper.createNode('div');
+        this.inner.setAttribute('class', 'modal-container__inner');
 
-            if (!this.preventClose) {
-                this.container.addEventListener('click', this.containerClick, false);
-            }
+        if (!this.preventClose) {
+            this.container.addEventListener('click', this.containerClick, false);
+        }
 
-            Helper.append(this.inner, this.element);
-            Helper.append(this.container, this.inner);
-            Helper.append(document.body, this.container);
+        if (this.element.parentNode.parentNode.classList.contains('modal-container')) {
+            oldParent = this.element.parentNode.parentNode;
+        }
+
+        Helper.append(this.inner, this.element);
+        Helper.append(this.container, this.inner);
+        Helper.append(document.body, this.container);
+
+        if (oldParent) {
+            oldParent.remove();
         }
 
         this.container.classList.add('is-visible');
