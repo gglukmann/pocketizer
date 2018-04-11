@@ -70,6 +70,17 @@ class Settings {
     }
 
     /**
+     * Set default page to load on extension load.
+     *
+     * @function setDefaultPage
+     * @param {String} page - Page to set.
+     * @return {void}
+     */
+    setDefaultPage(page = 'list') {
+        localStorage.setItem('defaultPage', page);
+    }
+
+    /**
      * Get default page to load on extension load.
      *
      * @function getDefaultPage
@@ -86,11 +97,14 @@ class Settings {
      * @return {void}
      */
     loadDefaultPage() {
-        const defaultPage = settings.getDefaultPage();
+        let defaultPage = settings.getDefaultPage();
 
-        if (defaultPage && defaultPage !== 'list' && PAGES.includes(defaultPage)) {
-            pocket.changePage(defaultPage);
+        if (defaultPage && defaultPage !== 'list' && !PAGES.includes(defaultPage)) {
+            defaultPage = 'list';
+            this.setDefaultPage(defaultPage);
         }
+
+        pocket.changePage(defaultPage);
 
         if (defaultPage) {
             const pageSelector = [...document.querySelectorAll('[name=selector-page]')];
@@ -114,7 +128,7 @@ class Settings {
             const page = e.detail.value.toString();
 
             if (PAGES.includes(page)) {
-                localStorage.setItem('defaultPage', page);
+                this.setDefaultPage(page);
 
                 selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
             }
