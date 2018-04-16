@@ -56,6 +56,16 @@ class Search {
     }
 
     /**
+     * Is search open?
+     *
+     * @function isSearchOpen
+     * @return {Boolean} - Is search open.
+     */
+    isSearchOpen() {
+        return document.querySelector('#js-searchForm').classList.contains('is-active');
+    }
+
+    /**
      * Handle search keyup event.
      *
      * @function handleMakeSearchClick

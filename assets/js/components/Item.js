@@ -396,7 +396,7 @@ class Item {
 
             pocket.changeItemState(e, 'tags', id, false, newTagsString);
             tags.renderTags();
-            this.addTagsToItem(id, newTagsString);
+            this.addTagsToItem();
             modal.close();
         }
     }
@@ -405,12 +405,12 @@ class Item {
      * Add new tags back to item in DOM.
      *
      * @function addTagsToItem
-     * @param {String} id - Id of item.
-     * @param {String} tags - New tags for item.
      * @return {void}
      */
-    addTagsToItem(id, tags) {
-        pocket.getContent();
+    addTagsToItem() {
+        if (!search.isSearchOpen()) {
+            pocket.getContent();
+        }
     }
 
     /**
