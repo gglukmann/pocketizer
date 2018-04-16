@@ -408,7 +408,7 @@ class Item {
      * @return {void}
      */
     addTagsToItem() {
-        if (!search.isSearchOpen()) {
+        if (!search.hasSearched()) {
             pocket.getContent();
         }
     }

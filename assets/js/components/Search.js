@@ -56,13 +56,13 @@ class Search {
     }
 
     /**
-     * Is search open?
+     * Has been searched.
      *
-     * @function isSearchOpen
-     * @return {Boolean} - Is search open.
+     * @function hasSearched
+     * @return {Boolean} - Has been searched.
      */
-    isSearchOpen() {
-        return document.querySelector('#js-searchForm').classList.contains('is-active');
+    hasSearched() {
+        return this.state.hasSearched;
     }
 
     /**
