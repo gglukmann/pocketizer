@@ -316,10 +316,9 @@ class Item {
 
         document.querySelector('#js-deleteSubmit').addEventListener('click', newEvent, false);
 
-        // TODO: remove event
         document.addEventListener('closed.modal', () => {
             document.querySelector('#js-deleteSubmit').removeEventListener('click', newEvent, false);
-        }, false);
+        }, { once: true });
     }
 
     /**
@@ -357,12 +356,11 @@ class Item {
         }
         tagsInput.focus();
 
-        // TODO: remove event
         document.addEventListener('closed.modal', () => {
             tagsItemIdInput.value = '';
             tagsInput.value = '';
             autocomplete.destroy();
-        }, false);
+        }, { once: true });
     }
 
     /**
