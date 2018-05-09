@@ -646,6 +646,7 @@ a > svg {
     transition: background-position .1s linear;
     width: auto;
     cursor: pointer;
+    outline: none;
 }
 
 .btn:hover {
@@ -693,7 +694,7 @@ a > svg {
     color: var(--white);
 }
 
-.btn > svg {
+.btn > * {
   pointer-events: none;
 }
 
@@ -1074,9 +1075,8 @@ a > svg {
 .tags {
     position: relative;
     display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    margin: 0 calc(var(--grid-gutter) / 2);
+    margin-left: calc(var(--grid-gutter) / 2);
+    margin-right: calc(var(--grid-gutter) / 2);
 }
 
 .tags__title {
@@ -1215,6 +1215,28 @@ a > svg {
 
 .autocomplete__item:last-child .autocomplete__link:after {
     display: none;
+}
+
+/* FILTER */
+.filter {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.filter__button {
+    margin-left: calc(var(--grid-gutter) / 2);
+    margin-right: calc(var(--grid-gutter) / 2);
+    transition: transform .25s;
+}
+
+.filter__button.is-rotated .btn__icon {
+    transform: rotate(180deg);
+}
+
+.filter__button .btn__text {
+    font-size: .6em;
+    font-weight: normal;
 }
 
 /* HELPERS */

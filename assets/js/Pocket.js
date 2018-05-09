@@ -13,6 +13,7 @@ class Pocket {
         };
 
         this.fullSync = false;
+        this.orderItemsAsc = true;
 
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
@@ -199,9 +200,10 @@ class Pocket {
      * Renders from localStorage.
      *
      * @function render
+     * @param {Boolean} isAsc - Is list sorted ascending.
      * @return {void}
      */
-    render() {
+    render(isAsc) {
         let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
 
         this.items_shown = this.load_count;
@@ -215,6 +217,10 @@ class Pocket {
             Helper.show(document.querySelector('#js-empty-list-message'));
         } else {
             tags.createTags(array);
+
+            if (isAsc === false) {
+                array = array.reverse();
+            }
 
             array = array.filter((item, index) => (index < this.load_count));
             Helper.hide(document.querySelector('#js-empty-list-message'));
@@ -320,6 +326,19 @@ class Pocket {
         return !!localStorage.getItem('archiveSince');
     }
 
+    rotateOrderButton(e) {
+        const target = e.target;
+        const orderDirectionText = document.querySelector('#js-orderDirectionText');
+        
+        if (target.classList.contains('is-rotated')) {
+            target.classList.remove('is-rotated');
+            orderDirectionText.innerText = chrome.i18n.getMessage('DESC');
+        } else {
+            target.classList.add('is-rotated');
+            orderDirectionText.innerText = chrome.i18n.getMessage('ASC');
+        }
+    }
+
     /**
      * Binds click events for logged in buttons.
      *
@@ -358,6 +377,9 @@ class Pocket {
             item.delete(e);
         } else if (e.target.classList.contains('js-tagsButton')) {
             item.addTags(e);
+        } else if (e.target.id === 'js-orderButton') {
+            this.rotateOrderButton(e);
+            this.render(this.orderItemsAsc = !this.orderItemsAsc);
         }
     }
 

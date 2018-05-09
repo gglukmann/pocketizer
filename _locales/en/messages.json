@@ -198,5 +198,17 @@
     },
     "SAVE": {
         "message": "Save"
+    },
+    "ORDER": {
+        "message": "Order"
+    },
+    "ORDER_ITEMS": {
+        "message": "Order list asc/desc"
+    },
+    "ASC": {
+        "message": "ascending"
+    },
+    "DESC": {
+        "message": "descending"
     }
 }
