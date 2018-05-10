@@ -326,10 +326,17 @@ class Pocket {
         return !!localStorage.getItem('archiveSince');
     }
 
+    /**
+     * Add class and change text in order by button.
+     *
+     * @function rotateOrderButton
+     * @param {Event} e - Event from button click.
+     * @return {void}
+     */
     rotateOrderButton(e) {
         const target = e.target;
         const orderDirectionText = document.querySelector('#js-orderDirectionText');
-        
+
         if (target.classList.contains('is-rotated')) {
             target.classList.remove('is-rotated');
             orderDirectionText.innerText = chrome.i18n.getMessage('DESC');
@@ -611,6 +618,7 @@ class Pocket {
             document.querySelector('#js-searchButton').removeAttribute('style');
             document.querySelector('#js-settings').removeAttribute('style');
             document.querySelector('#js-fullSync').removeAttribute('style');
+            document.querySelector('#js-orderButton').removeAttribute('style');
         } else {
             Helper.hide(document.querySelector('#js-empty-list-message'));
             Helper.show(document.querySelector('#js-default-message'));
@@ -626,6 +634,7 @@ class Pocket {
             Helper.hide(document.querySelector('#js-fullSync'));
             Helper.hide(document.querySelector('#js-tags'));
             Helper.clearChildren(document.querySelector('#js-list'));
+            Helper.hide(document.querySelector('#js-orderButton'));
         }
     }
 
