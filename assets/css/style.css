@@ -1227,6 +1227,9 @@ a > svg {
 .filter__button {
     margin-left: calc(var(--grid-gutter) / 2);
     margin-right: calc(var(--grid-gutter) / 2);
+}
+
+.filter__button .btn__icon {
     transition: transform .25s;
 }
 

@@ -334,10 +334,10 @@ class Pocket {
      * @return {void}
      */
     rotateOrderButton(e) {
-        const target = e.target;
+        const target = e && e.target ? e.target : document.querySelector('#js-orderButton');
         const orderDirectionText = document.querySelector('#js-orderDirectionText');
 
-        if (target.classList.contains('is-rotated')) {
+        if (this.orderItemsAsc) {
             target.classList.remove('is-rotated');
             orderDirectionText.innerText = chrome.i18n.getMessage('DESC');
         } else {
@@ -385,8 +385,8 @@ class Pocket {
         } else if (e.target.classList.contains('js-tagsButton')) {
             item.addTags(e);
         } else if (e.target.id === 'js-orderButton') {
-            this.rotateOrderButton(e);
             this.render(this.orderItemsAsc = !this.orderItemsAsc);
+            this.rotateOrderButton(e);
         }
     }
 
@@ -567,15 +567,19 @@ class Pocket {
         Helper.clearChildren(document.querySelector('#js-list'));
         search.hide(true);
 
+        this.orderItemsAsc = true;
+        this.rotateOrderButton();
+
+        document.querySelector('#js-count-wrapper').removeAttribute('style');
+        document.querySelector('#js-searchButton').removeAttribute('style');
+        document.querySelector('#js-fullSync').removeAttribute('style');
+
         switch (page) {
             case 'list':
                 this.setActivePage('list');
 
-                document.querySelector('#js-count-wrapper').removeAttribute('style');
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
-                document.querySelector('#js-searchButton').removeAttribute('style');
-                document.querySelector('#js-fullSync').removeAttribute('style');
 
                 this.render();
                 this.getContent();
@@ -583,11 +587,8 @@ class Pocket {
             case 'archive':
                 this.setActivePage('archive');
 
-                document.querySelector('#js-count-wrapper').removeAttribute('style');
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
-                document.querySelector('#js-searchButton').removeAttribute('style');
-                document.querySelector('#js-fullSync').removeAttribute('style');
 
                 if (this.isArchiveLoaded()) {
                     this.render();
