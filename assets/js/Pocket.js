@@ -200,10 +200,9 @@ class Pocket {
      * Renders from localStorage.
      *
      * @function render
-     * @param {Boolean} isAsc - Is list sorted ascending.
      * @return {void}
      */
-    render(isAsc) {
+    render() {
         let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
 
         this.items_shown = this.load_count;
@@ -218,7 +217,7 @@ class Pocket {
         } else {
             tags.createTags(array);
 
-            if (isAsc === false) {
+            if (!this.orderItemsAsc) {
                 array = array.reverse();
             }
 
@@ -300,6 +299,10 @@ class Pocket {
     infiniteScroll() {
         helper.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
         let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
+
+        if (!this.orderItemsAsc) {
+            array = array.reverse();
+        }
 
         array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
 
@@ -385,7 +388,8 @@ class Pocket {
         } else if (e.target.classList.contains('js-tagsButton')) {
             item.addTags(e);
         } else if (e.target.id === 'js-orderButton') {
-            this.render(this.orderItemsAsc = !this.orderItemsAsc);
+            this.orderItemsAsc = !this.orderItemsAsc;
+            this.render();
             this.rotateOrderButton(e);
         }
     }
