@@ -13,7 +13,7 @@ class Pocket {
         };
 
         this.fullSync = false;
-        this.orderItemsAsc = true;
+        this.orderItemsAsc = localStorage.getItem('order') === 'asc' ? true : false;
 
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
@@ -214,6 +214,7 @@ class Pocket {
             this.getContent();
         } else if (array.length === 0) {
             Helper.show(document.querySelector('#js-empty-list-message'));
+            Helper.hide(document.querySelector('#js-orderButton'));
         } else {
             tags.createTags(array);
 
@@ -223,6 +224,7 @@ class Pocket {
 
             array = array.filter((item, index) => (index < this.load_count));
             Helper.hide(document.querySelector('#js-empty-list-message'));
+            Helper.show(document.querySelector('#js-orderButton'));
 
             const domItemsArray = this.createItems(array);
             this.createSentinel();
@@ -330,26 +332,6 @@ class Pocket {
     }
 
     /**
-     * Add class and change text in order by button.
-     *
-     * @function rotateOrderButton
-     * @param {Event} e - Event from button click.
-     * @return {void}
-     */
-    rotateOrderButton(e) {
-        const target = e && e.target ? e.target : document.querySelector('#js-orderButton');
-        const orderDirectionText = document.querySelector('#js-orderDirectionText');
-
-        if (this.orderItemsAsc) {
-            target.classList.remove('is-rotated');
-            orderDirectionText.innerText = chrome.i18n.getMessage('DESC');
-        } else {
-            target.classList.add('is-rotated');
-            orderDirectionText.innerText = chrome.i18n.getMessage('ASC');
-        }
-    }
-
-    /**
      * Binds click events for logged in buttons.
      *
      * @function bindLoggedInEvents
@@ -390,7 +372,7 @@ class Pocket {
         } else if (e.target.id === 'js-orderButton') {
             this.orderItemsAsc = !this.orderItemsAsc;
             this.render();
-            this.rotateOrderButton(e);
+            settings.rotateOrderButton(this.orderItemsAsc, e);
         }
     }
 
@@ -571,9 +553,6 @@ class Pocket {
         Helper.clearChildren(document.querySelector('#js-list'));
         search.hide(true);
 
-        this.orderItemsAsc = true;
-        this.rotateOrderButton();
-
         document.querySelector('#js-count-wrapper').removeAttribute('style');
         document.querySelector('#js-searchButton').removeAttribute('style');
         document.querySelector('#js-fullSync').removeAttribute('style');
@@ -585,6 +564,8 @@ class Pocket {
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
+                this.orderItemsAsc = localStorage.getItem('order') === 'asc' ? true : false;
+
                 this.render();
                 this.getContent();
             break;
@@ -594,6 +575,8 @@ class Pocket {
                 document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
 
+                this.orderItemsAsc = true;
+
                 if (this.isArchiveLoaded()) {
                     this.render();
                 }
@@ -601,6 +584,8 @@ class Pocket {
                 this.getContent();
             break;
         }
+
+        settings.rotateOrderButton(this.orderItemsAsc);
 
         window.scrollTo(0, 0);
     }
@@ -684,6 +669,7 @@ class Pocket {
 
         if (settings.getDefaultPage() === null || (settings.getDefaultPage() && settings.getDefaultPage() === 'list')) {
             this.render();
+            document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
         } else {
             settings.loadDefaultPage();
         }

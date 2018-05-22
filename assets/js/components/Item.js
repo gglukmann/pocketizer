@@ -254,11 +254,6 @@ class Item {
             .then(response => {
                 modal.close();
 
-                if (pocket.getActivePage() === 'list') {
-                    const createdItem = this.create(response.item);
-                    this.render(createdItem, 'list', true);
-                }
-
                 let array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
                 array = Helper.prependArray(array, response.item);
                 localStorage.setItem('listFromLocalStorage', JSON.stringify(array));
@@ -269,6 +264,21 @@ class Item {
                 }
 
                 helper.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
+
+                if (pocket.getActivePage() === 'list') {
+                    const createdItem = this.create(response.item);
+                    let doPrepend = false;
+
+                    if (pocket.orderItemsAsc) {
+                        doPrepend = true;
+                    }
+
+                    if (!pocket.orderItemsAsc && array.length !== document.querySelector('#js-list').childElementCount - 1) {
+                        return;
+                    }
+
+                    this.render(createdItem, 'list', doPrepend);
+                }
             });
     }
 

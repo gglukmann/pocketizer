@@ -5,6 +5,7 @@ class Settings {
     constructor() {
         this.colorSelectorChange = this.handleColorSelectorChange.bind(this);
         this.pageSelectorChange = this.handlePageSelectorChange.bind(this);
+        this.orderSelectorChange = this.handleOrderSelectorChange.bind(this);
         this.focusAddInput = this.handleFocusAddInput.bind(this);
         this.resetAddInput = this.handleResetAddInput.bind(this);
         this.submitNewItem = this.handleSubmitNewItem.bind(this);
@@ -18,6 +19,7 @@ class Settings {
      */
     init() {
         this.bindEvents();
+        this.loadOrder();
     }
 
     /**
@@ -29,6 +31,7 @@ class Settings {
     bindEvents() {
         document.addEventListener('select.selector', this.colorSelectorChange, false);
         document.addEventListener('select.selector', this.pageSelectorChange, false);
+        document.addEventListener('select.selector', this.orderSelectorChange, false);
         document.addEventListener('opened.modal', this.focusAddInput, false);
         document.addEventListener('closed.modal', this.resetAddInput, false);
         document.newItemForm.addEventListener('submit', this.submitNewItem, false);
@@ -43,6 +46,7 @@ class Settings {
     removeEvents() {
         document.removeEventListener('select.selector', this.colorSelectorChange, false);
         document.removeEventListener('select.selector', this.pageSelectorChange, false);
+        document.removeEventListener('select.selector', this.orderSelectorChange, false);
         document.removeEventListener('opened.modal', this.focusAddInput, false);
         document.removeEventListener('closed.modal', this.resetAddInput, false);
         document.newItemForm.removeEventListener('submit', this.submitNewItem, false);
@@ -116,6 +120,42 @@ class Settings {
         }
     }
 
+    loadOrder() {
+        const order = localStorage.getItem('order');
+
+        if (order) {
+            this.rotateOrderButton(order === 'asc' ? true : false);
+
+            const orderSelector = [...document.querySelectorAll('[name=selector-order]')];
+            for (const selector of orderSelector) {
+                if (selector.value === order) {
+                    selector.checked = true;
+                }
+            }
+        }
+    }
+
+    /**
+     * Add class and change text in order by button.
+     *
+     * @function rotateOrderButton
+     * @param {Boolean} orderItemsAsc - Order asc or desc.
+     * @param {Event} e - Event from button click.
+     * @return {void}
+     */
+    rotateOrderButton(orderItemsAsc, e) {
+        const target = e && e.target ? e.target : document.querySelector('#js-orderButton');
+        const orderDirectionText = document.querySelector('#js-orderDirectionText');
+
+        if (orderItemsAsc) {
+            target.classList.remove('is-rotated');
+            orderDirectionText.innerText = chrome.i18n.getMessage('DESC');
+        } else {
+            target.classList.add('is-rotated');
+            orderDirectionText.innerText = chrome.i18n.getMessage('ASC');
+        }
+    }
+
     /**
      * Handle default page selector in settings.
      *
@@ -151,6 +191,17 @@ class Settings {
                 localStorage.setItem('theme', value);
                 document.body.classList.add(value);
 
+                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+            }
+        }
+    }
+
+    handleOrderSelectorChange(e) {
+        if (e.detail.name === 'selector-order') {
+            const value = e.detail.value.toString();
+
+            if (value === 'asc' || value === 'desc') {
+                localStorage.setItem('order', value);
                 selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
             }
         }

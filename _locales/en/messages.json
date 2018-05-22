@@ -210,5 +210,8 @@
     },
     "DESC": {
         "message": "descending"
+    },
+    "CHOOSE_ORDER": {
+        "message": "Choose default order of My List items"
     }
 }
