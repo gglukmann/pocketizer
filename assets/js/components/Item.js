@@ -273,7 +273,10 @@ class Item {
                         doPrepend = true;
                     }
 
-                    if (!pocket.orderItemsAsc && array.length !== document.querySelector('#js-list').childElementCount - 1) {
+                    // array has new item but it is not in dom yet
+                    // #js-list has .sentinel too
+                    // that's why array.length and #js-list.childElementCount can be equal
+                    if (!pocket.orderItemsAsc && array.length !== document.querySelector('#js-list').childElementCount) {
                         return;
                     }
 
