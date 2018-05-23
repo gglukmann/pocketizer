@@ -13,7 +13,7 @@ class Pocket {
         };
 
         this.fullSync = false;
-        this.orderItemsAsc = localStorage.getItem('order') === 'asc' ? true : false;
+        this.orderItemsAsc = localStorage.getItem('order') && localStorage.getItem('order') === 'desc' ? false : true;
 
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
