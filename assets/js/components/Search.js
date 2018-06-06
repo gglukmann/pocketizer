@@ -100,6 +100,7 @@ class Search {
     hide(hideMessage) {
         Helper.removeClass(document.querySelector('#js-searchForm'), 'is-active');
         Helper.removeClass(document.querySelector('#js-searchButton'), 'is-disabled');
+        Helper.show(document.querySelector('#js-orderButton'));
 
         if (hideMessage) {
             Helper.hide(document.querySelector('#js-results-message'));
@@ -144,7 +145,8 @@ class Search {
 
         this.state.hasSearched = true;
 
-        document.querySelector('#js-results-message').removeAttribute('style');
+        Helper.hide(document.querySelector('#js-orderButton'));
+        Helper.show(document.querySelector('#js-results-message'));
         document.querySelector('#js-searchValue').innerText = value;
         Helper.clearChildren(document.querySelector('#js-list'));
 

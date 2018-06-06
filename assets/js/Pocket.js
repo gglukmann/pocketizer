@@ -636,6 +636,7 @@ class Pocket {
      */
     loggedIn() {
         document.querySelector('#js-username').innerText = localStorage.getItem('username');
+        document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
         helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
