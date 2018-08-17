@@ -213,5 +213,11 @@
     },
     "CHOOSE_ORDER": {
         "message": "Choose default order of My List items"
+    },
+    "OFFLINE_MESSAGE": {
+        "message": "You are offline"
+    },
+    "REFRESH": {
+        "message": "Refresh"
     }
 }

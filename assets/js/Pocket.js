@@ -27,6 +27,7 @@ class Pocket {
      * @return {void}
      */
     init() {
+        this.handleInternetConnection();
         helper.localizeHtml();
         settings.loadTheme();
 
@@ -57,6 +58,20 @@ class Pocket {
      */
     setActivePage(page) {
         return this.active_page = page;
+    }
+
+    handleInternetConnection() {
+        const onLine = Helper.checkInternetConnection(window.navigator);
+
+        if (!onLine) {
+            Helper.addClass(document.body, 'theme-offline');
+            Helper.show(document.querySelector('#js-offlineStatus'));
+            document.querySelector('#js-login').disabled = true;
+        }
+
+        document.querySelector('#js-offlineRefresh').addEventListener('click', () => {
+            window.location.reload();
+        });
     }
 
     /**

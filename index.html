@@ -12,6 +12,17 @@
 <body>
     <header class="header" id="js-header">
         <div id="js-status" class="status"></div>
+        <div id="js-offlineStatus" class="status status--offline" style="display: none;">
+            <span data-translate="__MSG_OFFLINE_MESSAGE__"></span>
+            <button id="js-offlineRefresh" type="button" class="btn btn--link btn--small btn--inverse status__button" title="__MSG_REFRESH__">
+                <svg viewBox="0 0 64 64" class="icon icon--bigger">
+                    <path d="M31.5,15c8.5,0,15.2,4.6,16.7,14H40l12,12l12-12h-7.7C54.6,15.3,44.3,7,31.5,7c-8.1,0-15.9,4-20.7,10.6l6.5,4.7
+                C20.6,17.8,26,15,31.5,15z" />
+                    <path d="M32.5,49c-8.5,0-15.2-4.6-16.7-14H24L12,23L0,35h7.7c1.7,13.7,11.9,22,24.8,22c8.1,0,15.9-4,20.7-10.6l-6.5-4.7
+                C43.4,46.2,38,49,32.5,49z" />
+                </svg>
+            </button>
+        </div>
         <div class="container">
             <div class="header__inner">
                 <h1 class="header__title">

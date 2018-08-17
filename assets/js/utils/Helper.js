@@ -95,7 +95,7 @@ class Helper {
      */
     static async makeFetch(url, options) {
         try {
-            return await fetch(url, options);
+            return await window.fetch(url, options);
         } catch (e) {
             console.log(e);
             throw new Error(e);
@@ -294,6 +294,10 @@ class Helper {
         while (element.firstChild) {
             element.removeChild(element.firstChild);
         }
+    }
+
+    static checkInternetConnection(navigator) {
+        return navigator.onLine;
     }
 }
 
