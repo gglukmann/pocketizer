@@ -564,7 +564,7 @@ class Pocket {
                 document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
-                this.orderItemsAsc = localStorage.getItem('order') === 'asc' ? true : false;
+                this.orderItemsAsc = !localStorage.getItem('order') || localStorage.getItem('order') === 'asc' ? true : false;
 
                 this.render();
                 this.getContent();
