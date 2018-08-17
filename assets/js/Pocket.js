@@ -224,7 +224,7 @@ class Pocket {
 
             array = array.filter((item, index) => (index < this.load_count));
             Helper.hide(document.querySelector('#js-empty-list-message'));
-            Helper.show(document.querySelector('#js-orderButton'));
+            Helper.show(document.querySelector('#js-orderButton'), true);
 
             const domItemsArray = this.createItems(array);
             this.createSentinel();
@@ -553,9 +553,9 @@ class Pocket {
         Helper.clearChildren(document.querySelector('#js-list'));
         search.hide(true);
 
-        document.querySelector('#js-count-wrapper').removeAttribute('style');
-        document.querySelector('#js-searchButton').removeAttribute('style');
-        document.querySelector('#js-fullSync').removeAttribute('style');
+        Helper.show(document.querySelector('#js-count-wrapper'), true);
+        Helper.show(document.querySelector('#js-searchButton'), true);
+        Helper.show(document.querySelector('#js-fullSync'), true);
 
         switch (page) {
             case 'list':
@@ -599,31 +599,31 @@ class Pocket {
     toggleLoggedInContent(isShown = false) {
         if (isShown) {
             Helper.hide(document.querySelector('#js-default-message'));
-            document.querySelector('#js-count-wrapper').removeAttribute('style');
-            document.querySelector('#js-menu').removeAttribute('style');
-            document.querySelector('#js-list').removeAttribute('style');
-            document.querySelector('#js-username').removeAttribute('style');
-            document.querySelector('#js-logout').removeAttribute('style');
-            document.querySelector('#js-addNewItemButton').removeAttribute('style');
-            document.querySelector('#js-searchButton').removeAttribute('style');
-            document.querySelector('#js-settings').removeAttribute('style');
-            document.querySelector('#js-fullSync').removeAttribute('style');
-            document.querySelector('#js-orderButton').removeAttribute('style');
+            Helper.show(document.querySelector('#js-count-wrapper'), true);
+            Helper.show(document.querySelector('#js-menu'), true);
+            Helper.show(document.querySelector('#js-list'), true);
+            Helper.show(document.querySelector('#js-username'), true);
+            Helper.show(document.querySelector('#js-logout'), true);
+            Helper.show(document.querySelector('#js-addNewItemButton'), true);
+            Helper.show(document.querySelector('#js-searchButton'), true);
+            Helper.show(document.querySelector('#js-settings'), true);
+            Helper.show(document.querySelector('#js-fullSync'), true);
+            Helper.show(document.querySelector('#js-orderButton'), true);
         } else {
-            Helper.hide(document.querySelector('#js-empty-list-message'));
             Helper.show(document.querySelector('#js-default-message'));
+            document.querySelector('#js-count').innerText = '0';
+            Helper.clearChildren(document.querySelector('#js-list'));
+            Helper.hide(document.querySelector('#js-empty-list-message'));
             Helper.hide(document.querySelector('#js-list'));
             Helper.hide(document.querySelector('#js-menu'));
             Helper.hide(document.querySelector('#js-username'));
             Helper.hide(document.querySelector('#js-logout'));
             Helper.hide(document.querySelector('#js-count-wrapper'));
-            document.querySelector('#js-count').innerText = '0';
             Helper.hide(document.querySelector('#js-addNewItemButton'));
             Helper.hide(document.querySelector('#js-searchButton'));
             Helper.hide(document.querySelector('#js-settings'));
             Helper.hide(document.querySelector('#js-fullSync'));
             Helper.hide(document.querySelector('#js-tags'));
-            Helper.clearChildren(document.querySelector('#js-list'));
             Helper.hide(document.querySelector('#js-orderButton'));
         }
     }
@@ -729,8 +729,6 @@ class Pocket {
         this.setActivePage('list');
         header.changeMenuActiveState('list');
 
-        this.toggleLoggedInContent(false);
-
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();
 
@@ -742,6 +740,7 @@ class Pocket {
         settings.destroy();
         tags.destroy();
 
+        this.toggleLoggedInContent(false);
         Helper.removeClass(document.body, THEMES);
 
         helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));

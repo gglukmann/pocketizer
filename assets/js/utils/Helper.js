@@ -271,10 +271,15 @@ class Helper {
      *
      * @function hide
      * @param {Element|HTMLElement} element - Element to show.
+     * @param {Boolean} doRemove - If remove style to show element.
      * @param {String} display - CSS display property.
      * @return {void}
      */
-    static show(element, display = 'block') {
+    static show(element, doRemove, display = 'block') {
+        if (doRemove) {
+            return element.removeAttribute('style');
+        }
+
         element.style.display = display;
     }
 

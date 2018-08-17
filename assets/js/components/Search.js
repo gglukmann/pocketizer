@@ -100,7 +100,7 @@ class Search {
     hide(hideMessage) {
         Helper.removeClass(document.querySelector('#js-searchForm'), 'is-active');
         Helper.removeClass(document.querySelector('#js-searchButton'), 'is-disabled');
-        Helper.show(document.querySelector('#js-orderButton'));
+        Helper.show(document.querySelector('#js-orderButton'), true);
 
         if (hideMessage) {
             Helper.hide(document.querySelector('#js-results-message'));
@@ -221,7 +221,7 @@ class Search {
         } else {
             resultsStringElement.innerText = (count === 1 ? chrome.i18n.getMessage('RESULT_MESSAGE') : chrome.i18n.getMessage('RESULTS_MESSAGE')) + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
-            searchCountElement.removeAttribute('style');
+            Helper.show(searchCountElement, true);
             searchCountElement.innerText = count;
         }
 

@@ -132,7 +132,7 @@ class Tags {
             return;
         }
 
-        document.querySelector('#js-tags').removeAttribute('style');
+        Helper.show(document.querySelector('#js-tags'), true);
         const tagsElement = document.querySelector('#js-tagsList');
         const tagsTooltipElement = document.querySelector('#js-tagsTooltipList');
 
