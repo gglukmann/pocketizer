@@ -743,6 +743,7 @@ class Pocket {
         localStorage.clear();
         this.setActivePage('list');
         header.changeMenuActiveState('list');
+        document.querySelector('#js-title').innerText = chrome.i18n.getMessage('EXTENSION_SHORT_NAME');
 
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();

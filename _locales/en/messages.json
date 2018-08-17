@@ -7,6 +7,9 @@
         "message": "Unofficial Pocket new tab extension for Chrome and Firefox. See all your Pocket links right on new tab.",
         "description": "Description of the add-on."
     },
+    "EXTENSION_SHORT_NAME": {
+        "message": "Pocketizer"
+    },
     "ERROR_GETTING_CONTENT": {
         "message": "Getting new content"
     },
