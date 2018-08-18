@@ -194,7 +194,7 @@ class Tags {
      * @return {void}
      */
     addTag(tag, isFullSync) {
-        const tagsArray = isFullSync ? [] : (JSON.parse(Helper.getFromStorage('tags')) || []);
+        const tagsArray = isFullSync ? [] : JSON.parse(Helper.getFromStorage('tags')) || [];
 
         if (!tagsArray.includes(tag)) {
             tagsArray.push(tag);

@@ -2,18 +2,21 @@ class Pocket {
     /**
      * @constructor
      */
-    constructor() {
+    constructor() {
         this.active_page = 'list';
         this.items_shown = 0;
         this.load_count = 18;
 
         this.scroll = {
             lastKnownScrollY: 0,
-            ticking: false
+            ticking: false,
         };
 
         this.fullSync = false;
-        this.orderItemsAsc = Helper.getFromStorage('order') && Helper.getFromStorage('order') === 'desc' ? false : true;
+        this.orderItemsAsc =
+            Helper.getFromStorage('order') && Helper.getFromStorage('order') === 'desc'
+                ? false
+                : true;
 
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
@@ -57,7 +60,7 @@ class Pocket {
      * @return {String} - Active page name.
      */
     setActivePage(page) {
-        return this.active_page = page;
+        return (this.active_page = page);
     }
 
     /**
@@ -88,10 +91,9 @@ class Pocket {
      * @return {void}
      */
     getContent() {
-        apiService.get()
-            .then(response => {
-                this.handleApiGetResponse(response);
-            });
+        apiService.get().then(response => {
+            this.handleApiGetResponse(response);
+        });
     }
 
     /**
@@ -153,7 +155,7 @@ class Pocket {
 
                 switch (newItem.status) {
                     // add to unread list
-                    case "0":
+                    case '0':
                         newArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
 
                         // delete old item, if it is added from this extension
@@ -171,7 +173,7 @@ class Pocket {
                         Helper.setToStorage('listCount', newArray.length.toString());
                         break;
                     // add to archive list
-                    case "1":
+                    case '1':
                         // delete old item, if it is added to archive from somewhere else and is in unread list in extension
                         newArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
                         newArray = newArray.filter(item => item.item_id !== newItem.item_id);
@@ -184,12 +186,15 @@ class Pocket {
                             newArray = JSON.parse(Helper.getFromStorage('archiveFromLocalStorage'));
                             newArray = Helper.prependArray(newArray, newItem);
 
-                            Helper.setToStorage('archiveFromLocalStorage', JSON.stringify(newArray));
+                            Helper.setToStorage(
+                                'archiveFromLocalStorage',
+                                JSON.stringify(newArray),
+                            );
                             Helper.setToStorage('archiveCount', newArray.length);
                         }
                         break;
                     // delete from unread or archive list
-                    case "2":
+                    case '2':
                         let listArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
 
                         listArray = listArray.filter(item => item.item_id !== newItem.item_id);
@@ -198,10 +203,17 @@ class Pocket {
                         Helper.setToStorage('listCount', listArray.length);
 
                         if (this.isArchiveLoaded()) {
-                            let archiveArray = JSON.parse(Helper.getFromStorage('archiveFromLocalStorage'));
-                            archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
+                            let archiveArray = JSON.parse(
+                                Helper.getFromStorage('archiveFromLocalStorage'),
+                            );
+                            archiveArray = archiveArray.filter(
+                                item => item.item_id !== newItem.item_id,
+                            );
 
-                            Helper.setToStorage('archiveFromLocalStorage', JSON.stringify(archiveArray));
+                            Helper.setToStorage(
+                                'archiveFromLocalStorage',
+                                JSON.stringify(archiveArray),
+                            );
                             Helper.setToStorage('archiveCount', archiveArray.length);
                         }
                         break;
@@ -229,7 +241,9 @@ class Pocket {
 
         this.items_shown = this.load_count;
 
-        document.querySelector('#js-count').innerText = Helper.getFromStorage(`${this.getActivePage()}Count`);
+        document.querySelector('#js-count').innerText = Helper.getFromStorage(
+            `${this.getActivePage()}Count`,
+        );
         Helper.clearChildren(document.querySelector('#js-list'));
 
         if (array === null) {
@@ -244,7 +258,7 @@ class Pocket {
                 array = array.reverse();
             }
 
-            array = array.filter((item, index) => (index < this.load_count));
+            array = array.filter((item, index) => index < this.load_count);
             Helper.hide(document.querySelector('#js-empty-list-message'));
             Helper.show(document.querySelector('#js-orderButton'), true);
 
@@ -328,7 +342,9 @@ class Pocket {
             array = array.reverse();
         }
 
-        array = array.filter((i, index) => (index >= this.items_shown && index < this.items_shown + this.load_count));
+        array = array.filter(
+            (i, index) => index >= this.items_shown && index < this.items_shown + this.load_count,
+        );
 
         this.items_shown += this.load_count;
 
@@ -361,7 +377,9 @@ class Pocket {
      */
     bindLoggedInEvents() {
         document.body.addEventListener('click', this.itemClicks, false);
-        document.querySelector('#js-logout').addEventListener('click', this.logoutButtonClick, false);
+        document
+            .querySelector('#js-logout')
+            .addEventListener('click', this.logoutButtonClick, false);
     }
 
     /**
@@ -372,7 +390,9 @@ class Pocket {
      */
     removeLoggedInClickEvents() {
         document.body.removeEventListener('click', this.itemClicks, false);
-        document.querySelector('#js-logout').removeEventListener('click', this.logoutButtonClick, false);
+        document
+            .querySelector('#js-logout')
+            .removeEventListener('click', this.logoutButtonClick, false);
     }
 
     /**
@@ -415,7 +435,9 @@ class Pocket {
      * @return {void}
      */
     removeLoggedOutClickEvents() {
-        document.querySelector('#js-login').removeEventListener('click', this.loggedOutClicks, false);
+        document
+            .querySelector('#js-login')
+            .removeEventListener('click', this.loggedOutClicks, false);
     }
 
     /**
@@ -448,15 +470,25 @@ class Pocket {
             switch (this.getActivePage()) {
                 case 'archive':
                     action = 'readd';
-                    helper.showMessage(`${chrome.i18n.getMessage('UNARCHIVING')}...`, true, false, false);
-                break;
+                    helper.showMessage(
+                        `${chrome.i18n.getMessage('UNARCHIVING')}...`,
+                        true,
+                        false,
+                        false,
+                    );
+                    break;
                 case 'list':
                     action = 'archive';
-                    helper.showMessage(`${chrome.i18n.getMessage('ARCHIVING')}...`, true, false, false);
-                break;
+                    helper.showMessage(
+                        `${chrome.i18n.getMessage('ARCHIVING')}...`,
+                        true,
+                        false,
+                        false,
+                    );
+                    break;
             }
         } else if (state === 'favourite') {
-            action = (isFavourited === true ? 'unfavorite' : 'favorite');
+            action = isFavourited === true ? 'unfavorite' : 'favorite';
             helper.showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
         } else if (state === 'delete') {
             action = 'delete';
@@ -466,17 +498,20 @@ class Pocket {
             helper.showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
         }
 
-        const actions = [{
-            "action": action,
-            "item_id": id,
-            "time": Helper.getCurrentUNIX()
-        }];
+        const actions = [
+            {
+                action: action,
+                item_id: id,
+                time: Helper.getCurrentUNIX(),
+            },
+        ];
 
         if (state === 'tags') {
             actions[0].tags = tags;
         }
 
-        apiService.send(actions)
+        apiService
+            .send(actions)
             .then(response => {
                 if (response.status === 1) {
                     this.handleActionResponse(e, state, id, isFavourited, response, tags);
@@ -516,21 +551,28 @@ class Pocket {
                             itemNode.remove();
                         }, 500);
 
-                        Helper.setToStorage(`${this.getActivePage()}Count`, parseInt(Helper.getFromStorage(`${this.getActivePage()}Count`), 10) - 1);
+                        Helper.setToStorage(
+                            `${this.getActivePage()}Count`,
+                            parseInt(Helper.getFromStorage(`${this.getActivePage()}Count`), 10) - 1,
+                        );
 
-                        document.querySelector('#js-count').innerText = Helper.getFromStorage(`${this.getActivePage()}Count`);
-                    break;
+                        document.querySelector('#js-count').innerText = Helper.getFromStorage(
+                            `${this.getActivePage()}Count`,
+                        );
+                        break;
                     case 'favourite':
-                        array[i].favorite = (isFavourited === true ? 0 : 1);
+                        array[i].favorite = isFavourited === true ? 0 : 1;
 
                         isFavourited = !isFavourited;
-                        e.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite = isFavourited;
-                    break;
+                        e.target.parentNode.querySelector(
+                            '.js-toggleFavouriteButton',
+                        ).dataset.favourite = isFavourited;
+                        break;
                     case 'tags':
                         if (tags.length) {
                             e.target.dataset.tags = tags;
                         }
-                    break;
+                        break;
                 }
             }
         }
@@ -579,21 +621,31 @@ class Pocket {
 
         switch (page) {
             case 'list':
-                helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+                helper.showMessage(
+                    `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
+                    true,
+                    false,
+                    false,
+                );
                 this.setActivePage('list');
 
                 document.querySelector('#js-count').innerText = Helper.getFromStorage('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
-                this.orderItemsAsc = !Helper.getFromStorage('order') || Helper.getFromStorage('order') === 'asc' ? true : false;
+                this.orderItemsAsc =
+                    !Helper.getFromStorage('order') || Helper.getFromStorage('order') === 'asc'
+                        ? true
+                        : false;
 
                 this.render();
                 this.getContent();
-            break;
+                break;
             case 'archive':
                 this.setActivePage('archive');
 
-                document.querySelector('#js-count').innerText = Helper.getFromStorage('archiveCount');
+                document.querySelector('#js-count').innerText = Helper.getFromStorage(
+                    'archiveCount',
+                );
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
 
                 this.orderItemsAsc = true;
@@ -603,13 +655,23 @@ class Pocket {
                 }
 
                 if (isPageLoad && settings.isTimeToUpdate()) {
-                    helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+                    helper.showMessage(
+                        `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
+                        true,
+                        false,
+                        false,
+                    );
                     this.getContent();
                 } else if (!isPageLoad) {
-                    helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+                    helper.showMessage(
+                        `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
+                        true,
+                        false,
+                        false,
+                    );
                     this.getContent();
                 }
-            break;
+                break;
         }
 
         settings.rotateOrderButton(this.orderItemsAsc);
@@ -693,7 +755,10 @@ class Pocket {
     startSync() {
         this.toggleLoggedInContent(true);
 
-        if (settings.getDefaultPage() === null || (settings.getDefaultPage() && settings.getDefaultPage() === 'list')) {
+        if (
+            settings.getDefaultPage() === null ||
+            (settings.getDefaultPage() && settings.getDefaultPage() === 'list')
+        ) {
             this.render();
             document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
         } else {
@@ -715,9 +780,8 @@ class Pocket {
         tags.init();
 
         if (
-            (!settings.getDefaultPage() ||
-            settings.getDefaultPage() === 'list')
-            && settings.isTimeToUpdate()
+            (!settings.getDefaultPage() || settings.getDefaultPage() === 'list') &&
+            settings.isTimeToUpdate()
         ) {
             helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
             this.getContent();
@@ -731,20 +795,19 @@ class Pocket {
      * @return {void}
      */
     startLogin() {
-        authService.authenticate()
-            .then((response) => {
-                if (response.status !== 'authenticated') {
-                    helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
-                    document.querySelector('#js-login').disabled = false;
-
-                    this.logout();
-                    return;
-                }
-
+        authService.authenticate().then(response => {
+            if (response.status !== 'authenticated') {
+                helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                 document.querySelector('#js-login').disabled = false;
-                helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
-                this.loggedIn();
-            });
+
+                this.logout();
+                return;
+            }
+
+            document.querySelector('#js-login').disabled = false;
+            helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
+            this.loggedIn();
+        });
     }
 
     /**
@@ -758,7 +821,9 @@ class Pocket {
         localStorage.clear();
         this.setActivePage('list');
         header.changeMenuActiveState('list');
-        document.querySelector('#js-title').innerText = chrome.i18n.getMessage('EXTENSION_SHORT_NAME');
+        document.querySelector('#js-title').innerText = chrome.i18n.getMessage(
+            'EXTENSION_SHORT_NAME',
+        );
 
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();
@@ -780,6 +845,6 @@ class Pocket {
 
 const pocket = new Pocket();
 
-window.onload = (() => {
+window.onload = () => {
     pocket.init();
-});
+};

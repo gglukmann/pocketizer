@@ -19,7 +19,7 @@ class Lazyload {
         const config = {
             // If the image gets within 50px in the Y axis, start the download.
             rootMargin: '50px 0px',
-            threshold: 0.01
+            threshold: 0.01,
         };
         this.imageCount = images.length;
 
@@ -58,12 +58,12 @@ class Lazyload {
     }
 
     /**
-    * Fetchs the image for the given URL.
-    *
-    * @function fetchImage
-    * @param {String} url - Url from data-src.
-    * @return {Promise}
-    */
+     * Fetchs the image for the given URL.
+     *
+     * @function fetchImage
+     * @param {String} url - Url from data-src.
+     * @return {Promise}
+     */
     fetchImage(url) {
         return new Promise((resolve, reject) => {
             const image = new Image();
@@ -74,12 +74,12 @@ class Lazyload {
     }
 
     /**
-    * Preloads the image.
-    *
-    * @function preloadImage
-    * @param {Object} image - Image to preload.
-    * @return {*}
-    */
+     * Preloads the image.
+     *
+     * @function preloadImage
+     * @param {Object} image - Image to preload.
+     * @return {*}
+     */
     preloadImage(image) {
         const src = image.dataset.src;
         if (!src) {
@@ -92,12 +92,12 @@ class Lazyload {
     }
 
     /**
-    * Load all of the images immediately.
-    *
-    * @function loadImagesImmediately
-    * @param {NodeListOf<Element>} images - Image to load.
-    * @return {void}
-    */
+     * Load all of the images immediately.
+     *
+     * @function loadImagesImmediately
+     * @param {NodeListOf<Element>} images - Image to load.
+     * @return {void}
+     */
     loadImagesImmediately(images) {
         for (const image of images) {
             this.preloadImage(image);
@@ -105,11 +105,11 @@ class Lazyload {
     }
 
     /**
-    * Disconnect the observer.
-    *
-    * @function disconnect
-    * @return {void}
-    */
+     * Disconnect the observer.
+     *
+     * @function disconnect
+     * @return {void}
+     */
     disconnect() {
         if (!this.observer) {
             return;
@@ -119,13 +119,13 @@ class Lazyload {
     }
 
     /**
-    * Apply the image.
-    *
-    * @function applyImage
-    * @param {Object} img - Image HTMLElement.
-    * @param {String} src - Source url to apply.
-    * @return {void}
-    */
+     * Apply the image.
+     *
+     * @function applyImage
+     * @param {Object} img - Image HTMLElement.
+     * @param {String} src - Source url to apply.
+     * @return {void}
+     */
     applyImage(img, src) {
         // Prevent this from being lazy loaded a second time.
         img.classList.remove('js-lazyload');

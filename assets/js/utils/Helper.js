@@ -23,7 +23,7 @@ class Helper {
 
         if (hasEnding) {
             setTimeout(() => {
-                statusElement.innerText = "";
+                statusElement.innerText = '';
             }, 2000);
         }
     }
@@ -170,7 +170,7 @@ class Helper {
      * @param {Number} UNIX - Unix timestamp in seconds.
      * @return {String} - dd.mm.yyyy.
      */
-    static timeConverter(UNIX){
+    static timeConverter(UNIX) {
         let d = new Date(UNIX * 1000);
         let year = d.getFullYear();
         let month = ('0' + (d.getMonth() + 1)).slice(-2);
@@ -221,11 +221,11 @@ class Helper {
     }
 
     /**
-    * Enable window scrolling.
-    *
+     * Enable window scrolling.
+     *
      * @function enableScroll
-    * @returns {void}
-    */
+     * @returns {void}
+     */
     static enableScroll() {
         const bodyScroll = parseInt(document.body.style.top, 10);
 

@@ -7,9 +7,9 @@ class AuthService {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=UTF8',
-                'X-Accept': 'application/json'
-            }
-        }
+                'X-Accept': 'application/json',
+            },
+        };
     }
 
     /**
@@ -22,13 +22,13 @@ class AuthService {
         try {
             let { code } = await this.getRequestToken();
             await this.launchChromeWebAuthFlow(code);
-            let { username } = await this.getAccessToken(code);
+            let { username } = await this.getAccessToken(code);
 
             return {
-                "status": "authenticated",
-                "user": username
+                status: 'authenticated',
+                user: username,
             };
-        } catch(e) {
+        } catch (e) {
             helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
             document.querySelector('#js-login').disabled = false;
             throw new Error(e);
@@ -46,7 +46,7 @@ class AuthService {
 
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,
-            redirect_uri: API.redirect_url
+            redirect_uri: API.redirect_url,
         });
 
         return new Promise((resolve, reject) => {
@@ -72,8 +72,8 @@ class AuthService {
      */
     launchChromeWebAuthFlow(requestToken) {
         let options = {
-            'url': `${API.url_auth}?request_token=${requestToken}&redirect_uri=${API.redirect_url}`,
-            'interactive': true
+            url: `${API.url_auth}?request_token=${requestToken}&redirect_uri=${API.redirect_url}`,
+            interactive: true,
         };
 
         return new Promise((resolve, reject) => {
@@ -98,7 +98,7 @@ class AuthService {
     getAccessToken(requestToken) {
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,
-            code: requestToken
+            code: requestToken,
         });
 
         return new Promise((resolve, reject) => {

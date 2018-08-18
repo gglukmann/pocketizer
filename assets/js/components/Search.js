@@ -40,8 +40,12 @@ class Search {
      * @return {void}
      */
     bindEvents() {
-        document.querySelector('#js-searchInput').addEventListener('keyup', this.makeSearchClick, false);
-        document.querySelector('#js-emptySearch').addEventListener('click', this.closeSearchClick, false);
+        document
+            .querySelector('#js-searchInput')
+            .addEventListener('keyup', this.makeSearchClick, false);
+        document
+            .querySelector('#js-emptySearch')
+            .addEventListener('click', this.closeSearchClick, false);
     }
 
     /**
@@ -51,8 +55,12 @@ class Search {
      * @return {void}
      */
     removeEvents() {
-        document.querySelector('#js-searchInput').removeEventListener('keyup', this.makeSearchClick, false);
-        document.querySelector('#js-emptySearch').removeEventListener('click', this.closeSearchClick, false);
+        document
+            .querySelector('#js-searchInput')
+            .removeEventListener('keyup', this.makeSearchClick, false);
+        document
+            .querySelector('#js-emptySearch')
+            .removeEventListener('click', this.closeSearchClick, false);
     }
 
     /**
@@ -200,7 +208,10 @@ class Search {
                     searchableUrl = arrayItem.given_url;
                 }
 
-                if (searchableTitle.toLowerCase().indexOf(value) > -1 || searchableUrl.toLowerCase().indexOf(value) > -1) {
+                if (
+                    searchableTitle.toLowerCase().indexOf(value) > -1 ||
+                    searchableUrl.toLowerCase().indexOf(value) > -1
+                ) {
                     const newItem = item.create(arrayItem);
                     item.render(newItem);
 
@@ -213,13 +224,20 @@ class Search {
         const searchCountElement = document.querySelector('#js-searchCount');
         const resultsStringPrefix = document.querySelector('#js-resultsStringPrefix');
         const tagString = isTag ? ` ${chrome.i18n.getMessage('TAG')}` : '';
-        const currentListString = pocket.getActivePage() === 'list' ? ` ${chrome.i18n.getMessage('MY_LIST')}` : ` ${chrome.i18n.getMessage('ARCHIVE')}`;
+        const currentListString =
+            pocket.getActivePage() === 'list'
+                ? ` ${chrome.i18n.getMessage('MY_LIST')}`
+                : ` ${chrome.i18n.getMessage('ARCHIVE')}`;
         if (count === 0) {
-            resultsStringElement.innerText = chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
+            resultsStringElement.innerText =
+                chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
             Helper.hide(searchCountElement);
         } else {
-            resultsStringElement.innerText = (count === 1 ? chrome.i18n.getMessage('RESULT_MESSAGE') : chrome.i18n.getMessage('RESULTS_MESSAGE')) + tagString;
+            resultsStringElement.innerText =
+                (count === 1
+                    ? chrome.i18n.getMessage('RESULT_MESSAGE')
+                    : chrome.i18n.getMessage('RESULTS_MESSAGE')) + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
             Helper.show(searchCountElement, true);
             searchCountElement.innerText = count;

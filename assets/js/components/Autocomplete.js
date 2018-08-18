@@ -26,11 +26,7 @@ class Autocomplete {
     }
 
     handleAutocompleteKeydown(e) {
-        if (
-            e.target.id === 'js-tagsInput' &&
-            this.isOpen() &&
-            e.keyCode === 27
-        ) {
+        if (e.target.id === 'js-tagsInput' && this.isOpen() && e.keyCode === 27) {
             return this.hide();
         }
     }
@@ -63,8 +59,8 @@ class Autocomplete {
 
         for (const item of this.searchArray) {
             if (
-                (item.toLowerCase()).includes(this.searchableString) &&
-                (item.toLowerCase()) !== this.searchableString &&
+                item.toLowerCase().includes(this.searchableString) &&
+                item.toLowerCase() !== this.searchableString &&
                 !inputCurrentArray.includes(item)
             ) {
                 foundArray.push(item);

@@ -6,9 +6,9 @@ class ApiService {
         this._fetchData = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json; charset=UTF8'
-            }
-        }
+                'Content-Type': 'application/json; charset=UTF8',
+            },
+        };
     }
 
     /**
@@ -21,7 +21,7 @@ class ApiService {
         this._fetchData.body = {
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            detailType: 'complete'
+            detailType: 'complete',
         };
 
         let state;
@@ -33,14 +33,14 @@ class ApiService {
                 } else {
                     state = 'unread';
                 }
-            break;
+                break;
             case 'archive':
                 if (pocket.isArchiveLoaded()) {
                     this._fetchData.body.since = Helper.getFromStorage('archiveSince');
                 } else {
                     state = 'archive';
                 }
-            break;
+                break;
         }
 
         this._fetchData.body.state = this._fetchData.body.since ? 'all' : state;
@@ -79,7 +79,7 @@ class ApiService {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            actions: actions
+            actions: actions,
         });
 
         return await Helper.makeFetch(API.url_send, this._fetchData)
@@ -101,7 +101,7 @@ class ApiService {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            url: data.url
+            url: data.url,
         });
 
         return await Helper.makeFetch(API.url_add, this._fetchData)

@@ -87,10 +87,18 @@ class Item {
         fakeLinkElement.setAttribute('class', 'item__link-fake');
 
         // favourite
-        favouriteElement.setAttribute('data-favourite', element.favorite === '1' ? 'true' : 'false');
+        favouriteElement.setAttribute(
+            'data-favourite',
+            element.favorite === '1' ? 'true' : 'false',
+        );
         favouriteElement.setAttribute('class', 'item__favourite js-toggleFavouriteButton');
         favouriteElement.setAttribute('href', '#0');
-        favouriteElement.setAttribute('title', element.favorite === '1' ? chrome.i18n.getMessage('UNFAVOURITE') : chrome.i18n.getMessage('FAVOURITE'));
+        favouriteElement.setAttribute(
+            'title',
+            element.favorite === '1'
+                ? chrome.i18n.getMessage('UNFAVOURITE')
+                : chrome.i18n.getMessage('FAVOURITE'),
+        );
         favouriteElement.setAttribute('data-id', element.item_id);
 
         // title
@@ -134,11 +142,14 @@ class Item {
             tagLinkElement.setAttribute('data-tags', tagsArray);
         }
         tagLinkElement.setAttribute('title', chrome.i18n.getMessage('TAGS'));
-        const svgElement = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        const svgElement = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svgElement.setAttribute('viewBox', '0 0 541.9 541.9');
         svgElement.setAttribute('class', 'icon item__tags-svg');
-        const pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
-        pathElement.setAttribute('d', 'M84.7,121.2c-20.1,0-36.4-16.3-36.4-36.4c0-20.1,16.3-36.5,36.5-36.5c20.1,0,36.4,16.3,36.4,36.4C121.2,104.9,104.9,121.3,84.7,121.2z M526.3,299.6c-1.6-2.4-3.4-4.7-5.6-6.9L260.2,32.3c-17-17-50.6-31.5-74.7-32.3L42.4,0C18.4-0.7-0.7,18.4,0,42.4l0,143.1c0.8,24.1,15.3,57.7,32.3,74.7l260.5,260.5c2.1,2.1,4.4,4,6.8,5.6c28.6,22.3,70.1,20.6,96.3-5.6l124.8-124.9C547,369.7,548.6,328.2,526.3,299.6z');
+        const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathElement.setAttribute(
+            'd',
+            'M84.7,121.2c-20.1,0-36.4-16.3-36.4-36.4c0-20.1,16.3-36.5,36.5-36.5c20.1,0,36.4,16.3,36.4,36.4C121.2,104.9,104.9,121.3,84.7,121.2z M526.3,299.6c-1.6-2.4-3.4-4.7-5.6-6.9L260.2,32.3c-17-17-50.6-31.5-74.7-32.3L42.4,0C18.4-0.7-0.7,18.4,0,42.4l0,143.1c0.8,24.1,15.3,57.7,32.3,74.7l260.5,260.5c2.1,2.1,4.4,4,6.8,5.6c28.6,22.3,70.1,20.6,96.3-5.6l124.8-124.9C547,369.7,548.6,328.2,526.3,299.6z',
+        );
         Helper.append(svgElement, pathElement);
         Helper.append(tagLinkElement, svgElement);
 
@@ -174,10 +185,16 @@ class Item {
         }
 
         readButtonElement.setAttribute('href', '#0');
-        readButtonElement.setAttribute('class', 'item__link item__link--set-read js-toggleReadButton');
+        readButtonElement.setAttribute(
+            'class',
+            'item__link item__link--set-read js-toggleReadButton',
+        );
         readButtonElement.setAttribute('data-id', element.item_id);
         readButtonElement.setAttribute('data-read', isRead);
-        readButtonElement.setAttribute('title', isRead ? chrome.i18n.getMessage('MARK_UNREAD') : chrome.i18n.getMessage('MARK_READ'));
+        readButtonElement.setAttribute(
+            'title',
+            isRead ? chrome.i18n.getMessage('MARK_UNREAD') : chrome.i18n.getMessage('MARK_READ'),
+        );
         Helper.append(readButtonElement, readNode);
 
         // delete link
@@ -250,39 +267,44 @@ class Item {
      * @return {void}
      */
     add(data) {
-        apiService.add(data)
-            .then(response => {
-                modal.close();
+        apiService.add(data).then(response => {
+            modal.close();
 
-                let array = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
-                array = Helper.prependArray(array, response.item);
-                Helper.setToStorage('listFromLocalStorage', JSON.stringify(array));
+            let array = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
+            array = Helper.prependArray(array, response.item);
+            Helper.setToStorage('listFromLocalStorage', JSON.stringify(array));
 
-                Helper.setToStorage('listCount', (parseInt(Helper.getFromStorage('listCount'), 10) + 1).toString());
-                if (pocket.getActivePage() === 'list') {
-                    document.querySelector('#js-count').innerText = Helper.getFromStorage('listCount');
+            Helper.setToStorage(
+                'listCount',
+                (parseInt(Helper.getFromStorage('listCount'), 10) + 1).toString(),
+            );
+            if (pocket.getActivePage() === 'list') {
+                document.querySelector('#js-count').innerText = Helper.getFromStorage('listCount');
+            }
+
+            helper.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
+
+            if (pocket.getActivePage() === 'list') {
+                const createdItem = this.create(response.item);
+                let doPrepend = false;
+
+                if (pocket.orderItemsAsc) {
+                    doPrepend = true;
                 }
 
-                helper.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
-
-                if (pocket.getActivePage() === 'list') {
-                    const createdItem = this.create(response.item);
-                    let doPrepend = false;
-
-                    if (pocket.orderItemsAsc) {
-                        doPrepend = true;
-                    }
-
-                    // array has new item but it is not in dom yet
-                    // #js-list has .sentinel too
-                    // that's why array.length and #js-list.childElementCount can be equal
-                    if (!pocket.orderItemsAsc && array.length !== document.querySelector('#js-list').childElementCount) {
-                        return;
-                    }
-
-                    this.render(createdItem, 'list', doPrepend);
+                // array has new item but it is not in dom yet
+                // #js-list has .sentinel too
+                // that's why array.length and #js-list.childElementCount can be equal
+                if (
+                    !pocket.orderItemsAsc &&
+                    array.length !== document.querySelector('#js-list').childElementCount
+                ) {
+                    return;
                 }
-            });
+
+                this.render(createdItem, 'list', doPrepend);
+            }
+        });
     }
 
     /**
@@ -296,7 +318,7 @@ class Item {
         e.preventDefault();
         const id = e.target.dataset.id;
         let isFavourited = e.target.dataset.favourite;
-        isFavourited = (isFavourited === 'true'); // convert to boolean
+        isFavourited = isFavourited === 'true'; // convert to boolean
 
         pocket.changeItemState(e, 'favourite', id, isFavourited);
     }
@@ -329,9 +351,15 @@ class Item {
 
         document.querySelector('#js-deleteSubmit').addEventListener('click', newEvent, false);
 
-        document.addEventListener('closed.modal', () => {
-            document.querySelector('#js-deleteSubmit').removeEventListener('click', newEvent, false);
-        }, { once: true });
+        document.addEventListener(
+            'closed.modal',
+            () => {
+                document
+                    .querySelector('#js-deleteSubmit')
+                    .removeEventListener('click', newEvent, false);
+            },
+            { once: true },
+        );
     }
 
     /**
@@ -360,7 +388,10 @@ class Item {
         const tagsFormElements = document.tagsForm.elements;
         const tagsItemIdInput = tagsFormElements.namedItem('tagsItemId');
         const tagsInput = tagsFormElements.namedItem('tags');
-        const autocomplete = new Autocomplete('#js-tagsInput', JSON.parse(Helper.getFromStorage('tags')));
+        const autocomplete = new Autocomplete(
+            '#js-tagsInput',
+            JSON.parse(Helper.getFromStorage('tags')),
+        );
 
         tagsItemIdInput.value = e.target.dataset.id;
 
@@ -369,11 +400,15 @@ class Item {
         }
         tagsInput.focus();
 
-        document.addEventListener('closed.modal', () => {
-            tagsItemIdInput.value = '';
-            tagsInput.value = '';
-            autocomplete.destroy();
-        }, { once: true });
+        document.addEventListener(
+            'closed.modal',
+            () => {
+                tagsItemIdInput.value = '';
+                tagsInput.value = '';
+                autocomplete.destroy();
+            },
+            { once: true },
+        );
     }
 
     /**
