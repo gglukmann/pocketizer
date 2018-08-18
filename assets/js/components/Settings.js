@@ -3,9 +3,7 @@ class Settings {
      * @constructor
      */
     constructor() {
-        this.colorSelectorChange = this.handleColorSelectorChange.bind(this);
-        this.pageSelectorChange = this.handlePageSelectorChange.bind(this);
-        this.orderSelectorChange = this.handleOrderSelectorChange.bind(this);
+        this.selectorChange = this.handleSelectorChange.bind(this);
         this.focusAddInput = this.handleFocusAddInput.bind(this);
         this.resetAddInput = this.handleResetAddInput.bind(this);
         this.submitNewItem = this.handleSubmitNewItem.bind(this);
@@ -20,6 +18,7 @@ class Settings {
     init() {
         this.bindEvents();
         this.loadOrder();
+        this.loadUpdateInterval();
     }
 
     /**
@@ -29,9 +28,7 @@ class Settings {
      * @return {void}
      */
     bindEvents() {
-        document.addEventListener('select.selector', this.colorSelectorChange, false);
-        document.addEventListener('select.selector', this.pageSelectorChange, false);
-        document.addEventListener('select.selector', this.orderSelectorChange, false);
+        document.addEventListener('select.selector', this.selectorChange, false);
         document.addEventListener('opened.modal', this.focusAddInput, false);
         document.addEventListener('closed.modal', this.resetAddInput, false);
         document.newItemForm.addEventListener('submit', this.submitNewItem, false);
@@ -44,12 +41,61 @@ class Settings {
      * @return {void}
      */
     removeEvents() {
-        document.removeEventListener('select.selector', this.colorSelectorChange, false);
-        document.removeEventListener('select.selector', this.pageSelectorChange, false);
-        document.removeEventListener('select.selector', this.orderSelectorChange, false);
+        document.removeEventListener('select.selector', this.selectorChange, false);
         document.removeEventListener('opened.modal', this.focusAddInput, false);
         document.removeEventListener('closed.modal', this.resetAddInput, false);
         document.newItemForm.removeEventListener('submit', this.submitNewItem, false);
+    }
+
+    /**
+     * Set default page to load on extension load.
+     *
+     * @function setDefaultPage
+     * @param {String} page - Page to set.
+     * @return {void}
+     */
+    setDefaultPage(page = 'list') {
+        Helper.setToStorage('defaultPage', page);
+    }
+
+    /**
+     * Get default page to load on extension load.
+     *
+     * @function getDefaultPage
+     * @return {String | null}
+     */
+    getDefaultPage() {
+        return Helper.getFromStorage('defaultPage');
+    }
+
+    /**
+     * Get theme to load on extension load.
+     *
+     * @function getTheme
+     * @return {String | null}
+     */
+    getTheme() {
+        return Helper.getFromStorage('theme');
+    }
+
+    /**
+     * Get items order to load on extension load.
+     *
+     * @function getOrder
+     * @return {String | null}
+     */
+    getOrder() {
+        return Helper.getFromStorage('order');
+    }
+
+    /**
+     * Get update interval to load on extension load.
+     *
+     * @function getUpdateInterval
+     * @return {String | null}
+     */
+    getUpdateInterval() {
+        return Helper.getFromStorage('updateInterval') || UPDATE_INTERVALS[0];
     }
 
     /**
@@ -59,7 +105,7 @@ class Settings {
      * @return {void}
      */
     loadTheme() {
-        const theme = localStorage.getItem('theme');
+        const theme = this.getTheme();
 
         if (theme && THEMES.includes(theme)) {
             Helper.addClass(document.body, theme);
@@ -74,41 +120,20 @@ class Settings {
     }
 
     /**
-     * Set default page to load on extension load.
-     *
-     * @function setDefaultPage
-     * @param {String} page - Page to set.
-     * @return {void}
-     */
-    setDefaultPage(page = 'list') {
-        localStorage.setItem('defaultPage', page);
-    }
-
-    /**
-     * Get default page to load on extension load.
-     *
-     * @function getDefaultPage
-     * @return {String | null}
-     */
-    getDefaultPage() {
-        return localStorage.getItem('defaultPage');
-    }
-
-    /**
      * Set default page on pocket load.
      *
      * @function loadDefaultPage
      * @return {void}
      */
     loadDefaultPage() {
-        let defaultPage = settings.getDefaultPage();
+        let defaultPage = this.getDefaultPage();
 
         if (defaultPage && defaultPage !== 'list' && !PAGES.includes(defaultPage)) {
             defaultPage = 'list';
             this.setDefaultPage(defaultPage);
         }
 
-        pocket.changePage(defaultPage);
+        pocket.changePage(defaultPage, true);
 
         if (defaultPage) {
             const pageSelector = [...document.querySelectorAll('[name=selector-page]')];
@@ -120,8 +145,14 @@ class Settings {
         }
     }
 
+    /**
+     * Set order button direction and init selector in settings.
+     *
+     * @function loadOrder
+     * @return {void}
+     */
     loadOrder() {
-        const order = localStorage.getItem('order');
+        const order = this.getOrder();
 
         if (order) {
             this.rotateOrderButton(order === 'asc' ? true : false);
@@ -157,53 +188,71 @@ class Settings {
     }
 
     /**
-     * Handle default page selector in settings.
+     * Set update interval and change to right selector.
      *
-     * @function handlePageSelectorChange
-     * @param {Event} e - Selector change event.
+     * @function loadUpdateInterval
      * @return {void}
      */
-    handlePageSelectorChange(e) {
-        if (e.detail.name === 'selector-page') {
-            const page = e.detail.value.toString();
+    loadUpdateInterval() {
+        const updateInterval = this.getUpdateInterval();
 
-            if (PAGES.includes(page)) {
-                this.setDefaultPage(page);
-
-                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+        if (updateInterval) {
+            const updateIntervalSelector = [
+                ...document.querySelectorAll('[name=selector-update-interval]'),
+            ];
+            for (const selector of updateIntervalSelector) {
+                if (selector.value === updateInterval) {
+                    selector.checked = true;
+                }
             }
         }
     }
 
     /**
-     * Handle selector change event for color change.
+     * Handle selector change in settings.
      *
-     * @function handleColorSelectorChange
+     * @function handleSelectorChange
      * @param {Event} e - Selector change event.
      * @return {void}
      */
-    handleColorSelectorChange(e) {
-        if (e.detail.name === 'selector-color') {
-            const value = e.detail.value.toString();
+    handleSelectorChange(e) {
+        switch (e.detail.name) {
+            case 'selector-theme':
+                const value = e.detail.value.toString();
 
-            if (THEMES.includes(value)) {
-                document.body.classList.remove(localStorage.getItem('theme'));
-                localStorage.setItem('theme', value);
-                document.body.classList.add(value);
+                if (THEMES.includes(value)) {
+                    document.body.classList.remove(Helper.getFromStorage('theme'));
+                    Helper.setToStorage('theme', value);
+                    document.body.classList.add(value);
 
-                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
-            }
-        }
-    }
+                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                }
+                break;
+            case 'selector-page':
+                const page = e.detail.value.toString();
 
-    handleOrderSelectorChange(e) {
-        if (e.detail.name === 'selector-order') {
-            const value = e.detail.value.toString();
+                if (PAGES.includes(page)) {
+                    this.setDefaultPage(page);
 
-            if (value === 'asc' || value === 'desc') {
-                localStorage.setItem('order', value);
-                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
-            }
+                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                }
+                break;
+            case 'selector-order':
+                const order = e.detail.value.toString();
+
+                if (order === 'asc' || order === 'desc') {
+                    Helper.setToStorage('order', order);
+                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                }
+                break;
+            case 'selector-update-interval':
+                const interval = e.detail.value.toString();
+
+                if (UPDATE_INTERVALS.includes(interval)) {
+                    Helper.setToStorage('updateInterval', interval);
+                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                }
+                break;
         }
     }
 
@@ -254,6 +303,27 @@ class Settings {
 
             item.add(data);
         }
+    }
+
+    /**
+     * If update interval difference is bigger than selected.
+     *
+     * @function isTimeToUpdate
+     * @return {Boolean} - If is time to update.
+     */
+    isTimeToUpdate() {
+        let isTime = false;
+        const timeDifference = Helper.calcTimeDifference(
+            Helper.getCurrentUNIX(),
+            Helper.getFromStorage(`${this.getDefaultPage()}Since`),
+            settings.getUpdateInterval(),
+        );
+
+        if (timeDifference >= this.getUpdateInterval()) {
+            Helper.setToStorage(`${this.getDefaultPage()}Since`, Helper.getCurrentUNIX());
+            isTime = true;
+        }
+        return isTime;
     }
 
     /**

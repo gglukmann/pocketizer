@@ -221,16 +221,16 @@
                 <legend class="selector__label" data-translate="__MSG_CHOOSE_THEME__">Choose theme</legend>
                 <div class="selector__list">
                     <div class="selector__item">
-                        <input type="radio" name="selector-color" id="selector-color-1" class="selector__input" value="theme-light" checked>
-                        <label for="selector-color-1" class="selector__indicator" data-translate="__MSG_LIGHT__">Light</label>
+                        <input type="radio" name="selector-theme" id="selector-theme-1" class="selector__input" value="theme-light" checked>
+                        <label for="selector-theme-1" class="selector__indicator" data-translate="__MSG_LIGHT__">Light</label>
                     </div>
                     <div class="selector__item">
-                        <input type="radio" name="selector-color" id="selector-color-2" class="selector__input" value="theme-dark">
-                        <label for="selector-color-2" class="selector__indicator" data-translate="__MSG_DARK__">Dark</label>
+                        <input type="radio" name="selector-theme" id="selector-theme-2" class="selector__input" value="theme-dark">
+                        <label for="selector-theme-2" class="selector__indicator" data-translate="__MSG_DARK__">Dark</label>
                     </div>
                     <div class="selector__item">
-                        <input type="radio" name="selector-color" id="selector-color-3" class="selector__input" value="theme-sepia">
-                        <label for="selector-color-3" class="selector__indicator" data-translate="__MSG_SEPIA__">Sepia</label>
+                        <input type="radio" name="selector-theme" id="selector-theme-3" class="selector__input" value="theme-sepia">
+                        <label for="selector-theme-3" class="selector__indicator" data-translate="__MSG_SEPIA__">Sepia</label>
                     </div>
                 </div>
             </fieldset>
@@ -257,6 +257,33 @@
                     <div class="selector__item">
                         <input type="radio" name="selector-order" id="selector-order-2" class="selector__input" value="desc">
                         <label for="selector-order-2" class="selector__indicator" data-translate="__MSG_DESC__">descending</label>
+                    </div>
+                </div>
+            </fieldset>
+            <fieldset class="selector">
+                <legend class="selector__label" data-translate="__MSG_CHOOSE_LIST_UPDATE_INTERVAL__">
+                    Choose items update interval from Pocket
+                </legend>
+                <div class="selector__list">
+                    <div class="selector__item">
+                        <input type="radio" name="selector-update-interval" id="selector-update-1" class="selector__input" value="0" checked>
+                        <label for="selector-update-1" class="selector__indicator" data-translate="__MSG_ALWAYS__">opening new tab</label>
+                    </div>
+                    <div class="selector__item">
+                        <input type="radio" name="selector-update-interval" id="selector-update-interval-2" class="selector__input" value="1800">
+                        <label for="selector-update-interval-2" class="selector__indicator">0,5h</label>
+                    </div>
+                    <div class="selector__item">
+                        <input type="radio" name="selector-update-interval" id="selector-update-interval-3" class="selector__input" value="3600">
+                        <label for="selector-update-interval-3" class="selector__indicator">1h</label>
+                    </div>
+                    <div class="selector__item">
+                        <input type="radio" name="selector-update-interval" id="selector-update-interval-4" class="selector__input" value="18000">
+                        <label for="selector-update-interval-4" class="selector__indicator">5h</label>
+                    </div>
+                    <div class="selector__item">
+                        <input type="radio" name="selector-update-interval" id="selector-update-interval-5" class="selector__input" value="86400">
+                        <label for="selector-update-interval-5" class="selector__indicator">24h</label>
                     </div>
                 </div>
             </fieldset>

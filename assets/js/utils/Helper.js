@@ -167,7 +167,7 @@ class Helper {
      * Convert unix time to datetime format dd.mm.yyyy.
      *
      * @function timeConverter
-     * @param {Number} UNIX - Unix timestamp.
+     * @param {Number} UNIX - Unix timestamp in seconds.
      * @return {String} - dd.mm.yyyy.
      */
     static timeConverter(UNIX){
@@ -179,13 +179,25 @@ class Helper {
     }
 
     /**
-     * Returns current unix timestamp
+     * Returns current unix timestamp in seconds.
      *
      * @function getCurrentUNIX
-     * @return {Number} - Current time unix timestamp.
+     * @return {Number} - Current time unix timestamp in seconds.
      */
     static getCurrentUNIX() {
         return Math.floor(Date.now() / 1000);
+    }
+
+    /**
+     * Calculate time difference between two unix timestamps in seconds.
+     *
+     * @function calcTimeDifference
+     * @param {Number | String} date1
+     * @param {Number | String} date2
+     * @return {Number} - Time difference in seconds.
+     */
+    static calcTimeDifference(date1, date2) {
+        return parseInt(date1, 10) - parseInt(date2, 10);
     }
 
     /**
@@ -296,8 +308,50 @@ class Helper {
         }
     }
 
+    /**
+     * Check if connected to internet.
+     *
+     * @function checkInternetConnection
+     * @param {*} navigator - Navigator object from window.
+     * @return {Boolean} - If is online.
+     */
     static checkInternetConnection(navigator) {
         return navigator.onLine;
+    }
+
+    /**
+     * Set to storage.
+     *
+     * @function setToStorage
+     * @param {String | Number} key
+     * @param {String | Number | Boolean} value
+     * @return {void}
+     */
+    static setToStorage(key, value) {
+        localStorage.setItem(key, value);
+    }
+
+    /**
+     * Get from storage.
+     *
+     * @function getFromStorage
+     * @param {String | Number} key
+     * @return {String | Number | Boolean}
+     */
+    static getFromStorage(key) {
+        return localStorage.getItem(key);
+    }
+
+    /**
+     * Remove from storage.
+     *
+     * @function removeFromStorage
+     * @param {String | Number} key
+     * @return {String | Number} - Given key.
+     */
+    static removeFromStorage(key) {
+        localStorage.removeItem(key);
+        return key;
     }
 }
 

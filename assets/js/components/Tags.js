@@ -126,7 +126,7 @@ class Tags {
      * @return {void}
      */
     renderTags() {
-        const tagsArray = JSON.parse(localStorage.getItem('tags'));
+        const tagsArray = JSON.parse(Helper.getFromStorage('tags'));
 
         if (tagsArray === null || !tagsArray.length) {
             return;
@@ -194,13 +194,13 @@ class Tags {
      * @return {void}
      */
     addTag(tag, isFullSync) {
-        const tagsArray = isFullSync ? [] : (JSON.parse(localStorage.getItem('tags')) || []);
+        const tagsArray = isFullSync ? [] : (JSON.parse(Helper.getFromStorage('tags')) || []);
 
         if (!tagsArray.includes(tag)) {
             tagsArray.push(tag);
             tagsArray.sort();
 
-            localStorage.setItem('tags', JSON.stringify(tagsArray));
+            Helper.setToStorage('tags', JSON.stringify(tagsArray));
         }
     }
 

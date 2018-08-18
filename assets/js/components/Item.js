@@ -254,13 +254,13 @@ class Item {
             .then(response => {
                 modal.close();
 
-                let array = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                let array = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
                 array = Helper.prependArray(array, response.item);
-                localStorage.setItem('listFromLocalStorage', JSON.stringify(array));
+                Helper.setToStorage('listFromLocalStorage', JSON.stringify(array));
 
-                localStorage.setItem('listCount', (parseInt(localStorage.getItem('listCount'), 10) + 1).toString());
+                Helper.setToStorage('listCount', (parseInt(Helper.getFromStorage('listCount'), 10) + 1).toString());
                 if (pocket.getActivePage() === 'list') {
-                    document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
+                    document.querySelector('#js-count').innerText = Helper.getFromStorage('listCount');
                 }
 
                 helper.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
@@ -360,7 +360,7 @@ class Item {
         const tagsFormElements = document.tagsForm.elements;
         const tagsItemIdInput = tagsFormElements.namedItem('tagsItemId');
         const tagsInput = tagsFormElements.namedItem('tags');
-        const autocomplete = new Autocomplete('#js-tagsInput', JSON.parse(localStorage.getItem('tags')));
+        const autocomplete = new Autocomplete('#js-tagsInput', JSON.parse(Helper.getFromStorage('tags')));
 
         tagsItemIdInput.value = e.target.dataset.id;
 

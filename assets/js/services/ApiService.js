@@ -28,15 +28,15 @@ class ApiService {
 
         switch (pocket.getActivePage()) {
             case 'list':
-                if (localStorage.getItem('listSince')) {
-                    this._fetchData.body.since = localStorage.getItem('listSince');
+                if (Helper.getFromStorage('listSince')) {
+                    this._fetchData.body.since = Helper.getFromStorage('listSince');
                 } else {
                     state = 'unread';
                 }
             break;
             case 'archive':
                 if (pocket.isArchiveLoaded()) {
-                    this._fetchData.body.since = localStorage.getItem('archiveSince');
+                    this._fetchData.body.since = Helper.getFromStorage('archiveSince');
                 } else {
                     state = 'archive';
                 }

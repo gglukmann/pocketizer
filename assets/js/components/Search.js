@@ -162,7 +162,7 @@ class Search {
 
         value = value.toLowerCase();
 
-        let array = JSON.parse(localStorage.getItem(`${pocket.getActivePage()}FromLocalStorage`));
+        let array = JSON.parse(Helper.getFromStorage(`${pocket.getActivePage()}FromLocalStorage`));
         let count = 0;
 
         if (isTag) {

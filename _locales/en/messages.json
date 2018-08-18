@@ -222,5 +222,11 @@
     },
     "REFRESH": {
         "message": "Refresh"
+    },
+    "CHOOSE_LIST_UPDATE_INTERVAL": {
+        "message": "Choose items update interval from Pocket"
+    },
+    "ALWAYS": {
+        "message": "opening new tab"
     }
 }

@@ -13,3 +13,4 @@ const API = {
 
 const PAGES = ['list', 'archive'];
 const THEMES = ['theme-light', 'theme-dark', 'theme-sepia'];
+const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];

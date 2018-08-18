@@ -107,7 +107,7 @@ class AuthService {
                 .then(response => {
                     this.setToken(response.access_token);
 
-                    localStorage.setItem('username', response.username);
+                    Helper.setToStorage('username', response.username);
 
                     return response;
                 })
@@ -126,7 +126,7 @@ class AuthService {
      * @return {String} Token.
      */
     getToken() {
-        return localStorage.getItem('token') ? localStorage.getItem('token') : false;
+        return Helper.getFromStorage('token') ? Helper.getFromStorage('token') : false;
     }
 
     /**
@@ -137,7 +137,7 @@ class AuthService {
      * @return {void}
      */
     setToken(token) {
-        localStorage.setItem('token', token);
+        Helper.setToStorage('token', token);
     }
 
     /**

@@ -157,7 +157,12 @@ a > svg {
     border-radius: 15px;
     font-size: 1.3rem;
     font-weight: 500;
-    top: 70px;
+}
+
+@media (min-width: 720px) {
+    .status--offline {
+        top: 70px;
+    }
 }
 
 .status__button {
@@ -719,6 +724,10 @@ a > svg {
 
 .btn--link.btn--inverse {
     color: var(--white);
+}
+
+.btn--link.btn--inverse:hover {
+    color: var(--text-color);
 }
 
 .btn--small {

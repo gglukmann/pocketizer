@@ -13,7 +13,7 @@ class Pocket {
         };
 
         this.fullSync = false;
-        this.orderItemsAsc = localStorage.getItem('order') && localStorage.getItem('order') === 'desc' ? false : true;
+        this.orderItemsAsc = Helper.getFromStorage('order') && Helper.getFromStorage('order') === 'desc' ? false : true;
 
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
@@ -29,7 +29,7 @@ class Pocket {
     init() {
         this.handleInternetConnection();
         helper.localizeHtml();
-        settings.loadTheme();
+        settings.loadTheme(); // this is here for faster load time
 
         if (authService.isLoggedIn()) {
             this.startSync();
@@ -60,6 +60,12 @@ class Pocket {
         return this.active_page = page;
     }
 
+    /**
+     * Check internet connection and handle everything when offline.
+     *
+     * @function handleInternetConnection
+     * @return {void}
+     */
     handleInternetConnection() {
         const onLine = Helper.checkInternetConnection(window.navigator);
 
@@ -69,7 +75,8 @@ class Pocket {
             document.querySelector('#js-login').disabled = true;
         }
 
-        document.querySelector('#js-offlineRefresh').addEventListener('click', () => {
+        document.querySelector('#js-offlineRefresh').addEventListener('click', e => {
+            e.target.classList.add('is-syncing');
             window.location.reload();
         });
     }
@@ -101,15 +108,15 @@ class Pocket {
 
         switch (this.getActivePage()) {
             case 'list':
-                if (!localStorage.getItem('listSince')) {
+                if (!Helper.getFromStorage('listSince')) {
                     isFirstLoad = true;
                 }
                 break;
             case 'archive':
                 // TODO: Remove old list name sometime in the future
-                if (localStorage.getItem('archiveListFromLocalStorage')) {
+                if (Helper.getFromStorage('archiveListFromLocalStorage')) {
                     isFirstLoad = true;
-                    localStorage.removeItem('archiveListFromLocalStorage');
+                    Helper.removeFromStorage('archiveListFromLocalStorage');
                 } else {
                     if (!this.isArchiveLoaded()) {
                         isFirstLoad = true;
@@ -125,9 +132,9 @@ class Pocket {
         if (isFirstLoad || this.fullSync) {
             array.sort((x, y) => x.sort_id - y.sort_id);
 
-            localStorage.setItem(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
-            localStorage.setItem(`${this.getActivePage()}Count`, array.length.toString());
-            localStorage.setItem(`${this.getActivePage()}Since`, response.since);
+            Helper.setToStorage(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
+            Helper.setToStorage(`${this.getActivePage()}Count`, array.length.toString());
+            Helper.setToStorage(`${this.getActivePage()}Since`, response.since);
 
             tags.createTags(array, true);
 
@@ -147,7 +154,7 @@ class Pocket {
                 switch (newItem.status) {
                     // add to unread list
                     case "0":
-                        newArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                        newArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
 
                         // delete old item, if it is added from this extension
                         for (const i in newArray) {
@@ -160,50 +167,50 @@ class Pocket {
 
                         tags.createTags(newArray);
 
-                        localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
-                        localStorage.setItem('listCount', newArray.length.toString());
+                        Helper.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
+                        Helper.setToStorage('listCount', newArray.length.toString());
                         break;
                     // add to archive list
                     case "1":
                         // delete old item, if it is added to archive from somewhere else and is in unread list in extension
-                        newArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                        newArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
                         newArray = newArray.filter(item => item.item_id !== newItem.item_id);
 
-                        localStorage.setItem('listFromLocalStorage', JSON.stringify(newArray));
-                        localStorage.setItem('listCount', newArray.length);
+                        Helper.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
+                        Helper.setToStorage('listCount', newArray.length);
 
                         // only add to localstorage archive list if archive is loaded
                         if (this.isArchiveLoaded()) {
-                            newArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
+                            newArray = JSON.parse(Helper.getFromStorage('archiveFromLocalStorage'));
                             newArray = Helper.prependArray(newArray, newItem);
 
-                            localStorage.setItem('archiveFromLocalStorage', JSON.stringify(newArray));
-                            localStorage.setItem('archiveCount', newArray.length);
+                            Helper.setToStorage('archiveFromLocalStorage', JSON.stringify(newArray));
+                            Helper.setToStorage('archiveCount', newArray.length);
                         }
                         break;
                     // delete from unread or archive list
                     case "2":
-                        let listArray = JSON.parse(localStorage.getItem('listFromLocalStorage'));
+                        let listArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
 
                         listArray = listArray.filter(item => item.item_id !== newItem.item_id);
 
-                        localStorage.setItem('listFromLocalStorage', JSON.stringify(listArray));
-                        localStorage.setItem('listCount', listArray.length);
+                        Helper.setToStorage('listFromLocalStorage', JSON.stringify(listArray));
+                        Helper.setToStorage('listCount', listArray.length);
 
                         if (this.isArchiveLoaded()) {
-                            let archiveArray = JSON.parse(localStorage.getItem('archiveFromLocalStorage'));
+                            let archiveArray = JSON.parse(Helper.getFromStorage('archiveFromLocalStorage'));
                             archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
 
-                            localStorage.setItem('archiveFromLocalStorage', JSON.stringify(archiveArray));
-                            localStorage.setItem('archiveCount', archiveArray.length);
+                            Helper.setToStorage('archiveFromLocalStorage', JSON.stringify(archiveArray));
+                            Helper.setToStorage('archiveCount', archiveArray.length);
                         }
                         break;
                 }
             }
 
-            localStorage.setItem('listSince', response.since);
+            Helper.setToStorage('listSince', response.since);
             if (this.isArchiveLoaded()) {
-                localStorage.setItem('archiveSince', response.since);
+                Helper.setToStorage('archiveSince', response.since);
             }
         }
 
@@ -218,11 +225,11 @@ class Pocket {
      * @return {void}
      */
     render() {
-        let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
+        let array = JSON.parse(Helper.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
 
         this.items_shown = this.load_count;
 
-        document.querySelector('#js-count').innerText = localStorage.getItem(`${this.getActivePage()}Count`);
+        document.querySelector('#js-count').innerText = Helper.getFromStorage(`${this.getActivePage()}Count`);
         Helper.clearChildren(document.querySelector('#js-list'));
 
         if (array === null) {
@@ -315,7 +322,7 @@ class Pocket {
      */
     infiniteScroll() {
         helper.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
-        let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
+        let array = JSON.parse(Helper.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
 
         if (!this.orderItemsAsc) {
             array = array.reverse();
@@ -343,7 +350,7 @@ class Pocket {
      * @return {Boolean} If is loaded.
      */
     isArchiveLoaded() {
-        return !!localStorage.getItem('archiveSince');
+        return !!Helper.getFromStorage('archiveSince');
     }
 
     /**
@@ -494,7 +501,7 @@ class Pocket {
      * @return {void}
      */
     handleActionResponse(e, state, id, isFavourited, response, tags) {
-        let array = JSON.parse(localStorage.getItem(`${this.getActivePage()}FromLocalStorage`));
+        let array = JSON.parse(Helper.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
 
         for (const i in array) {
             if (array[i].item_id === id) {
@@ -509,9 +516,9 @@ class Pocket {
                             itemNode.remove();
                         }, 500);
 
-                        localStorage.setItem(`${this.getActivePage()}Count`, parseInt(localStorage.getItem(`${this.getActivePage()}Count`), 10) - 1);
+                        Helper.setToStorage(`${this.getActivePage()}Count`, parseInt(Helper.getFromStorage(`${this.getActivePage()}Count`), 10) - 1);
 
-                        document.querySelector('#js-count').innerText = localStorage.getItem(`${this.getActivePage()}Count`);
+                        document.querySelector('#js-count').innerText = Helper.getFromStorage(`${this.getActivePage()}Count`);
                     break;
                     case 'favourite':
                         array[i].favorite = (isFavourited === true ? 0 : 1);
@@ -528,7 +535,7 @@ class Pocket {
             }
         }
 
-        localStorage.setItem(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
+        Helper.setToStorage(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
 
         if (state === 'read') {
             switch (this.getActivePage()) {
@@ -553,14 +560,12 @@ class Pocket {
      * @param {String} page - Page to change to.
      * @return {void}
      */
-    changePage(page) {
+    changePage(page, isPageLoad) {
         page = page ? page : 'list';
 
         if (!PAGES.includes(page)) {
             return;
         }
-
-        helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
         header.changeMenuActiveState(page);
 
@@ -574,12 +579,13 @@ class Pocket {
 
         switch (page) {
             case 'list':
+                helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
                 this.setActivePage('list');
 
-                document.querySelector('#js-count').innerText = localStorage.getItem('listCount');
+                document.querySelector('#js-count').innerText = Helper.getFromStorage('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
-                this.orderItemsAsc = !localStorage.getItem('order') || localStorage.getItem('order') === 'asc' ? true : false;
+                this.orderItemsAsc = !Helper.getFromStorage('order') || Helper.getFromStorage('order') === 'asc' ? true : false;
 
                 this.render();
                 this.getContent();
@@ -587,7 +593,7 @@ class Pocket {
             case 'archive':
                 this.setActivePage('archive');
 
-                document.querySelector('#js-count').innerText = localStorage.getItem('archiveCount');
+                document.querySelector('#js-count').innerText = Helper.getFromStorage('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
 
                 this.orderItemsAsc = true;
@@ -596,7 +602,13 @@ class Pocket {
                     this.render();
                 }
 
-                this.getContent();
+                if (isPageLoad && settings.isTimeToUpdate()) {
+                    helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+                    this.getContent();
+                } else if (!isPageLoad) {
+                    helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+                    this.getContent();
+                }
             break;
         }
 
@@ -650,7 +662,7 @@ class Pocket {
      * @return {void}
      */
     loggedIn() {
-        document.querySelector('#js-username').innerText = localStorage.getItem('username');
+        document.querySelector('#js-username').innerText = Helper.getFromStorage('username');
         document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
         helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
@@ -679,8 +691,6 @@ class Pocket {
      * @return {void}
      */
     startSync() {
-        helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
-
         this.toggleLoggedInContent(true);
 
         if (settings.getDefaultPage() === null || (settings.getDefaultPage() && settings.getDefaultPage() === 'list')) {
@@ -690,8 +700,8 @@ class Pocket {
             settings.loadDefaultPage();
         }
 
-        if (localStorage.getItem('username')) {
-            document.querySelector('#js-username').innerText = localStorage.getItem('username');
+        if (Helper.getFromStorage('username')) {
+            document.querySelector('#js-username').innerText = Helper.getFromStorage('username');
         }
 
         this.bindLoggedInEvents();
@@ -704,7 +714,12 @@ class Pocket {
         settings.init();
         tags.init();
 
-        if (!settings.getDefaultPage() || settings.getDefaultPage() === 'list') {
+        if (
+            (!settings.getDefaultPage() ||
+            settings.getDefaultPage() === 'list')
+            && settings.isTimeToUpdate()
+        ) {
+            helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
             this.getContent();
         }
     }
