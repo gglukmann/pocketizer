@@ -65,7 +65,7 @@ class Settings {
      * @return {String | null}
      */
     getDefaultPage() {
-        return Helper.getFromStorage('defaultPage');
+        return Helper.getFromStorage('defaultPage') || PAGES[0];
     }
 
     /**
@@ -128,7 +128,7 @@ class Settings {
     loadDefaultPage() {
         let defaultPage = this.getDefaultPage();
 
-        if (defaultPage && defaultPage !== 'list' && !PAGES.includes(defaultPage)) {
+        if (defaultPage !== 'list' && !PAGES.includes(defaultPage)) {
             defaultPage = 'list';
             this.setDefaultPage(defaultPage);
         }
@@ -316,7 +316,6 @@ class Settings {
         const timeDifference = Helper.calcTimeDifference(
             Helper.getCurrentUNIX(),
             Helper.getFromStorage(`${this.getDefaultPage()}Since`),
-            settings.getUpdateInterval(),
         );
 
         if (timeDifference >= this.getUpdateInterval()) {
