@@ -315,8 +315,8 @@ class Helper {
      * @param {*} navigator - Navigator object from window.
      * @return {Boolean} - If is online.
      */
-    static checkInternetConnection(navigator) {
-        return navigator.onLine;
+    static checkInternetConnection() {
+        return window.navigator.onLine;
     }
 
     /**

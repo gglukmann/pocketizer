@@ -70,18 +70,35 @@ class Pocket {
      * @return {void}
      */
     handleInternetConnection() {
-        const onLine = Helper.checkInternetConnection(window.navigator);
+        this.toggleOfflineTheme();
 
-        if (!onLine) {
-            Helper.addClass(document.body, 'theme-offline');
-            Helper.show(document.querySelector('#js-offlineStatus'));
-            document.querySelector('#js-login').disabled = true;
-        }
+        window.addEventListener('offline', this.toggleOfflineTheme, false);
+        window.addEventListener('online', this.toggleOfflineTheme, false);
 
         document.querySelector('#js-offlineRefresh').addEventListener('click', e => {
             e.target.classList.add('is-syncing');
             window.location.reload();
         });
+    }
+
+    /**
+     * Toggle all props for offline theme.
+     *
+     * @function toggleOfflineTheme
+     * @return {void}
+     */
+    toggleOfflineTheme() {
+        const isOnline = Helper.checkInternetConnection();
+
+        if (isOnline) {
+            Helper.removeClass(document.body, 'theme-offline');
+            Helper.hide(document.querySelector('#js-offlineStatus'));
+            document.querySelector('#js-login').disabled = false;
+        } else {
+            Helper.addClass(document.body, 'theme-offline');
+            Helper.show(document.querySelector('#js-offlineStatus'), true);
+            document.querySelector('#js-login').disabled = true;
+        }
     }
 
     /**
