@@ -140,3 +140,4 @@ class Lazyload {
 }
 
 const lazyload = new Lazyload();
+export default lazyload;

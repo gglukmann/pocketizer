@@ -1,7 +1,7 @@
-const API_URL = 'https://getpocket.com/';
-const API_VERSION = 'v3';
+export const API_URL = 'https://getpocket.com/';
+export const API_VERSION = 'v3';
 
-const API = {
+export const API = {
     redirect_url: chrome.identity.getRedirectURL() + 'oauth',
     url_request: API_URL + API_VERSION + '/oauth/request',
     url_authorize: API_URL + API_VERSION + '/oauth/authorize',
@@ -11,6 +11,6 @@ const API = {
     url_add: API_URL + API_VERSION + '/add',
 };
 
-const PAGES = ['list', 'archive'];
-const THEMES = ['theme-light', 'theme-dark', 'theme-sepia'];
-const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];
+export const PAGES = ['list', 'archive'];
+export const THEMES = ['theme-light', 'theme-dark', 'theme-sepia'];
+export const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];

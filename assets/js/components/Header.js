@@ -1,3 +1,7 @@
+import * as helpers from '../utils/helpers.js';
+import pocket from '../App.js';
+import { search } from './index.js';
+
 class Header {
     /**
      * constructor
@@ -83,9 +87,9 @@ class Header {
         const header = document.querySelector('#js-header');
 
         if (scrollPosition > 10) {
-            Helper.addClass(header, this.options.scrolledClass);
+            helpers.addClass(header, this.options.scrolledClass);
         } else {
-            Helper.removeClass(header, this.options.scrolledClass);
+            helpers.removeClass(header, this.options.scrolledClass);
         }
 
         this.timeout = false;
@@ -101,10 +105,10 @@ class Header {
         let menuLinkElements = document.querySelectorAll('.menu__link');
 
         for (const menuLink of menuLinkElements) {
-            Helper.removeClass(menuLink, 'is-active');
+            helpers.removeClass(menuLink, 'is-active');
 
             if (menuLink.dataset.page === page) {
-                Helper.addClass(menuLink, 'is-active');
+                helpers.addClass(menuLink, 'is-active');
             }
         }
     }
@@ -143,12 +147,12 @@ class Header {
      * @return {void}
      */
     handleFullSyncClick(e) {
-        helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+        helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
         const target = e.target;
         const syncClass = 'is-syncing';
 
-        Helper.addClass(target, syncClass);
+        helpers.addClass(target, syncClass);
         pocket.fullSync = true;
 
         pocket.getContent();
@@ -168,16 +172,16 @@ class Header {
     handleRemoveSyncedClass(target, syncClass) {
         const syncedClass = 'is-synced';
 
-        Helper.removeClass(target, syncClass);
-        Helper.addClass(target, syncedClass);
+        helpers.removeClass(target, syncClass);
+        helpers.addClass(target, syncedClass);
 
-        Helper.addClass(target.children[0], 'hidden');
-        Helper.removeClass(target.children[1], 'hidden');
+        helpers.addClass(target.children[0], 'hidden');
+        helpers.removeClass(target.children[1], 'hidden');
 
         setTimeout(() => {
-            Helper.removeClass(target, syncedClass);
-            Helper.addClass(target.children[1], 'hidden');
-            Helper.removeClass(target.children[0], 'hidden');
+            helpers.removeClass(target, syncedClass);
+            helpers.addClass(target.children[1], 'hidden');
+            helpers.removeClass(target.children[0], 'hidden');
         }, 1500);
 
         document.removeEventListener('synced', this.removeSyncedClassHandler, false);
@@ -195,3 +199,4 @@ class Header {
 }
 
 const header = new Header();
+export default header;

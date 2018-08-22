@@ -1,3 +1,6 @@
+import __consumer_key from '../../../env.js';
+import * as helpers from '../utils/helpers.js';
+
 class AuthService {
     /**
      * @constructor
@@ -29,7 +32,7 @@ class AuthService {
                 user: username,
             };
         } catch (e) {
-            helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+            helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
             document.querySelector('#js-login').disabled = false;
             throw new Error(e);
         }
@@ -42,7 +45,7 @@ class AuthService {
      * @return {Promise}
      */
     getRequestToken() {
-        helper.showMessage(`${chrome.i18n.getMessage('AUTHENTICATING')}...`, true, false, false);
+        helpers.showMessage(`${chrome.i18n.getMessage('AUTHENTICATING')}...`, true, false, false);
 
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,
@@ -50,7 +53,7 @@ class AuthService {
         });
 
         return new Promise((resolve, reject) => {
-            let code = Helper.makeFetch(API.url_request, this._fetchData)
+            let code = helpers.makeFetch(API.url_request, this._fetchData)
                 .then(response => response.json())
                 .then(response => {
                     return response;
@@ -79,7 +82,7 @@ class AuthService {
         return new Promise((resolve, reject) => {
             chrome.identity.launchWebAuthFlow(options, () => {
                 if (chrome.runtime.lastError) {
-                    helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+                    helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                     reject(chrome.runtime.lastError.message);
                 }
 
@@ -102,12 +105,12 @@ class AuthService {
         });
 
         return new Promise((resolve, reject) => {
-            let user = Helper.makeFetch(API.url_authorize, this._fetchData)
+            let user = helpers.makeFetch(API.url_authorize, this._fetchData)
                 .then(response => response.json())
                 .then(response => {
                     this.setToken(response.access_token);
 
-                    Helper.setToStorage('username', response.username);
+                    helpers.setToStorage('username', response.username);
 
                     return response;
                 })
@@ -126,7 +129,7 @@ class AuthService {
      * @return {String} Token.
      */
     getToken() {
-        return Helper.getFromStorage('token') ? Helper.getFromStorage('token') : false;
+        return helpers.getFromStorage('token') ? helpers.getFromStorage('token') : false;
     }
 
     /**
@@ -137,7 +140,7 @@ class AuthService {
      * @return {void}
      */
     setToken(token) {
-        Helper.setToStorage('token', token);
+        helpers.setToStorage('token', token);
     }
 
     /**
@@ -152,3 +155,4 @@ class AuthService {
 }
 
 const authService = new AuthService();
+export default authService;

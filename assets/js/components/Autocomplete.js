@@ -1,3 +1,5 @@
+import * as helpers from '../utils/helpers.js';
+
 class Autocomplete {
     constructor(input, searchArray, componentClass) {
         this.input = document.querySelector(input);
@@ -75,9 +77,9 @@ class Autocomplete {
     }
 
     show(foundArray) {
-        Helper.clearChildren(this.autocompleteList);
+        helpers.clearChildren(this.autocompleteList);
         this.renderWrapper();
-        Helper.addClass(this.autocomplete, 'is-open');
+        helpers.addClass(this.autocomplete, 'is-open');
 
         for (const item of foundArray) {
             this.renderItem(item);
@@ -86,7 +88,7 @@ class Autocomplete {
 
     hide() {
         if (this.autocomplete) {
-            Helper.removeClass(this.autocomplete, 'is-open');
+            helpers.removeClass(this.autocomplete, 'is-open');
         }
     }
 
@@ -99,32 +101,32 @@ class Autocomplete {
             return;
         }
 
-        const element = Helper.createNode('div');
+        const element = helpers.createNode('div');
         element.setAttribute('class', this.componentClass);
-        Helper.append(this.input.parentNode, element);
+        helpers.append(this.input.parentNode, element);
 
         this.autocomplete = this.input.parentNode.querySelector(`.${this.componentClass}`);
 
-        const ulElement = Helper.createNode('ul');
+        const ulElement = helpers.createNode('ul');
         ulElement.setAttribute('class', `${this.componentClass}__list`);
-        Helper.append(this.autocomplete, ulElement);
+        helpers.append(this.autocomplete, ulElement);
 
         this.autocompleteList = ulElement;
     }
 
     renderItem(item) {
-        const listElement = Helper.createNode('li');
-        const linkElement = Helper.createNode('a');
-        const tagNode = Helper.createTextNode(item);
+        const listElement = helpers.createNode('li');
+        const linkElement = helpers.createNode('a');
+        const tagNode = helpers.createTextNode(item);
 
         listElement.setAttribute('class', 'autocomplete__item');
         linkElement.setAttribute('href', `#${item}`);
         linkElement.setAttribute('class', 'autocomplete__link js-autocompleteLink');
         linkElement.setAttribute('title', item);
 
-        Helper.append(linkElement, tagNode);
-        Helper.append(listElement, linkElement);
-        Helper.append(this.autocompleteList, listElement);
+        helpers.append(linkElement, tagNode);
+        helpers.append(listElement, linkElement);
+        helpers.append(this.autocompleteList, listElement);
     }
 
     setValue(e) {
@@ -152,3 +154,9 @@ class Autocomplete {
         this.remove();
     }
 }
+
+const autocomplete = new Autocomplete(
+    '#js-tagsInput',
+    JSON.parse(helpers.getFromStorage('tags')),
+);
+export default autocomplete;

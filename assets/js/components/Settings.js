@@ -1,3 +1,8 @@
+import * as helpers from '../utils/helpers.js';
+import * as globals from '../utils/globals.js';
+import { selector } from './index.js';
+import pocket from '../App.js';
+
 class Settings {
     /**
      * @constructor
@@ -55,7 +60,7 @@ class Settings {
      * @return {void}
      */
     setDefaultPage(page = 'list') {
-        Helper.setToStorage('defaultPage', page);
+        helpers.setToStorage('defaultPage', page);
     }
 
     /**
@@ -65,7 +70,7 @@ class Settings {
      * @return {String | null}
      */
     getDefaultPage() {
-        return Helper.getFromStorage('defaultPage') || PAGES[0];
+        return helpers.getFromStorage('defaultPage') || globals.PAGES[0];
     }
 
     /**
@@ -75,7 +80,7 @@ class Settings {
      * @return {String | null}
      */
     getTheme() {
-        return Helper.getFromStorage('theme');
+        return helpers.getFromStorage('theme');
     }
 
     /**
@@ -85,7 +90,7 @@ class Settings {
      * @return {String | null}
      */
     getOrder() {
-        return Helper.getFromStorage('order');
+        return helpers.getFromStorage('order');
     }
 
     /**
@@ -95,7 +100,7 @@ class Settings {
      * @return {String | null}
      */
     getUpdateInterval() {
-        return Helper.getFromStorage('updateInterval') || UPDATE_INTERVALS[0];
+        return helpers.getFromStorage('updateInterval') || globals.UPDATE_INTERVALS[0];
     }
 
     /**
@@ -107,8 +112,8 @@ class Settings {
     loadTheme() {
         const theme = this.getTheme();
 
-        if (theme && THEMES.includes(theme)) {
-            Helper.addClass(document.body, theme);
+        if (theme && globals.THEMES.includes(theme)) {
+            helpers.addClass(document.body, theme);
 
             const colorSelector = [...document.querySelectorAll('[name=selector-color]')];
             for (const selector of colorSelector) {
@@ -128,7 +133,7 @@ class Settings {
     loadDefaultPage() {
         let defaultPage = this.getDefaultPage();
 
-        if (defaultPage !== 'list' && !PAGES.includes(defaultPage)) {
+        if (defaultPage !== 'list' && !globals.PAGES.includes(defaultPage)) {
             defaultPage = 'list';
             this.setDefaultPage(defaultPage);
         }
@@ -220,9 +225,9 @@ class Settings {
             case 'selector-theme':
                 const value = e.detail.value.toString();
 
-                if (THEMES.includes(value)) {
-                    document.body.classList.remove(Helper.getFromStorage('theme'));
-                    Helper.setToStorage('theme', value);
+                if (globals.THEMES.includes(value)) {
+                    document.body.classList.remove(helpers.getFromStorage('theme'));
+                    helpers.setToStorage('theme', value);
                     document.body.classList.add(value);
 
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
@@ -231,7 +236,7 @@ class Settings {
             case 'selector-page':
                 const page = e.detail.value.toString();
 
-                if (PAGES.includes(page)) {
+                if (globals.PAGES.includes(page)) {
                     this.setDefaultPage(page);
 
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
@@ -241,15 +246,15 @@ class Settings {
                 const order = e.detail.value.toString();
 
                 if (order === 'asc' || order === 'desc') {
-                    Helper.setToStorage('order', order);
+                    helpers.setToStorage('order', order);
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
             case 'selector-update-interval':
                 const interval = e.detail.value.toString();
 
-                if (UPDATE_INTERVALS.includes(interval)) {
-                    Helper.setToStorage('updateInterval', interval);
+                if (globals.UPDATE_INTERVALS.includes(interval)) {
+                    helpers.setToStorage('updateInterval', interval);
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
@@ -288,7 +293,7 @@ class Settings {
 
         if (form.checkValidity()) {
             e.preventDefault();
-            helper.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
+            helpers.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 
             if (pocket.getActivePage() === 'list') {
                 search.reset(true);
@@ -313,13 +318,13 @@ class Settings {
      */
     isTimeToUpdate() {
         let isTime = false;
-        const timeDifference = Helper.calcTimeDifference(
-            Helper.getCurrentUNIX(),
-            Helper.getFromStorage(`${this.getDefaultPage()}Since`),
+        const timeDifference = helpers.calcTimeDifference(
+            helpers.getCurrentUNIX(),
+            helpers.getFromStorage(`${this.getDefaultPage()}Since`),
         );
 
         if (timeDifference >= this.getUpdateInterval()) {
-            Helper.setToStorage(`${this.getDefaultPage()}Since`, Helper.getCurrentUNIX());
+            helpers.setToStorage(`${this.getDefaultPage()}Since`, helpers.getCurrentUNIX());
             isTime = true;
         }
         return isTime;
@@ -337,3 +342,4 @@ class Settings {
 }
 
 const settings = new Settings();
+export default settings;

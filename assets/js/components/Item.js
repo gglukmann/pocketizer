@@ -1,6 +1,10 @@
+import * as helpers from '../utils/helpers.js';
+import pocket from '../App.js';
+import { modal, tags, search } from './index.js';
+
 class Item {
     /**
-     * constructor
+     * @constructor
      */
     constructor() {
         this.timeout = false;
@@ -61,19 +65,19 @@ class Item {
      * @return {HTMLElement} - Created element.
      */
     create(element) {
-        const itemElement = Helper.createNode('li');
-        const contentElement = Helper.createNode('div');
-        const fakeLinkElement = Helper.createNode('a');
-        const favouriteElement = Helper.createNode('a');
-        const titleElement = Helper.createNode('div');
-        const timeAndTagsWrapperElement = Helper.createNode('div');
-        const tagLinkElement = Helper.createNode('a');
-        const timeElement = Helper.createNode('div');
-        const excerptElement = Helper.createNode('div');
-        const linkElement = Helper.createNode('a');
-        const readButtonElement = Helper.createNode('a');
-        const deleteButtonElement = Helper.createNode('a');
-        const pocketLinkElement = Helper.createNode('a');
+        const itemElement = helpers.createNode('li');
+        const contentElement = helpers.createNode('div');
+        const fakeLinkElement = helpers.createNode('a');
+        const favouriteElement = helpers.createNode('a');
+        const titleElement = helpers.createNode('div');
+        const timeAndTagsWrapperElement = helpers.createNode('div');
+        const tagLinkElement = helpers.createNode('a');
+        const timeElement = helpers.createNode('div');
+        const excerptElement = helpers.createNode('div');
+        const linkElement = helpers.createNode('a');
+        const readButtonElement = helpers.createNode('a');
+        const deleteButtonElement = helpers.createNode('a');
+        const pocketLinkElement = helpers.createNode('a');
 
         let link;
         if (element.resolved_url && element.resolved_url !== '') {
@@ -113,19 +117,19 @@ class Item {
             title = element.given_url;
         }
 
-        const titleTextNode = Helper.createTextNode(title);
+        const titleTextNode = helpers.createTextNode(title);
 
         titleElement.setAttribute('class', 'item__title js-itemTitle');
-        Helper.append(titleElement, titleTextNode);
+        helpers.append(titleElement, titleTextNode);
 
         // time and tags wrapper
         timeAndTagsWrapperElement.setAttribute('class', 'item__time-and-tags');
 
         //time
         if (element.time_added) {
-            let timeNode = Helper.createTextNode(Helper.timeConverter(element.time_added));
+            let timeNode = helpers.createTextNode(helpers.timeConverter(element.time_added));
             timeElement.setAttribute('title', chrome.i18n.getMessage('DATE_ADDED'));
-            Helper.append(timeElement, timeNode);
+            helpers.append(timeElement, timeNode);
         }
 
         // tags
@@ -150,11 +154,11 @@ class Item {
             'd',
             'M84.7,121.2c-20.1,0-36.4-16.3-36.4-36.4c0-20.1,16.3-36.5,36.5-36.5c20.1,0,36.4,16.3,36.4,36.4C121.2,104.9,104.9,121.3,84.7,121.2z M526.3,299.6c-1.6-2.4-3.4-4.7-5.6-6.9L260.2,32.3c-17-17-50.6-31.5-74.7-32.3L42.4,0C18.4-0.7-0.7,18.4,0,42.4l0,143.1c0.8,24.1,15.3,57.7,32.3,74.7l260.5,260.5c2.1,2.1,4.4,4,6.8,5.6c28.6,22.3,70.1,20.6,96.3-5.6l124.8-124.9C547,369.7,548.6,328.2,526.3,299.6z',
         );
-        Helper.append(svgElement, pathElement);
-        Helper.append(tagLinkElement, svgElement);
+        helpers.append(svgElement, pathElement);
+        helpers.append(tagLinkElement, svgElement);
 
-        Helper.append(timeAndTagsWrapperElement, timeElement);
-        Helper.append(timeAndTagsWrapperElement, tagLinkElement);
+        helpers.append(timeAndTagsWrapperElement, timeElement);
+        helpers.append(timeAndTagsWrapperElement, tagLinkElement);
 
         // excerpt or background image
         excerptElement.setAttribute('class', 'item__excerpt js-itemExcerpt');
@@ -164,8 +168,8 @@ class Item {
             excerptElement.dataset.src = element.image.src;
         } else {
             if (element.excerpt) {
-                let excerptNode = Helper.createTextNode(element.excerpt);
-                Helper.append(excerptElement, excerptNode);
+                let excerptNode = helpers.createTextNode(element.excerpt);
+                helpers.append(excerptElement, excerptNode);
             }
         }
 
@@ -175,11 +179,11 @@ class Item {
 
         switch (pocket.getActivePage()) {
             case 'list':
-                readNode = Helper.createTextNode(chrome.i18n.getMessage('MARK_READ'));
+                readNode = helpers.createTextNode(chrome.i18n.getMessage('MARK_READ'));
                 isRead = false;
                 break;
             case 'archive':
-                readNode = Helper.createTextNode(chrome.i18n.getMessage('MARK_UNREAD'));
+                readNode = helpers.createTextNode(chrome.i18n.getMessage('MARK_UNREAD'));
                 isRead = true;
                 break;
         }
@@ -195,47 +199,47 @@ class Item {
             'title',
             isRead ? chrome.i18n.getMessage('MARK_UNREAD') : chrome.i18n.getMessage('MARK_READ'),
         );
-        Helper.append(readButtonElement, readNode);
+        helpers.append(readButtonElement, readNode);
 
         // delete link
-        const deleteNode = Helper.createTextNode(chrome.i18n.getMessage('DELETE'));
+        const deleteNode = helpers.createTextNode(chrome.i18n.getMessage('DELETE'));
         deleteButtonElement.setAttribute('href', '#0');
         deleteButtonElement.setAttribute('class', 'item__link item__link--delete js-deleteButton');
         deleteButtonElement.setAttribute('data-id', element.item_id);
         deleteButtonElement.setAttribute('title', chrome.i18n.getMessage('DELETE'));
-        Helper.append(deleteButtonElement, deleteNode);
+        helpers.append(deleteButtonElement, deleteNode);
 
         // open in pocket link
-        const pocketLinkNode = Helper.createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
+        const pocketLinkNode = helpers.createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
         pocketLinkElement.setAttribute('href', 'https://getpocket.com/a/read/' + element.item_id);
         pocketLinkElement.setAttribute('class', 'item__link item__link--open-pocket');
         pocketLinkElement.setAttribute('title', chrome.i18n.getMessage('OPEN_IN_POCKET'));
-        Helper.append(pocketLinkElement, pocketLinkNode);
+        helpers.append(pocketLinkElement, pocketLinkNode);
 
         // domain link
         let domain = link.replace(/^(https?:|)\/\//, '');
         domain = domain.split('/')[0];
-        const linkNode = Helper.createTextNode(domain);
+        const linkNode = helpers.createTextNode(domain);
         linkElement.setAttribute('href', link);
         linkElement.setAttribute('class', 'item__link');
         linkElement.setAttribute('title', link);
-        Helper.append(linkElement, linkNode);
+        helpers.append(linkElement, linkNode);
 
         // item and item__content
         itemElement.setAttribute('class', 'item');
         contentElement.setAttribute('class', 'item__content');
-        Helper.append(itemElement, contentElement);
+        helpers.append(itemElement, contentElement);
 
         // append everything to item__content
-        Helper.append(contentElement, fakeLinkElement);
-        Helper.append(contentElement, favouriteElement);
-        Helper.append(contentElement, titleElement);
-        Helper.append(contentElement, timeAndTagsWrapperElement);
-        Helper.append(contentElement, excerptElement);
-        Helper.append(contentElement, linkElement);
-        Helper.append(contentElement, pocketLinkElement);
-        Helper.append(contentElement, readButtonElement);
-        Helper.append(contentElement, deleteButtonElement);
+        helpers.append(contentElement, fakeLinkElement);
+        helpers.append(contentElement, favouriteElement);
+        helpers.append(contentElement, titleElement);
+        helpers.append(contentElement, timeAndTagsWrapperElement);
+        helpers.append(contentElement, excerptElement);
+        helpers.append(contentElement, linkElement);
+        helpers.append(contentElement, pocketLinkElement);
+        helpers.append(contentElement, readButtonElement);
+        helpers.append(contentElement, deleteButtonElement);
 
         return itemElement;
     }
@@ -253,10 +257,10 @@ class Item {
         const listElement = document.querySelector(listSelector);
 
         if (doPrepend) {
-            return Helper.prepend(listElement, itemElement);
+            return helpers.prepend(listElement, itemElement);
         }
 
-        return Helper.append(listElement, itemElement);
+        return helpers.append(listElement, itemElement);
     }
 
     /**
@@ -270,19 +274,19 @@ class Item {
         apiService.add(data).then(response => {
             modal.close();
 
-            let array = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
-            array = Helper.prependArray(array, response.item);
-            Helper.setToStorage('listFromLocalStorage', JSON.stringify(array));
+            let array = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
+            array = helpers.prependArray(array, response.item);
+            helpers.setToStorage('listFromLocalStorage', JSON.stringify(array));
 
-            Helper.setToStorage(
+            helpers.setToStorage(
                 'listCount',
-                (parseInt(Helper.getFromStorage('listCount'), 10) + 1).toString(),
+                (parseInt(helpers.getFromStorage('listCount'), 10) + 1).toString(),
             );
             if (pocket.getActivePage() === 'list') {
-                document.querySelector('#js-count').innerText = Helper.getFromStorage('listCount');
+                document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
             }
 
-            helper.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
+            helpers.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
 
             if (pocket.getActivePage() === 'list') {
                 const createdItem = this.create(response.item);
@@ -388,10 +392,6 @@ class Item {
         const tagsFormElements = document.tagsForm.elements;
         const tagsItemIdInput = tagsFormElements.namedItem('tagsItemId');
         const tagsInput = tagsFormElements.namedItem('tags');
-        const autocomplete = new Autocomplete(
-            '#js-tagsInput',
-            JSON.parse(Helper.getFromStorage('tags')),
-        );
 
         tagsItemIdInput.value = e.target.dataset.id;
 
@@ -405,7 +405,6 @@ class Item {
             () => {
                 tagsItemIdInput.value = '';
                 tagsInput.value = '';
-                autocomplete.destroy();
             },
             { once: true },
         );
@@ -496,3 +495,4 @@ class Item {
 }
 
 const item = new Item();
+export default item;

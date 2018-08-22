@@ -1,3 +1,9 @@
+import __consumer_key from '../../../env.js';
+import { authService } from './index.js';
+import pocket from '../App.js';
+import * as helpers from '../utils/helpers.js';
+import * as globals from '../utils/globals.js';
+
 class ApiService {
     /**
      * @constructor
@@ -28,15 +34,15 @@ class ApiService {
 
         switch (pocket.getActivePage()) {
             case 'list':
-                if (Helper.getFromStorage('listSince')) {
-                    this._fetchData.body.since = Helper.getFromStorage('listSince');
+                if (helpers.getFromStorage('listSince')) {
+                    this._fetchData.body.since = helpers.getFromStorage('listSince');
                 } else {
                     state = 'unread';
                 }
                 break;
             case 'archive':
                 if (pocket.isArchiveLoaded()) {
-                    this._fetchData.body.since = Helper.getFromStorage('archiveSince');
+                    this._fetchData.body.since = helpers.getFromStorage('archiveSince');
                 } else {
                     state = 'archive';
                 }
@@ -60,11 +66,11 @@ class ApiService {
 
         this._fetchData.body = JSON.stringify(this._fetchData.body);
 
-        return await Helper.makeFetch(API.url_get, this._fetchData)
+        return await helpers.makeFetch(globals.API.url_get, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
-                helper.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
+                helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
             });
     }
 
@@ -82,11 +88,11 @@ class ApiService {
             actions: actions,
         });
 
-        return await Helper.makeFetch(API.url_send, this._fetchData)
+        return await helpers.makeFetch(globals.API.url_send, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
-                helper.showMessage(chrome.i18n.getMessage('ACTION'), false);
+                helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
             });
     }
 
@@ -104,13 +110,14 @@ class ApiService {
             url: data.url,
         });
 
-        return await Helper.makeFetch(API.url_add, this._fetchData)
+        return await helpers.makeFetch(globals.API.url_add, this._fetchData)
             .then(response => response.json())
             .catch(error => {
                 console.log(error);
-                helper.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
+                helpers.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
             });
     }
 }
 
 const apiService = new ApiService();
+export default apiService;

@@ -1,3 +1,5 @@
+import * as helpers from '../utils/helpers.js';
+
 class Modal {
     /**
      * @constructor
@@ -110,9 +112,9 @@ class Modal {
         const eventOpen = new Event('open.modal');
         document.dispatchEvent(eventOpen);
 
-        this.container = Helper.createNode('div');
+        this.container = helpers.createNode('div');
         this.container.setAttribute('class', 'modal-container');
-        this.inner = Helper.createNode('div');
+        this.inner = helpers.createNode('div');
         this.inner.setAttribute('class', 'modal-container__inner');
 
         if (!this.preventClose) {
@@ -123,16 +125,16 @@ class Modal {
             oldParent = this.element.parentNode.parentNode;
         }
 
-        Helper.append(this.inner, this.element);
-        Helper.append(this.container, this.inner);
-        Helper.append(document.body, this.container);
+        helpers.append(this.inner, this.element);
+        helpers.append(this.container, this.inner);
+        helpers.append(document.body, this.container);
 
         if (oldParent) {
             oldParent.remove();
         }
 
         this.container.classList.add('is-visible');
-        Helper.disableScroll(true);
+        helpers.disableScroll(true);
 
         const eventOpened = new Event('opened.modal');
         document.dispatchEvent(eventOpened);
@@ -161,7 +163,7 @@ class Modal {
     close() {
         if (this.container && this.container.classList.contains('is-visible')) {
             this.container.removeEventListener('click', this.containerClick, false);
-            Helper.enableScroll();
+            helpers.enableScroll();
             this.container.classList.remove('is-visible');
 
             const event = new Event('closed.modal');
@@ -182,3 +184,4 @@ class Modal {
 }
 
 const modal = new Modal();
+export default modal;

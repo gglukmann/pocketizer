@@ -1,3 +1,6 @@
+import * as helpers from '../utils/helpers.js';
+import { search } from './index.js';
+
 class Tags {
     constructor() {
         this.tagClicks = this.handleTagClicks.bind(this);
@@ -83,7 +86,7 @@ class Tags {
      */
     showTooltip() {
         const tagsTooltip = document.querySelector('#js-tagsTooltip');
-        return Helper.addClass(tagsTooltip, 'is-visible');
+        return helpers.addClass(tagsTooltip, 'is-visible');
     }
 
     /**
@@ -94,7 +97,7 @@ class Tags {
      */
     closeTooltip() {
         const tagsTooltip = document.querySelector('#js-tagsTooltip');
-        return Helper.removeClass(tagsTooltip, 'is-visible');
+        return helpers.removeClass(tagsTooltip, 'is-visible');
     }
 
     /**
@@ -126,18 +129,18 @@ class Tags {
      * @return {void}
      */
     renderTags() {
-        const tagsArray = JSON.parse(Helper.getFromStorage('tags'));
+        const tagsArray = JSON.parse(helpers.getFromStorage('tags'));
 
         if (tagsArray === null || !tagsArray.length) {
             return;
         }
 
-        Helper.show(document.querySelector('#js-tags'), true);
+        helpers.show(document.querySelector('#js-tags'), true);
         const tagsElement = document.querySelector('#js-tagsList');
         const tagsTooltipElement = document.querySelector('#js-tagsTooltipList');
 
-        Helper.clearChildren(tagsElement);
-        Helper.clearChildren(tagsTooltipElement);
+        helpers.clearChildren(tagsElement);
+        helpers.clearChildren(tagsTooltipElement);
 
         for (const tag of tagsArray) {
             const tagElement = this.createTag(tag);
@@ -153,17 +156,17 @@ class Tags {
      * @return {HTMLElement}
      */
     createTag(tag) {
-        const listElement = Helper.createNode('li');
-        const linkElement = Helper.createNode('a');
-        const tagNode = Helper.createTextNode(tag);
+        const listElement = helpers.createNode('li');
+        const linkElement = helpers.createNode('a');
+        const tagNode = helpers.createTextNode(tag);
 
         listElement.setAttribute('class', 'tags__item');
         linkElement.setAttribute('href', `#${tag}`);
         linkElement.setAttribute('class', 'btn btn--link tags__link js-tagsLink');
         linkElement.setAttribute('title', `${chrome.i18n.getMessage('TAG')}: ${tag}`);
 
-        Helper.append(linkElement, tagNode);
-        Helper.append(listElement, linkElement);
+        helpers.append(linkElement, tagNode);
+        helpers.append(listElement, linkElement);
 
         return listElement;
     }
@@ -179,10 +182,10 @@ class Tags {
      */
     renderTag(tagsElement, tagElement, tagsTooltipElement) {
         if (tagsElement.children.length < 5) {
-            return Helper.append(tagsElement, tagElement);
+            return helpers.append(tagsElement, tagElement);
         }
 
-        return Helper.append(tagsTooltipElement, tagElement);
+        return helpers.append(tagsTooltipElement, tagElement);
     }
 
     /**
@@ -194,13 +197,13 @@ class Tags {
      * @return {void}
      */
     addTag(tag, isFullSync) {
-        const tagsArray = isFullSync ? [] : JSON.parse(Helper.getFromStorage('tags')) || [];
+        const tagsArray = isFullSync ? [] : JSON.parse(helpers.getFromStorage('tags')) || [];
 
         if (!tagsArray.includes(tag)) {
             tagsArray.push(tag);
             tagsArray.sort();
 
-            Helper.setToStorage('tags', JSON.stringify(tagsArray));
+            helpers.setToStorage('tags', JSON.stringify(tagsArray));
         }
     }
 
@@ -216,3 +219,4 @@ class Tags {
 }
 
 const tags = new Tags();
+export default tags;

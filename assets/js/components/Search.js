@@ -1,3 +1,7 @@
+import * as helpers from '../utils/helpers.js';
+import pocket from '../App.js';
+import { item, lazyload } from './index.js';
+
 class Search {
     /**
      * constructor
@@ -28,9 +32,9 @@ class Search {
      * @return {void}
      */
     show() {
-        Helper.addClass(document.querySelector('#js-searchForm'), 'is-active');
+        helpers.addClass(document.querySelector('#js-searchForm'), 'is-active');
         document.querySelector('#js-searchInput').focus();
-        Helper.addClass(document.querySelector('#js-searchButton'), 'is-disabled');
+        helpers.addClass(document.querySelector('#js-searchButton'), 'is-disabled');
     }
 
     /**
@@ -106,12 +110,12 @@ class Search {
      * @return {void}
      */
     hide(hideMessage) {
-        Helper.removeClass(document.querySelector('#js-searchForm'), 'is-active');
-        Helper.removeClass(document.querySelector('#js-searchButton'), 'is-disabled');
-        Helper.show(document.querySelector('#js-orderButton'), true);
+        helpers.removeClass(document.querySelector('#js-searchForm'), 'is-active');
+        helpers.removeClass(document.querySelector('#js-searchButton'), 'is-disabled');
+        helpers.show(document.querySelector('#js-orderButton'), true);
 
         if (hideMessage) {
-            Helper.hide(document.querySelector('#js-results-message'));
+            helpers.hide(document.querySelector('#js-results-message'));
         }
     }
 
@@ -124,7 +128,7 @@ class Search {
      */
     reset(doHide) {
         document.querySelector('#js-searchInput').value = '';
-        Helper.hide(document.querySelector('#js-results-message'));
+        helpers.hide(document.querySelector('#js-results-message'));
 
         if (this.state.hasSearched) {
             pocket.render();
@@ -153,10 +157,10 @@ class Search {
 
         this.state.hasSearched = true;
 
-        Helper.hide(document.querySelector('#js-orderButton'));
-        Helper.show(document.querySelector('#js-results-message'));
+        helpers.hide(document.querySelector('#js-orderButton'));
+        helpers.show(document.querySelector('#js-results-message'));
         document.querySelector('#js-searchValue').innerText = value;
-        Helper.clearChildren(document.querySelector('#js-list'));
+        helpers.clearChildren(document.querySelector('#js-list'));
 
         if (isTag) {
             document.querySelector('#js-searchInput').value = value;
@@ -170,7 +174,7 @@ class Search {
 
         value = value.toLowerCase();
 
-        let array = JSON.parse(Helper.getFromStorage(`${pocket.getActivePage()}FromLocalStorage`));
+        let array = JSON.parse(helpers.getFromStorage(`${pocket.getActivePage()}FromLocalStorage`));
         let count = 0;
 
         if (isTag) {
@@ -232,14 +236,14 @@ class Search {
             resultsStringElement.innerText =
                 chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
-            Helper.hide(searchCountElement);
+            helpers.hide(searchCountElement);
         } else {
             resultsStringElement.innerText =
                 (count === 1
                     ? chrome.i18n.getMessage('RESULT_MESSAGE')
                     : chrome.i18n.getMessage('RESULTS_MESSAGE')) + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
-            Helper.show(searchCountElement, true);
+            helpers.show(searchCountElement, true);
             searchCountElement.innerText = count;
         }
 
@@ -261,3 +265,4 @@ class Search {
 }
 
 const search = new Search();
+export default search;

@@ -1,4 +1,18 @@
-class Pocket {
+import * as helpers from './utils/helpers.js';
+import * as globals from './utils/globals.js';
+import {
+    settings,
+    tags,
+    item,
+    lazyload,
+    header,
+    search,
+    modal,
+    selector,
+} from './components/index.js';
+import { apiService, authService } from './services/index.js';
+
+class App {
     /**
      * @constructor
      */
@@ -14,7 +28,7 @@ class Pocket {
 
         this.fullSync = false;
         this.orderItemsAsc =
-            Helper.getFromStorage('order') && Helper.getFromStorage('order') === 'desc'
+            helpers.getFromStorage('order') && helpers.getFromStorage('order') === 'desc'
                 ? false
                 : true;
 
@@ -31,13 +45,13 @@ class Pocket {
      */
     init() {
         this.handleInternetConnection();
-        helper.localizeHtml();
+        helpers.localizeHtml();
         settings.loadTheme(); // this is here for faster load time
 
         if (authService.isLoggedIn()) {
             this.startSync();
         } else {
-            Helper.show(document.querySelector('#js-default-message'));
+            helpers.show(document.querySelector('#js-default-message'));
             this.bindLoggedOutClickEvents();
         }
     }
@@ -88,15 +102,15 @@ class Pocket {
      * @return {void}
      */
     toggleOfflineTheme() {
-        const isOnline = Helper.checkInternetConnection();
+        const isOnline = helpers.checkInternetConnection();
 
         if (isOnline) {
-            Helper.removeClass(document.body, 'theme-offline');
-            Helper.hide(document.querySelector('#js-offlineStatus'));
+            helpers.removeClass(document.body, 'theme-offline');
+            helpers.hide(document.querySelector('#js-offlineStatus'));
             document.querySelector('#js-login').disabled = false;
         } else {
-            Helper.addClass(document.body, 'theme-offline');
-            Helper.show(document.querySelector('#js-offlineStatus'), true);
+            helpers.addClass(document.body, 'theme-offline');
+            helpers.show(document.querySelector('#js-offlineStatus'), true);
             document.querySelector('#js-login').disabled = true;
         }
     }
@@ -127,15 +141,15 @@ class Pocket {
 
         switch (this.getActivePage()) {
             case 'list':
-                if (!Helper.getFromStorage('listSince')) {
+                if (!helpers.getFromStorage('listSince')) {
                     isFirstLoad = true;
                 }
                 break;
             case 'archive':
                 // TODO: Remove old list name sometime in the future
-                if (Helper.getFromStorage('archiveListFromLocalStorage')) {
+                if (helpers.getFromStorage('archiveListFromLocalStorage')) {
                     isFirstLoad = true;
-                    Helper.removeFromStorage('archiveListFromLocalStorage');
+                    helpers.removeFromStorage('archiveListFromLocalStorage');
                 } else {
                     if (!this.isArchiveLoaded()) {
                         isFirstLoad = true;
@@ -151,9 +165,9 @@ class Pocket {
         if (isFirstLoad || this.fullSync) {
             array.sort((x, y) => x.sort_id - y.sort_id);
 
-            Helper.setToStorage(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
-            Helper.setToStorage(`${this.getActivePage()}Count`, array.length.toString());
-            Helper.setToStorage(`${this.getActivePage()}Since`, response.since);
+            helpers.setToStorage(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
+            helpers.setToStorage(`${this.getActivePage()}Count`, array.length.toString());
+            helpers.setToStorage(`${this.getActivePage()}Since`, response.since);
 
             tags.createTags(array, true);
 
@@ -173,7 +187,7 @@ class Pocket {
                 switch (newItem.status) {
                     // add to unread list
                     case '0':
-                        newArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
+                        newArray = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
 
                         // delete old item, if it is added from this extension
                         for (const i in newArray) {
@@ -182,69 +196,71 @@ class Pocket {
                             }
                         }
 
-                        newArray = Helper.prependArray(newArray, newItem);
+                        newArray = helpers.prependArray(newArray, newItem);
 
                         tags.createTags(newArray);
 
-                        Helper.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
-                        Helper.setToStorage('listCount', newArray.length.toString());
+                        helpers.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
+                        helpers.setToStorage('listCount', newArray.length.toString());
                         break;
                     // add to archive list
                     case '1':
                         // delete old item, if it is added to archive from somewhere else and is in unread list in extension
-                        newArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
+                        newArray = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
                         newArray = newArray.filter(item => item.item_id !== newItem.item_id);
 
-                        Helper.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
-                        Helper.setToStorage('listCount', newArray.length);
+                        helpers.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
+                        helpers.setToStorage('listCount', newArray.length);
 
                         // only add to localstorage archive list if archive is loaded
                         if (this.isArchiveLoaded()) {
-                            newArray = JSON.parse(Helper.getFromStorage('archiveFromLocalStorage'));
-                            newArray = Helper.prependArray(newArray, newItem);
+                            newArray = JSON.parse(
+                                helpers.getFromStorage('archiveFromLocalStorage'),
+                            );
+                            newArray = helpers.prependArray(newArray, newItem);
 
-                            Helper.setToStorage(
+                            helpers.setToStorage(
                                 'archiveFromLocalStorage',
                                 JSON.stringify(newArray),
                             );
-                            Helper.setToStorage('archiveCount', newArray.length);
+                            helpers.setToStorage('archiveCount', newArray.length);
                         }
                         break;
                     // delete from unread or archive list
                     case '2':
-                        let listArray = JSON.parse(Helper.getFromStorage('listFromLocalStorage'));
+                        let listArray = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
 
                         listArray = listArray.filter(item => item.item_id !== newItem.item_id);
 
-                        Helper.setToStorage('listFromLocalStorage', JSON.stringify(listArray));
-                        Helper.setToStorage('listCount', listArray.length);
+                        helpers.setToStorage('listFromLocalStorage', JSON.stringify(listArray));
+                        helpers.setToStorage('listCount', listArray.length);
 
                         if (this.isArchiveLoaded()) {
                             let archiveArray = JSON.parse(
-                                Helper.getFromStorage('archiveFromLocalStorage'),
+                                helpers.getFromStorage('archiveFromLocalStorage'),
                             );
                             archiveArray = archiveArray.filter(
                                 item => item.item_id !== newItem.item_id,
                             );
 
-                            Helper.setToStorage(
+                            helpers.setToStorage(
                                 'archiveFromLocalStorage',
                                 JSON.stringify(archiveArray),
                             );
-                            Helper.setToStorage('archiveCount', archiveArray.length);
+                            helpers.setToStorage('archiveCount', archiveArray.length);
                         }
                         break;
                 }
             }
 
-            Helper.setToStorage('listSince', response.since);
+            helpers.setToStorage('listSince', response.since);
             if (this.isArchiveLoaded()) {
-                Helper.setToStorage('archiveSince', response.since);
+                helpers.setToStorage('archiveSince', response.since);
             }
         }
 
         this.render();
-        helper.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
+        helpers.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
     }
 
     /**
@@ -254,20 +270,20 @@ class Pocket {
      * @return {void}
      */
     render() {
-        let array = JSON.parse(Helper.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
+        let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
 
         this.items_shown = this.load_count;
 
-        document.querySelector('#js-count').innerText = Helper.getFromStorage(
+        document.querySelector('#js-count').innerText = helpers.getFromStorage(
             `${this.getActivePage()}Count`,
         );
-        Helper.clearChildren(document.querySelector('#js-list'));
+        helpers.clearChildren(document.querySelector('#js-list'));
 
         if (array === null) {
             this.getContent();
         } else if (array.length === 0) {
-            Helper.show(document.querySelector('#js-empty-list-message'));
-            Helper.hide(document.querySelector('#js-orderButton'));
+            helpers.show(document.querySelector('#js-empty-list-message'));
+            helpers.hide(document.querySelector('#js-orderButton'));
         } else {
             tags.createTags(array);
 
@@ -276,8 +292,8 @@ class Pocket {
             }
 
             array = array.filter((item, index) => index < this.load_count);
-            Helper.hide(document.querySelector('#js-empty-list-message'));
-            Helper.show(document.querySelector('#js-orderButton'), true);
+            helpers.hide(document.querySelector('#js-empty-list-message'));
+            helpers.show(document.querySelector('#js-orderButton'), true);
 
             const domItemsArray = this.createItems(array);
             this.createSentinel();
@@ -315,12 +331,12 @@ class Pocket {
      */
     createSentinel() {
         const list = document.querySelector('#js-list');
-        let element = Helper.createNode('div');
+        let element = helpers.createNode('div');
 
         element.setAttribute('id', 'js-sentinel');
         element.setAttribute('class', 'sentinel');
 
-        Helper.append(list, element);
+        helpers.append(list, element);
     }
 
     /**
@@ -339,7 +355,7 @@ class Pocket {
             }
 
             this.infiniteScroll();
-            Helper.append(list, sentinel);
+            helpers.append(list, sentinel);
         });
 
         io.observe(sentinel);
@@ -352,8 +368,8 @@ class Pocket {
      * @return {void}
      */
     infiniteScroll() {
-        helper.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
-        let array = JSON.parse(Helper.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
+        helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
+        let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
 
         if (!this.orderItemsAsc) {
             array = array.reverse();
@@ -366,9 +382,9 @@ class Pocket {
         this.items_shown += this.load_count;
 
         if (array.length === 0) {
-            helper.showMessage(chrome.i18n.getMessage('EVERYTHING_LOADED'), true, false, true);
+            helpers.showMessage(chrome.i18n.getMessage('EVERYTHING_LOADED'), true, false, true);
         } else {
-            helper.showMessage(chrome.i18n.getMessage('LOADING'));
+            helpers.showMessage(chrome.i18n.getMessage('LOADING'));
         }
 
         const domItemsArray = this.createItems(array);
@@ -383,7 +399,7 @@ class Pocket {
      * @return {Boolean} If is loaded.
      */
     isArchiveLoaded() {
-        return !!Helper.getFromStorage('archiveSince');
+        return !!helpers.getFromStorage('archiveSince');
     }
 
     /**
@@ -487,7 +503,7 @@ class Pocket {
             switch (this.getActivePage()) {
                 case 'archive':
                     action = 'readd';
-                    helper.showMessage(
+                    helpers.showMessage(
                         `${chrome.i18n.getMessage('UNARCHIVING')}...`,
                         true,
                         false,
@@ -496,7 +512,7 @@ class Pocket {
                     break;
                 case 'list':
                     action = 'archive';
-                    helper.showMessage(
+                    helpers.showMessage(
                         `${chrome.i18n.getMessage('ARCHIVING')}...`,
                         true,
                         false,
@@ -506,20 +522,20 @@ class Pocket {
             }
         } else if (state === 'favourite') {
             action = isFavourited === true ? 'unfavorite' : 'favorite';
-            helper.showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
+            helpers.showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
         } else if (state === 'delete') {
             action = 'delete';
-            helper.showMessage(`${chrome.i18n.getMessage('DELETING')}...`, true, false, false);
+            helpers.showMessage(`${chrome.i18n.getMessage('DELETING')}...`, true, false, false);
         } else if (state === 'tags') {
             action = 'tags_replace';
-            helper.showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
+            helpers.showMessage(`${chrome.i18n.getMessage('PROCESSING')}...`, true, false, false);
         }
 
         const actions = [
             {
                 action: action,
                 item_id: id,
-                time: Helper.getCurrentUNIX(),
+                time: helpers.getCurrentUNIX(),
             },
         ];
 
@@ -536,7 +552,7 @@ class Pocket {
             })
             .catch(error => {
                 console.log(error);
-                helper.showMessage(chrome.i18n.getMessage('ACTION'), false);
+                helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
             });
     }
 
@@ -553,7 +569,7 @@ class Pocket {
      * @return {void}
      */
     handleActionResponse(e, state, id, isFavourited, response, tags) {
-        let array = JSON.parse(Helper.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
+        let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
 
         for (const i in array) {
             if (array[i].item_id === id) {
@@ -563,17 +579,18 @@ class Pocket {
                         array.splice(i, 1);
 
                         const itemNode = e.target.parentNode.parentNode;
-                        Helper.addClass(itemNode, 'move-up');
+                        helpers.addClass(itemNode, 'move-up');
                         setTimeout(() => {
                             itemNode.remove();
                         }, 500);
 
-                        Helper.setToStorage(
+                        helpers.setToStorage(
                             `${this.getActivePage()}Count`,
-                            parseInt(Helper.getFromStorage(`${this.getActivePage()}Count`), 10) - 1,
+                            parseInt(helpers.getFromStorage(`${this.getActivePage()}Count`), 10) -
+                                1,
                         );
 
-                        document.querySelector('#js-count').innerText = Helper.getFromStorage(
+                        document.querySelector('#js-count').innerText = helpers.getFromStorage(
                             `${this.getActivePage()}Count`,
                         );
                         break;
@@ -594,21 +611,21 @@ class Pocket {
             }
         }
 
-        Helper.setToStorage(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
+        helpers.setToStorage(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
 
         if (state === 'read') {
             switch (this.getActivePage()) {
                 case 'list':
-                    helper.showMessage(chrome.i18n.getMessage('ARCHIVING'));
+                    helpers.showMessage(chrome.i18n.getMessage('ARCHIVING'));
                     break;
                 case 'archive':
-                    helper.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
+                    helpers.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
                     break;
             }
         } else if (state === 'favourite' || state === 'tags') {
-            helper.showMessage(chrome.i18n.getMessage('PROCESSING'));
+            helpers.showMessage(chrome.i18n.getMessage('PROCESSING'));
         } else if (state === 'delete') {
-            helper.showMessage(chrome.i18n.getMessage('DELETING'));
+            helpers.showMessage(chrome.i18n.getMessage('DELETING'));
         }
     }
 
@@ -622,23 +639,23 @@ class Pocket {
     changePage(page, isPageLoad) {
         page = page ? page : 'list';
 
-        if (!PAGES.includes(page)) {
+        if (!globals.PAGES.includes(page)) {
             return;
         }
 
         header.changeMenuActiveState(page);
 
         this.items_shown = 0;
-        Helper.clearChildren(document.querySelector('#js-list'));
+        helpers.clearChildren(document.querySelector('#js-list'));
         search.hide(true);
 
-        Helper.show(document.querySelector('#js-count-wrapper'), true);
-        Helper.show(document.querySelector('#js-searchButton'), true);
-        Helper.show(document.querySelector('#js-fullSync'), true);
+        helpers.show(document.querySelector('#js-count-wrapper'), true);
+        helpers.show(document.querySelector('#js-searchButton'), true);
+        helpers.show(document.querySelector('#js-fullSync'), true);
 
         switch (page) {
             case 'list':
-                helper.showMessage(
+                helpers.showMessage(
                     `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
                     true,
                     false,
@@ -646,11 +663,11 @@ class Pocket {
                 );
                 this.setActivePage('list');
 
-                document.querySelector('#js-count').innerText = Helper.getFromStorage('listCount');
+                document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
                 this.orderItemsAsc =
-                    !Helper.getFromStorage('order') || Helper.getFromStorage('order') === 'asc'
+                    !helpers.getFromStorage('order') || helpers.getFromStorage('order') === 'asc'
                         ? true
                         : false;
 
@@ -660,7 +677,7 @@ class Pocket {
             case 'archive':
                 this.setActivePage('archive');
 
-                document.querySelector('#js-count').innerText = Helper.getFromStorage(
+                document.querySelector('#js-count').innerText = helpers.getFromStorage(
                     'archiveCount',
                 );
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
@@ -672,7 +689,7 @@ class Pocket {
                 }
 
                 if (isPageLoad && settings.isTimeToUpdate()) {
-                    helper.showMessage(
+                    helpers.showMessage(
                         `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
                         true,
                         false,
@@ -680,7 +697,7 @@ class Pocket {
                     );
                     this.getContent();
                 } else if (!isPageLoad) {
-                    helper.showMessage(
+                    helpers.showMessage(
                         `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
                         true,
                         false,
@@ -704,33 +721,33 @@ class Pocket {
      */
     toggleLoggedInContent(isShown = false) {
         if (isShown) {
-            Helper.hide(document.querySelector('#js-default-message'));
-            Helper.show(document.querySelector('#js-count-wrapper'), true);
-            Helper.show(document.querySelector('#js-menu'), true);
-            Helper.show(document.querySelector('#js-list'), true);
-            Helper.show(document.querySelector('#js-username'), true);
-            Helper.show(document.querySelector('#js-logout'), true);
-            Helper.show(document.querySelector('#js-addNewItemButton'), true);
-            Helper.show(document.querySelector('#js-searchButton'), true);
-            Helper.show(document.querySelector('#js-settings'), true);
-            Helper.show(document.querySelector('#js-fullSync'), true);
-            Helper.show(document.querySelector('#js-orderButton'), true);
+            helpers.hide(document.querySelector('#js-default-message'));
+            helpers.show(document.querySelector('#js-count-wrapper'), true);
+            helpers.show(document.querySelector('#js-menu'), true);
+            helpers.show(document.querySelector('#js-list'), true);
+            helpers.show(document.querySelector('#js-username'), true);
+            helpers.show(document.querySelector('#js-logout'), true);
+            helpers.show(document.querySelector('#js-addNewItemButton'), true);
+            helpers.show(document.querySelector('#js-searchButton'), true);
+            helpers.show(document.querySelector('#js-settings'), true);
+            helpers.show(document.querySelector('#js-fullSync'), true);
+            helpers.show(document.querySelector('#js-orderButton'), true);
         } else {
-            Helper.show(document.querySelector('#js-default-message'));
+            helpers.show(document.querySelector('#js-default-message'));
             document.querySelector('#js-count').innerText = '0';
-            Helper.clearChildren(document.querySelector('#js-list'));
-            Helper.hide(document.querySelector('#js-empty-list-message'));
-            Helper.hide(document.querySelector('#js-list'));
-            Helper.hide(document.querySelector('#js-menu'));
-            Helper.hide(document.querySelector('#js-username'));
-            Helper.hide(document.querySelector('#js-logout'));
-            Helper.hide(document.querySelector('#js-count-wrapper'));
-            Helper.hide(document.querySelector('#js-addNewItemButton'));
-            Helper.hide(document.querySelector('#js-searchButton'));
-            Helper.hide(document.querySelector('#js-settings'));
-            Helper.hide(document.querySelector('#js-fullSync'));
-            Helper.hide(document.querySelector('#js-tags'));
-            Helper.hide(document.querySelector('#js-orderButton'));
+            helpers.clearChildren(document.querySelector('#js-list'));
+            helpers.hide(document.querySelector('#js-empty-list-message'));
+            helpers.hide(document.querySelector('#js-list'));
+            helpers.hide(document.querySelector('#js-menu'));
+            helpers.hide(document.querySelector('#js-username'));
+            helpers.hide(document.querySelector('#js-logout'));
+            helpers.hide(document.querySelector('#js-count-wrapper'));
+            helpers.hide(document.querySelector('#js-addNewItemButton'));
+            helpers.hide(document.querySelector('#js-searchButton'));
+            helpers.hide(document.querySelector('#js-settings'));
+            helpers.hide(document.querySelector('#js-fullSync'));
+            helpers.hide(document.querySelector('#js-tags'));
+            helpers.hide(document.querySelector('#js-orderButton'));
         }
     }
 
@@ -741,10 +758,10 @@ class Pocket {
      * @return {void}
      */
     loggedIn() {
-        document.querySelector('#js-username').innerText = Helper.getFromStorage('username');
+        document.querySelector('#js-username').innerText = helpers.getFromStorage('username');
         document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
-        helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+        helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
         this.toggleLoggedInContent(true);
 
@@ -782,8 +799,8 @@ class Pocket {
             settings.loadDefaultPage();
         }
 
-        if (Helper.getFromStorage('username')) {
-            document.querySelector('#js-username').innerText = Helper.getFromStorage('username');
+        if (helpers.getFromStorage('username')) {
+            document.querySelector('#js-username').innerText = helpers.getFromStorage('username');
         }
 
         this.bindLoggedInEvents();
@@ -800,7 +817,12 @@ class Pocket {
             (!settings.getDefaultPage() || settings.getDefaultPage() === 'list') &&
             settings.isTimeToUpdate()
         ) {
-            helper.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
+            helpers.showMessage(
+                `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
+                true,
+                false,
+                false,
+            );
             this.getContent();
         }
     }
@@ -814,7 +836,7 @@ class Pocket {
     startLogin() {
         authService.authenticate().then(response => {
             if (response.status !== 'authenticated') {
-                helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+                helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                 document.querySelector('#js-login').disabled = false;
 
                 this.logout();
@@ -822,7 +844,7 @@ class Pocket {
             }
 
             document.querySelector('#js-login').disabled = false;
-            helper.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
+            helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
             this.loggedIn();
         });
     }
@@ -834,7 +856,7 @@ class Pocket {
      * @return {void}
      */
     logout() {
-        helper.showMessage(`${chrome.i18n.getMessage('LOGGING_OUT')}...`, true, false, false);
+        helpers.showMessage(`${chrome.i18n.getMessage('LOGGING_OUT')}...`, true, false, false);
         localStorage.clear();
         this.setActivePage('list');
         header.changeMenuActiveState('list');
@@ -854,14 +876,11 @@ class Pocket {
         tags.destroy();
 
         this.toggleLoggedInContent(false);
-        Helper.removeClass(document.body, THEMES);
+        helpers.removeClass(document.body, THEMES);
 
-        helper.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
+        helpers.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }
 }
 
-const pocket = new Pocket();
-
-window.onload = () => {
-    pocket.init();
-};
+const pocket = new App();
+export default pocket;

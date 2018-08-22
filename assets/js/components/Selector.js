@@ -1,3 +1,5 @@
+import * as helpers from '../utils/helpers.js';
+
 class Selector {
     /**
      * constructor
@@ -69,7 +71,7 @@ class Selector {
      * @return {ActiveX.IXMLDOMNode}
      */
     createMessageNode(isSuccess, message) {
-        let element = Helper.createNode('div');
+        let element = helpers.createNode('div');
 
         element.setAttribute('class', 'selector__message');
 
@@ -79,9 +81,9 @@ class Selector {
             element.classList.add('selector__message--error');
         }
 
-        let messageNode = Helper.createTextNode(message);
+        let messageNode = helpers.createTextNode(message);
 
-        Helper.append(element, messageNode);
+        helpers.append(element, messageNode);
 
         return element;
     }
@@ -110,7 +112,7 @@ class Selector {
             messageNode.remove();
         }
 
-        Helper.append(component, messageNode);
+        helpers.append(component, messageNode);
 
         setTimeout(() => {
             messageNode.remove();
@@ -129,3 +131,4 @@ class Selector {
 }
 
 const selector = new Selector();
+export default selector;
