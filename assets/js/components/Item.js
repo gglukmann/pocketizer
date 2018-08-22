@@ -1,6 +1,7 @@
 import * as helpers from '../utils/helpers.js';
 import pocket from '../App.js';
 import { modal, tags, search } from './index.js';
+import { apiService } from '../services/index.js';
 
 class Item {
     /**

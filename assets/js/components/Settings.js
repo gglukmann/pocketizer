@@ -1,6 +1,6 @@
 import * as helpers from '../utils/helpers.js';
 import * as globals from '../utils/globals.js';
-import { selector } from './index.js';
+import { selector, search, item } from './index.js';
 import pocket from '../App.js';
 
 class Settings {
