@@ -1,5 +1,6 @@
 import __consumer_key from '../../../env.js';
 import * as helpers from '../utils/helpers.js';
+import * as globals from '../utils/globals.js';
 
 class AuthService {
     /**
@@ -49,11 +50,12 @@ class AuthService {
 
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,
-            redirect_uri: API.redirect_url,
+            redirect_uri: globals.API.redirect_url,
         });
 
         return new Promise((resolve, reject) => {
-            let code = helpers.makeFetch(API.url_request, this._fetchData)
+            let code = helpers
+                .makeFetch(globals.API.url_request, this._fetchData)
                 .then(response => response.json())
                 .then(response => {
                     return response;
@@ -75,7 +77,9 @@ class AuthService {
      */
     launchChromeWebAuthFlow(requestToken) {
         let options = {
-            url: `${API.url_auth}?request_token=${requestToken}&redirect_uri=${API.redirect_url}`,
+            url: `${globals.API.url_auth}?request_token=${requestToken}&redirect_uri=${
+                globals.API.redirect_url
+            }`,
             interactive: true,
         };
 
@@ -105,7 +109,8 @@ class AuthService {
         });
 
         return new Promise((resolve, reject) => {
-            let user = helpers.makeFetch(API.url_authorize, this._fetchData)
+            let user = helpers
+                .makeFetch(globals.API.url_authorize, this._fetchData)
                 .then(response => response.json())
                 .then(response => {
                     this.setToken(response.access_token);
