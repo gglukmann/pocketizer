@@ -324,9 +324,9 @@ class Settings {
         );
 
         if (timeDifference >= this.getUpdateInterval()) {
-            helpers.setToStorage(`${this.getDefaultPage()}Since`, helpers.getCurrentUNIX());
             isTime = true;
         }
+
         return isTime;
     }
 
