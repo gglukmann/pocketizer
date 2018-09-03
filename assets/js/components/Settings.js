@@ -115,7 +115,7 @@ class Settings {
         if (theme && globals.THEMES.includes(theme)) {
             helpers.addClass(document.body, theme);
 
-            const colorSelector = [...document.querySelectorAll('[name=selector-color]')];
+            const colorSelector = [...document.querySelectorAll('[name=selector-theme]')];
             for (const selector of colorSelector) {
                 if (selector.value === theme) {
                     selector.checked = true;
