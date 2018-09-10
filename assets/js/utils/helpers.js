@@ -93,7 +93,8 @@ export function localizeHtml() {
  */
 export async function makeFetch(url, options) {
     try {
-        return await window.fetch(url, options);
+        const response = await window.fetch(url, options);
+        return await response.json();
     } catch (e) {
         console.log(e);
         throw new Error(e);

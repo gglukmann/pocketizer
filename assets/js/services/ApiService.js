@@ -67,7 +67,6 @@ class ApiService {
         this._fetchData.body = JSON.stringify(this._fetchData.body);
 
         return await helpers.makeFetch(globals.API.url_get, this._fetchData)
-            .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
@@ -89,7 +88,6 @@ class ApiService {
         });
 
         return await helpers.makeFetch(globals.API.url_send, this._fetchData)
-            .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
@@ -111,7 +109,6 @@ class ApiService {
         });
 
         return await helpers.makeFetch(globals.API.url_add, this._fetchData)
-            .then(response => response.json())
             .catch(error => {
                 console.log(error);
                 helpers.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);

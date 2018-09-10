@@ -24,9 +24,9 @@ class AuthService {
      */
     async authenticate() {
         try {
-            let { code } = await this.getRequestToken();
+            const { code } = await this.getRequestToken();
             await this.launchChromeWebAuthFlow(code);
-            let { username } = await this.getAccessToken(code);
+            const { username } = await this.getAccessToken(code);
 
             return {
                 status: 'authenticated',
@@ -53,19 +53,7 @@ class AuthService {
             redirect_uri: globals.API.redirect_url,
         });
 
-        return new Promise((resolve, reject) => {
-            let code = helpers
-                .makeFetch(globals.API.url_request, this._fetchData)
-                .then(response => response.json())
-                .then(response => {
-                    return response;
-                })
-                .catch(error => {
-                    reject(error);
-                });
-
-            resolve(code);
-        });
+        return helpers.makeFetch(globals.API.url_request, this._fetchData);
     }
 
     /**
@@ -76,7 +64,7 @@ class AuthService {
      * @return {Promise}
      */
     launchChromeWebAuthFlow(requestToken) {
-        let options = {
+        const options = {
             url: `${globals.API.url_auth}?request_token=${requestToken}&redirect_uri=${
                 globals.API.redirect_url
             }`,
@@ -108,22 +96,11 @@ class AuthService {
             code: requestToken,
         });
 
-        return new Promise((resolve, reject) => {
-            let user = helpers
-                .makeFetch(globals.API.url_authorize, this._fetchData)
-                .then(response => response.json())
-                .then(response => {
-                    this.setToken(response.access_token);
+        return helpers.makeFetch(globals.API.url_authorize, this._fetchData).then(response => {
+            this.setToken(response.access_token);
+            helpers.setToStorage('username', response.username);
 
-                    helpers.setToStorage('username', response.username);
-
-                    return response;
-                })
-                .catch(error => {
-                    reject(error);
-                });
-
-            resolve(user);
+            return response;
         });
     }
 
