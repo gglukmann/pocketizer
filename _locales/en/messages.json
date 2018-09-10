@@ -145,6 +145,9 @@
     "SEARCH": {
         "message": "Search"
     },
+    "TITLE_SEARCH": {
+        "message": "Search (alt + f)"
+    },
     "SEARCH_FROM": {
         "message": "Search from title, url or tags"
     },
