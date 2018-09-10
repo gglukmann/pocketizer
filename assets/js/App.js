@@ -35,6 +35,7 @@ class App {
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
         this.logoutButtonClick = this.logout.bind(this);
+        this.keyDowns = this.handleKeyDowns.bind(this);
     }
 
     /**
@@ -410,6 +411,7 @@ class App {
      */
     bindLoggedInEvents() {
         document.body.addEventListener('click', this.itemClicks, false);
+        document.body.addEventListener('keyup', this.keyDowns, false);
         document
             .querySelector('#js-logout')
             .addEventListener('click', this.logoutButtonClick, false);
@@ -423,6 +425,7 @@ class App {
      */
     removeLoggedInClickEvents() {
         document.body.removeEventListener('click', this.itemClicks, false);
+        document.body.removeEventListener('keydown', this.keyDowns, false);
         document
             .querySelector('#js-logout')
             .removeEventListener('click', this.logoutButtonClick, false);
@@ -448,6 +451,20 @@ class App {
             this.orderItemsAsc = !this.orderItemsAsc;
             this.render();
             settings.rotateOrderButton(this.orderItemsAsc, e);
+        }
+    }
+
+    /**
+     * Handle keyboard clicks.
+     *
+     * @function handleKeyDowns
+     * @param {Event} e - Event from keyup.
+     * @return {void}
+     */
+    handleKeyDowns(e) {
+        // alt + f - opens search
+        if (e.keyCode === 70 && e.altKey) {
+            search.show();
         }
     }
 
