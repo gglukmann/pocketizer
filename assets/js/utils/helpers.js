@@ -150,7 +150,7 @@ export function prepend(parent, el) {
 /**
  * Prepend element to array.
  *
- * @function prepend
+ * @function prependArray
  * @param {Array[]} array - Array where to add.
  * @param {*} value - Value to add to array.
  * @return {Array[]} - Array with prepended item.
