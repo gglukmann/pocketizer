@@ -46,7 +46,7 @@ class Tags {
         if (e.target.classList.contains('js-tagsLink')) {
             e.preventDefault();
 
-            search.search(e.target.hash);
+            search.search(decodeURI(e.target.hash));
             search.show();
         } else if (e.target.id === 'js-tagsAllLink') {
             e.preventDefault();
