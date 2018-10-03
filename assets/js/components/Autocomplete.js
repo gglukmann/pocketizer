@@ -119,9 +119,10 @@ class Autocomplete {
         const linkElement = helpers.createNode('a');
         const tagNode = helpers.createTextNode(item);
 
-        listElement.setAttribute('class', 'autocomplete__item');
+        listElement.setAttribute('class', `${this.componentClass}__item`);
+
         linkElement.setAttribute('href', `#${item}`);
-        linkElement.setAttribute('class', 'autocomplete__link js-autocompleteLink');
+        linkElement.setAttribute('class', `${this.componentClass}__link js-${this.componentClass}Link`);
         linkElement.setAttribute('title', item);
 
         helpers.append(linkElement, tagNode);
@@ -137,7 +138,7 @@ class Autocomplete {
             this.searchableString = '';
         }
 
-        const value = e.target.hash.substr(1);
+        const value = decodeURI(e.target.hash.substr(1));
         this.input.value += currentInputValueArray.length === 0 ? value : `,${value}`;
     }
 
