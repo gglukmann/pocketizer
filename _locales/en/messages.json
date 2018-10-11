@@ -136,6 +136,15 @@
     "SAVED": {
         "message": "Saved"
     },
+    "LOADING_THEME": {
+        "message": "Getting your location and loading theme..."
+    },
+    "ERROR_THEME": {
+        "message": "Sorry. No position available."
+    },
+    "ERROR_GETTING_LOCATION": {
+        "message": "Error getting your position, reverting theme to light"
+    },
     "CANCEL": {
         "message": "Cancel"
     },
@@ -174,6 +183,12 @@
     },
     "SEPIA": {
         "message": "Sepia"
+    },
+    "DYNAMIC": {
+        "message": "Dynamic"
+    },
+    "DYNAMIC_INFO": {
+        "message": "Light during the day and dark in the night, based on your locations sunset and sunrise"
     },
     "CHOOSE_DEFAULT_PAGE": {
         "message": "Choose default page"

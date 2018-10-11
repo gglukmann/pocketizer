@@ -70,7 +70,7 @@ class Settings {
      * @return {String | null}
      */
     getDefaultPage() {
-        return helpers.getFromStorage('defaultPage') || globals.PAGES[0];
+        return helpers.getFromStorage('defaultPage') || globals.PAGES[0];
     }
 
     /**
@@ -112,8 +112,31 @@ class Settings {
     loadTheme() {
         const theme = this.getTheme();
 
-        if (theme && globals.THEMES.includes(theme)) {
-            helpers.addClass(document.body, theme);
+        if (theme && globals.THEMES.includes(theme)) {
+            if (theme === 'theme-dynamic') {
+                helpers
+                    .getCurrentPosition()
+                    .then(position => {
+                        const isNight = this.isNightTime(position);
+                        helpers.addClass(
+                            document.body,
+                            isNight ? globals.THEMES[1] : globals.THEMES[0],
+                        );
+                    })
+                    .catch(() => {
+                        helpers.setToStorage('theme', globals.THEMES[0]);
+                        helpers.showMessage(
+                            chrome.i18n.getMessage('ERROR_GETTING_LOCATION'),
+                            false,
+                            false,
+                            true,
+                            10000,
+                        );
+                        this.loadTheme();
+                    });
+            } else {
+                helpers.addClass(document.body, theme);
+            }
 
             const colorSelector = [...document.querySelectorAll('[name=selector-theme]')];
             for (const selector of colorSelector) {
@@ -187,7 +210,7 @@ class Settings {
             target.classList.remove('is-rotated');
             orderDirectionText.innerText = chrome.i18n.getMessage('DESC');
         } else {
-            target.classList.add('is-rotated');
+            helpers.addClass(target, 'is-rotated');
             orderDirectionText.innerText = chrome.i18n.getMessage('ASC');
         }
     }
@@ -226,11 +249,48 @@ class Settings {
                 const value = e.detail.value.toString();
 
                 if (globals.THEMES.includes(value)) {
-                    document.body.classList.remove(helpers.getFromStorage('theme'));
-                    helpers.setToStorage('theme', value);
-                    document.body.classList.add(value);
+                    if (value === 'theme-dynamic') {
+                        selector.showMessage(
+                            e,
+                            true,
+                            chrome.i18n.getMessage('LOADING_THEME'),
+                            'infinite',
+                        );
 
-                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                        helpers
+                            .getCurrentPosition()
+                            .then(position => {
+                                const isNight = this.isNightTime(position);
+
+                                helpers.removeClass(document.body, helpers.getFromStorage('theme'));
+                                helpers.addClass(
+                                    document.body,
+                                    isNight ? globals.THEMES[1] : globals.THEMES[0],
+                                );
+                                helpers.setToStorage('theme', value);
+
+                                selector.showMessage(
+                                    e,
+                                    true,
+                                    `${chrome.i18n.getMessage('SAVED')}!`,
+                                );
+                            })
+                            .catch(() => {
+                                this.loadTheme();
+                                selector.showMessage(
+                                    e,
+                                    false,
+                                    chrome.i18n.getMessage('ERROR_THEME'),
+                                    10000,
+                                );
+                            });
+                    } else {
+                        helpers.removeClass(document.body, helpers.getFromStorage('theme'));
+                        helpers.addClass(document.body, value);
+                        helpers.setToStorage('theme', value);
+
+                        selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                    }
                 }
                 break;
             case 'selector-page':
@@ -293,7 +353,12 @@ class Settings {
 
         if (form.checkValidity()) {
             e.preventDefault();
-            helpers.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
+            helpers.showMessage(
+                `${chrome.i18n.getMessage('CREATING_ITEM')}...`,
+                true,
+                false,
+                false,
+            );
 
             if (pocket.getActivePage() === 'list') {
                 search.reset(true);
@@ -328,6 +393,21 @@ class Settings {
         }
 
         return isTime;
+    }
+
+    /**
+     * If is between sunset and sunrise in your geolocation.
+     *
+     * @function isNightTime
+     * @param {Object} position - Position from navigator.geolocation
+     * @return {Boolean}
+     */
+    isNightTime(position) {
+        const sunset = new Date().sunset(position.coords.latitude, position.coords.longitude);
+        const tomorrow = helpers.getFutureDate(1);
+        const sunrise = tomorrow.sunrise(position.coords.latitude, position.coords.longitude);
+
+        return new Date().getTime() > sunset.getTime() && new Date().getTime() < sunrise.getTime();
     }
 
     /**

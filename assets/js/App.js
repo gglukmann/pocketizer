@@ -91,7 +91,7 @@ class App {
         window.addEventListener('online', this.toggleOfflineTheme, false);
 
         document.querySelector('#js-offlineRefresh').addEventListener('click', e => {
-            e.target.classList.add('is-syncing');
+            helpers.addClass(e.target, 'is-syncing');
             window.location.reload();
         });
     }

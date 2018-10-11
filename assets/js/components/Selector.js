@@ -71,18 +71,12 @@ class Selector {
      * @return {ActiveX.IXMLDOMNode}
      */
     createMessageNode(isSuccess, message) {
-        let element = helpers.createNode('div');
-
+        const element = helpers.createNode('div');
         element.setAttribute('class', 'selector__message');
 
-        if (isSuccess) {
-            element.classList.add('selector__message--success');
-        } else {
-            element.classList.add('selector__message--error');
-        }
+        helpers.addClass(element, `selector__message--${isSuccess ? 'success' : 'error'}`);
 
-        let messageNode = helpers.createTextNode(message);
-
+        const messageNode = helpers.createTextNode(message);
         helpers.append(element, messageNode);
 
         return element;
@@ -95,28 +89,28 @@ class Selector {
      * @param {Event} e - Selector checkbox change event.
      * @param {Boolean} isSuccess - Is success or error.
      * @param {String} message - Message to show.
+     * @param {Number | *} timeout - Timeout for how long to show message.
      * @return {void}
      */
-    showMessage(e, isSuccess, message) {
+    showMessage(e, isSuccess, message, timeout = 2000) {
         const messageNode = this.createMessageNode(isSuccess, message);
         const component = e.detail.closest('.selector');
-        let count = 0;
 
         for (const child of component.children) {
             if (child.classList.contains('selector__message')) {
-                count++;
+                child.remove();
             }
-        }
-
-        if (count !== 0) {
-            messageNode.remove();
         }
 
         helpers.append(component, messageNode);
 
+        if (typeof timeout !== 'number') {
+            return;
+        }
+
         setTimeout(() => {
             messageNode.remove();
-        }, 2000);
+        }, timeout);
     }
 
     /**

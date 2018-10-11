@@ -6,15 +6,18 @@
  * @param {Boolean} isSuccess - If is success or fail.
  * @param {Boolean} hasSuffix - If has suffix.
  * @param {Boolean} hasEnding - If should be removed after 2 seconds.
+ * @param {Number} timeout - Timeout for how long to show message.
  * @return {void}
  */
-export function showMessage(message, isSuccess = true, hasSuffix = true, hasEnding = true) {
+export function showMessage(
+    message,
+    isSuccess = true,
+    hasSuffix = true,
+    hasEnding = true,
+    timeout = 2000,
+) {
     if (hasSuffix) {
-        if (isSuccess) {
-            message += ` ${chrome.i18n.getMessage('SUCCESSFUL')}!`;
-        } else {
-            message += ` ${chrome.i18n.getMessage('FAILED')}!`;
-        }
+        message += ` ${chrome.i18n.getMessage(isSuccess ? 'SUCCESSFUL' : 'FAILED')}!`;
     }
 
     const statusElement = document.querySelector('#js-status');
@@ -23,7 +26,7 @@ export function showMessage(message, isSuccess = true, hasSuffix = true, hasEndi
     if (hasEnding) {
         setTimeout(() => {
             statusElement.innerText = '';
-        }, 2000);
+        }, timeout);
     }
 }
 
@@ -351,4 +354,37 @@ export function getFromStorage(key) {
 export function removeFromStorage(key) {
     localStorage.removeItem(key);
     return key;
+}
+
+/**
+ * Get current geolocation.
+ *
+ * @function getCurrentPosition
+ * @return {Promise} - Promise with position.
+ */
+export function getCurrentPosition() {
+    return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+            position => {
+                resolve(position);
+            },
+            () => {
+                reject();
+            },
+        );
+    });
+}
+
+/**
+ * Get future date.
+ *
+ * @function getFutureDate
+ * @param {Number} days - Days count to add
+ * @return {Date} - Date object of future.
+ */
+export function getFutureDate(days) {
+    const now = new Date();
+    now.setDate(now.getDate() + parseInt(days, 10));
+
+    return now;
 }

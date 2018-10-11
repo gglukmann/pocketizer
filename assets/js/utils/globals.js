@@ -12,5 +12,5 @@ export const API = {
 };
 
 export const PAGES = ['list', 'archive'];
-export const THEMES = ['theme-light', 'theme-dark', 'theme-sepia'];
+export const THEMES = ['theme-light', 'theme-dark', 'theme-sepia', 'theme-dynamic'];
 export const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];
