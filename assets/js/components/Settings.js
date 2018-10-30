@@ -74,6 +74,17 @@ class Settings {
     }
 
     /**
+     * Set default theme if none is provided.
+     *
+     * @function setTheme
+     * @param {String} theme - Theme to set.
+     * @return {void}
+     */
+    setTheme(theme = globals.THEMES[0]) {
+        helpers.setToStorage('theme', theme);
+    }
+
+    /**
      * Get theme to load on extension load.
      *
      * @function getTheme
@@ -110,9 +121,14 @@ class Settings {
      * @return {void}
      */
     loadTheme() {
-        const theme = this.getTheme();
+        let theme = this.getTheme();
 
-        if (theme && globals.THEMES.includes(theme)) {
+        if (!theme && !globals.THEMES.includes(theme)) {
+            this.setTheme();
+            theme = this.getTheme();
+        }
+
+        if (globals.THEMES.includes(theme)) {
             if (theme === 'theme-dynamic') {
                 helpers
                     .getCurrentPosition()
@@ -156,8 +172,8 @@ class Settings {
     loadDefaultPage() {
         let defaultPage = this.getDefaultPage();
 
-        if (defaultPage !== 'list' && !globals.PAGES.includes(defaultPage)) {
-            defaultPage = 'list';
+        if (defaultPage !== globals.PAGES[0] && !globals.PAGES.includes(defaultPage)) {
+            defaultPage = globals.PAGES[0];
             this.setDefaultPage(defaultPage);
         }
 
@@ -385,7 +401,7 @@ class Settings {
         let isTime = false;
         const timeDifference = helpers.calcTimeDifference(
             helpers.getCurrentUNIX(),
-            helpers.getFromStorage(`${this.getDefaultPage()}Since`),
+            helpers.getFromStorage(`${this.getDefaultPage()}Since`) || 0,
         );
 
         if (timeDifference >= this.getUpdateInterval()) {

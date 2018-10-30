@@ -147,14 +147,8 @@ class App {
                 }
                 break;
             case 'archive':
-                // TODO: Remove old list name sometime in the future
-                if (helpers.getFromStorage('archiveListFromLocalStorage')) {
+                if (!this.isArchiveLoaded()) {
                     isFirstLoad = true;
-                    helpers.removeFromStorage('archiveListFromLocalStorage');
-                } else {
-                    if (!this.isArchiveLoaded()) {
-                        isFirstLoad = true;
-                    }
                 }
                 break;
         }
