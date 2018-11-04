@@ -887,7 +887,7 @@ class App {
         tags.destroy();
 
         this.toggleLoggedInContent(false);
-        helpers.removeClass(document.body, THEMES);
+        helpers.removeClass(document.body, globals.THEMES);
 
         helpers.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }

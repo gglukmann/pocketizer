@@ -111,7 +111,7 @@ class AuthService {
      * @return {String} Token.
      */
     getToken() {
-        return helpers.getFromStorage('token') ? helpers.getFromStorage('token') : false;
+        return helpers.getFromStorage('token') || false;
     }
 
     /**

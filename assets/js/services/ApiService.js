@@ -70,6 +70,10 @@ class ApiService {
             .catch(error => {
                 console.log(error);
                 helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
+
+                if (error.response.status === 401) {
+                    pocket.logout();
+                }
             });
     }
 
@@ -91,6 +95,10 @@ class ApiService {
             .catch(error => {
                 console.log(error);
                 helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
+
+                if (error.response.status === 401) {
+                    pocket.logout();
+                }
             });
     }
 
@@ -112,6 +120,10 @@ class ApiService {
             .catch(error => {
                 console.log(error);
                 helpers.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
+
+                if (error.response.status === 401) {
+                    pocket.logout();
+                }
             });
     }
 }
