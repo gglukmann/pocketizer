@@ -11,6 +11,7 @@ class Item {
         this.timeout = false;
         this.pageResize = this.handlePageResize.bind(this);
         this.submitTags = this.handleSaveTagsClick.bind(this);
+        this.fakeLinkElementOnClick = this.fakeLinkElementOnClick.bind(this);
     }
 
     /**
@@ -89,7 +90,9 @@ class Item {
 
         // fake link
         fakeLinkElement.setAttribute('href', link);
+        fakeLinkElement.setAttribute('target', '_blank');
         fakeLinkElement.setAttribute('class', 'item__link-fake');
+        fakeLinkElement.addEventListener('click', (e) => this.fakeLinkElementOnClick(e, element.item_id), false);
 
         // favourite
         favouriteElement.setAttribute(
@@ -482,6 +485,10 @@ class Item {
         }
 
         this.timeout = false;
+    }
+
+    fakeLinkElementOnClick(e, itemId) {
+        pocket.changeItemState(e, 'read', itemId);
     }
 
     /**
