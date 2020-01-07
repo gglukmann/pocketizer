@@ -488,7 +488,9 @@ class Item {
     }
 
     fakeLinkElementOnClick(e, itemId) {
-        pocket.changeItemState(e, 'read', itemId);
+        if (pocket.getArchiveAfterOpen()) {
+            pocket.changeItemState(e, 'read', itemId);
+        }
     }
 
     /**

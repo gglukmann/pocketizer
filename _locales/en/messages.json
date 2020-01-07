@@ -246,5 +246,8 @@
     },
     "ALWAYS": {
         "message": "opening new tab"
+    },
+    "ARCHIVE_ITEM_AFTER_OPEN": {
+        "message": "Archive Item after open?"
     }
 }
