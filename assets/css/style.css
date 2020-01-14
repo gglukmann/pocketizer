@@ -1351,3 +1351,7 @@ a > svg {
     font-size: small;
     color: var(--text-light);
 }
+
+.cursor-pointer {
+    cursor: pointer;
+}

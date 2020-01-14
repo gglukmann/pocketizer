@@ -68,6 +68,16 @@ class App {
     }
 
     /**
+     * Get "archive after open" value.
+     *
+     * @function getArchiveAfterOpen
+     * @return {Boolean} - Active page name.
+     */
+    getArchiveAfterOpen () {
+        return JSON.parse(helpers.getFromStorage('archiveAfterOpen')) || false;
+    }
+
+    /**
      * Set active page.
      *
      * @function setActivePage

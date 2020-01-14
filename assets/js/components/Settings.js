@@ -24,6 +24,7 @@ class Settings {
         this.bindEvents();
         this.loadOrder();
         this.loadUpdateInterval();
+        this.loadArchiveAfterOpen();
     }
 
     /**
@@ -253,6 +254,37 @@ class Settings {
     }
 
     /**
+     * Set the value of "archive after open"
+     *
+     * @function setArchiveAfterOpen
+     * @param {Boolean}
+     * @return {void}
+     */
+    setArchiveAfterOpen(val) {
+        helpers.setToStorage('archiveAfterOpen', val);
+    }
+
+    /**
+     * Get "archive after open" to load on extension load.
+     *
+     * @function getArchiveAfterOpen
+     * @return {Boolean}
+     */
+    getArchiveAfterOpen() {
+        return helpers.getFromStorage('archiveAfterOpen') || false;
+    }
+
+    /**
+     * Load the "archive after open" option
+     *
+     * @function loadArchiveAfterOpen
+     * @return {void}
+     */
+    loadArchiveAfterOpen () {
+        document.querySelector('[name="archive-after-open"]').checked = JSON.parse(this.getArchiveAfterOpen());
+    }
+
+    /**
      * Handle selector change in settings.
      *
      * @function handleSelectorChange
@@ -334,6 +366,14 @@ class Settings {
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
+
+            case 'archive-after-open':
+                this.setArchiveAfterOpen(e.detail.checked);
+                selector.showMessage(
+                    e,
+                    true,
+                    `${chrome.i18n.getMessage('SAVED')}!`,
+                );
         }
     }
 

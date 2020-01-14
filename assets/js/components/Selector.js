@@ -46,18 +46,18 @@ class Selector {
      * @return {void}
      */
     handleSelectorClick(e) {
-        if (e.target.classList.contains('selector__input')) {
-            this.selectRadio(e);
+        if (e.target.classList.contains('selector__input') || e.target.type === 'checkbox') {
+            this.selectInput(e);
         }
     }
 
     /**
      * Select selector and change theme class on body.
      *
-     * @function selectRadio
+     * @function selectInput
      * @return {void}
      */
-    selectRadio(e) {
+    selectInput(e) {
         const eventSelector = new CustomEvent('select.selector', { detail: e.target });
         document.dispatchEvent(eventSelector);
     }
