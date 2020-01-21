@@ -135,10 +135,7 @@ class Settings {
                     .getCurrentPosition()
                     .then(position => {
                         const isNight = this.isNightTime(position);
-                        helpers.addClass(
-                            document.body,
-                            isNight ? globals.THEMES[1] : globals.THEMES[0],
-                        );
+                        helpers.addClass(document.body, isNight ? globals.THEMES[1] : globals.THEMES[0]);
                     })
                     .catch(() => {
                         helpers.setToStorage('theme', globals.THEMES[0]);
@@ -147,7 +144,7 @@ class Settings {
                             false,
                             false,
                             true,
-                            10000,
+                            10000
                         );
                         this.loadTheme();
                     });
@@ -242,9 +239,7 @@ class Settings {
         const updateInterval = this.getUpdateInterval();
 
         if (updateInterval) {
-            const updateIntervalSelector = [
-                ...document.querySelectorAll('[name=selector-update-interval]'),
-            ];
+            const updateIntervalSelector = [...document.querySelectorAll('[name=selector-update-interval]')];
             for (const selector of updateIntervalSelector) {
                 if (selector.value === updateInterval) {
                     selector.checked = true;
@@ -268,10 +263,10 @@ class Settings {
      * Get "archive after open" to load on extension load.
      *
      * @function getArchiveAfterOpen
-     * @return {Boolean}
+     * @return {String | null}
      */
     getArchiveAfterOpen() {
-        return helpers.getFromStorage('archiveAfterOpen') || false;
+        return helpers.getFromStorage('archiveAfterOpen');
     }
 
     /**
@@ -280,8 +275,17 @@ class Settings {
      * @function loadArchiveAfterOpen
      * @return {void}
      */
-    loadArchiveAfterOpen () {
-        document.querySelector('[name="archive-after-open"]').checked = JSON.parse(this.getArchiveAfterOpen());
+    loadArchiveAfterOpen() {
+        const archiveAfterOpen = this.getArchiveAfterOpen();
+
+        if (archiveAfterOpen) {
+            const archiveAfterOpenSelector = [...document.querySelectorAll('[name=archive-after-open]')];
+            for (const selector of archiveAfterOpenSelector) {
+                if (selector.value === archiveAfterOpen) {
+                    selector.checked = true;
+                }
+            }
+        }
     }
 
     /**
@@ -298,12 +302,7 @@ class Settings {
 
                 if (globals.THEMES.includes(value)) {
                     if (value === 'theme-dynamic') {
-                        selector.showMessage(
-                            e,
-                            true,
-                            chrome.i18n.getMessage('LOADING_THEME'),
-                            'infinite',
-                        );
+                        selector.showMessage(e, true, chrome.i18n.getMessage('LOADING_THEME'), 'infinite');
 
                         helpers
                             .getCurrentPosition()
@@ -311,26 +310,14 @@ class Settings {
                                 const isNight = this.isNightTime(position);
 
                                 helpers.removeClass(document.body, helpers.getFromStorage('theme'));
-                                helpers.addClass(
-                                    document.body,
-                                    isNight ? globals.THEMES[1] : globals.THEMES[0],
-                                );
+                                helpers.addClass(document.body, isNight ? globals.THEMES[1] : globals.THEMES[0]);
                                 helpers.setToStorage('theme', value);
 
-                                selector.showMessage(
-                                    e,
-                                    true,
-                                    `${chrome.i18n.getMessage('SAVED')}!`,
-                                );
+                                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                             })
                             .catch(() => {
                                 this.loadTheme();
-                                selector.showMessage(
-                                    e,
-                                    false,
-                                    chrome.i18n.getMessage('ERROR_THEME'),
-                                    10000,
-                                );
+                                selector.showMessage(e, false, chrome.i18n.getMessage('ERROR_THEME'), 10000);
                             });
                     } else {
                         helpers.removeClass(document.body, helpers.getFromStorage('theme'));
@@ -366,14 +353,11 @@ class Settings {
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
-
             case 'archive-after-open':
-                this.setArchiveAfterOpen(e.detail.checked);
-                selector.showMessage(
-                    e,
-                    true,
-                    `${chrome.i18n.getMessage('SAVED')}!`,
-                );
+                const archiveAfterOpen = e.detail.value.toString();
+
+                this.setArchiveAfterOpen(archiveAfterOpen);
+                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
         }
     }
 
@@ -409,12 +393,7 @@ class Settings {
 
         if (form.checkValidity()) {
             e.preventDefault();
-            helpers.showMessage(
-                `${chrome.i18n.getMessage('CREATING_ITEM')}...`,
-                true,
-                false,
-                false,
-            );
+            helpers.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 
             if (pocket.getActivePage() === 'list') {
                 search.reset(true);
@@ -441,7 +420,7 @@ class Settings {
         let isTime = false;
         const timeDifference = helpers.calcTimeDifference(
             helpers.getCurrentUNIX(),
-            helpers.getFromStorage(`${this.getDefaultPage()}Since`) || 0,
+            helpers.getFromStorage(`${this.getDefaultPage()}Since`) || 0
         );
 
         if (timeDifference >= this.getUpdateInterval()) {

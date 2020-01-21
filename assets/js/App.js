@@ -1,15 +1,6 @@
 import * as helpers from './utils/helpers.js';
 import * as globals from './utils/globals.js';
-import {
-    settings,
-    tags,
-    item,
-    lazyload,
-    header,
-    search,
-    modal,
-    selector,
-} from './components/index.js';
+import { settings, tags, item, lazyload, header, search, modal, selector } from './components/index.js';
 import { apiService, authService } from './services/index.js';
 
 class App {
@@ -23,14 +14,12 @@ class App {
 
         this.scroll = {
             lastKnownScrollY: 0,
-            ticking: false,
+            ticking: false
         };
 
         this.fullSync = false;
         this.orderItemsAsc =
-            helpers.getFromStorage('order') && helpers.getFromStorage('order') === 'desc'
-                ? false
-                : true;
+            helpers.getFromStorage('order') && helpers.getFromStorage('order') === 'desc' ? false : true;
 
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
@@ -65,16 +54,6 @@ class App {
      */
     getActivePage() {
         return this.active_page;
-    }
-
-    /**
-     * Get "archive after open" value.
-     *
-     * @function getArchiveAfterOpen
-     * @return {Boolean} - Active page name.
-     */
-    getArchiveAfterOpen () {
-        return JSON.parse(helpers.getFromStorage('archiveAfterOpen')) || false;
     }
 
     /**
@@ -219,15 +198,10 @@ class App {
 
                         // only add to localstorage archive list if archive is loaded
                         if (this.isArchiveLoaded()) {
-                            newArray = JSON.parse(
-                                helpers.getFromStorage('archiveFromLocalStorage'),
-                            );
+                            newArray = JSON.parse(helpers.getFromStorage('archiveFromLocalStorage'));
                             newArray = helpers.prependArray(newArray, newItem);
 
-                            helpers.setToStorage(
-                                'archiveFromLocalStorage',
-                                JSON.stringify(newArray),
-                            );
+                            helpers.setToStorage('archiveFromLocalStorage', JSON.stringify(newArray));
                             helpers.setToStorage('archiveCount', newArray.length);
                         }
                         break;
@@ -241,17 +215,10 @@ class App {
                         helpers.setToStorage('listCount', listArray.length);
 
                         if (this.isArchiveLoaded()) {
-                            let archiveArray = JSON.parse(
-                                helpers.getFromStorage('archiveFromLocalStorage'),
-                            );
-                            archiveArray = archiveArray.filter(
-                                item => item.item_id !== newItem.item_id,
-                            );
+                            let archiveArray = JSON.parse(helpers.getFromStorage('archiveFromLocalStorage'));
+                            archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
 
-                            helpers.setToStorage(
-                                'archiveFromLocalStorage',
-                                JSON.stringify(archiveArray),
-                            );
+                            helpers.setToStorage('archiveFromLocalStorage', JSON.stringify(archiveArray));
                             helpers.setToStorage('archiveCount', archiveArray.length);
                         }
                         break;
@@ -279,9 +246,7 @@ class App {
 
         this.items_shown = this.load_count;
 
-        document.querySelector('#js-count').innerText = helpers.getFromStorage(
-            `${this.getActivePage()}Count`,
-        );
+        document.querySelector('#js-count').innerText = helpers.getFromStorage(`${this.getActivePage()}Count`);
         helpers.clearChildren(document.querySelector('#js-list'));
 
         if (array === null) {
@@ -380,9 +345,7 @@ class App {
             array = array.reverse();
         }
 
-        array = array.filter(
-            (i, index) => index >= this.items_shown && index < this.items_shown + this.load_count,
-        );
+        array = array.filter((i, index) => index >= this.items_shown && index < this.items_shown + this.load_count);
 
         this.items_shown += this.load_count;
 
@@ -416,9 +379,7 @@ class App {
     bindLoggedInEvents() {
         document.body.addEventListener('click', this.itemClicks, false);
         document.body.addEventListener('keyup', this.keyDowns, false);
-        document
-            .querySelector('#js-logout')
-            .addEventListener('click', this.logoutButtonClick, false);
+        document.querySelector('#js-logout').addEventListener('click', this.logoutButtonClick, false);
     }
 
     /**
@@ -430,9 +391,7 @@ class App {
     removeLoggedInClickEvents() {
         document.body.removeEventListener('click', this.itemClicks, false);
         document.body.removeEventListener('keydown', this.keyDowns, false);
-        document
-            .querySelector('#js-logout')
-            .removeEventListener('click', this.logoutButtonClick, false);
+        document.querySelector('#js-logout').removeEventListener('click', this.logoutButtonClick, false);
     }
 
     /**
@@ -455,6 +414,12 @@ class App {
             this.orderItemsAsc = !this.orderItemsAsc;
             this.render();
             settings.rotateOrderButton(this.orderItemsAsc, e);
+        } else if (e.target.classList.contains('js-link')) {
+            const canSetAsArchived = settings.getArchiveAfterOpen() && this.getActivePage() === 'list';
+
+            if (canSetAsArchived) {
+                item.archive(e);
+            }
         }
     }
 
@@ -489,9 +454,7 @@ class App {
      * @return {void}
      */
     removeLoggedOutClickEvents() {
-        document
-            .querySelector('#js-login')
-            .removeEventListener('click', this.loggedOutClicks, false);
+        document.querySelector('#js-login').removeEventListener('click', this.loggedOutClicks, false);
     }
 
     /**
@@ -524,21 +487,11 @@ class App {
             switch (this.getActivePage()) {
                 case 'archive':
                     action = 'readd';
-                    helpers.showMessage(
-                        `${chrome.i18n.getMessage('UNARCHIVING')}...`,
-                        true,
-                        false,
-                        false,
-                    );
+                    helpers.showMessage(`${chrome.i18n.getMessage('UNARCHIVING')}...`, true, false, false);
                     break;
                 case 'list':
                     action = 'archive';
-                    helpers.showMessage(
-                        `${chrome.i18n.getMessage('ARCHIVING')}...`,
-                        true,
-                        false,
-                        false,
-                    );
+                    helpers.showMessage(`${chrome.i18n.getMessage('ARCHIVING')}...`, true, false, false);
                     break;
             }
         } else if (state === 'favourite') {
@@ -556,8 +509,8 @@ class App {
             {
                 action: action,
                 item_id: id,
-                time: helpers.getCurrentUNIX(),
-            },
+                time: helpers.getCurrentUNIX()
+            }
         ];
 
         if (state === 'tags') {
@@ -607,21 +560,18 @@ class App {
 
                         helpers.setToStorage(
                             `${this.getActivePage()}Count`,
-                            parseInt(helpers.getFromStorage(`${this.getActivePage()}Count`), 10) -
-                                1,
+                            parseInt(helpers.getFromStorage(`${this.getActivePage()}Count`), 10) - 1
                         );
 
                         document.querySelector('#js-count').innerText = helpers.getFromStorage(
-                            `${this.getActivePage()}Count`,
+                            `${this.getActivePage()}Count`
                         );
                         break;
                     case 'favourite':
                         array[i].favorite = isFavourited === true ? 0 : 1;
 
                         isFavourited = !isFavourited;
-                        e.target.parentNode.querySelector(
-                            '.js-toggleFavouriteButton',
-                        ).dataset.favourite = isFavourited;
+                        e.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite = isFavourited;
                         break;
                     case 'tags':
                         if (tags.length) {
@@ -676,21 +626,14 @@ class App {
 
         switch (page) {
             case 'list':
-                helpers.showMessage(
-                    `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
-                    true,
-                    false,
-                    false,
-                );
+                helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
                 this.setActivePage('list');
 
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
                 this.orderItemsAsc =
-                    !helpers.getFromStorage('order') || helpers.getFromStorage('order') === 'asc'
-                        ? true
-                        : false;
+                    !helpers.getFromStorage('order') || helpers.getFromStorage('order') === 'asc' ? true : false;
 
                 this.render();
                 this.getContent();
@@ -698,9 +641,7 @@ class App {
             case 'archive':
                 this.setActivePage('archive');
 
-                document.querySelector('#js-count').innerText = helpers.getFromStorage(
-                    'archiveCount',
-                );
+                document.querySelector('#js-count').innerText = helpers.getFromStorage('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
 
                 this.orderItemsAsc = true;
@@ -710,20 +651,10 @@ class App {
                 }
 
                 if (isPageLoad && settings.isTimeToUpdate()) {
-                    helpers.showMessage(
-                        `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
-                        true,
-                        false,
-                        false,
-                    );
+                    helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
                     this.getContent();
                 } else if (!isPageLoad) {
-                    helpers.showMessage(
-                        `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
-                        true,
-                        false,
-                        false,
-                    );
+                    helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
                     this.getContent();
                 }
                 break;
@@ -810,10 +741,7 @@ class App {
     startSync() {
         this.toggleLoggedInContent(true);
 
-        if (
-            settings.getDefaultPage() === null ||
-            (settings.getDefaultPage() && settings.getDefaultPage() === 'list')
-        ) {
+        if (settings.getDefaultPage() === null || (settings.getDefaultPage() && settings.getDefaultPage() === 'list')) {
             this.render();
             document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
         } else {
@@ -834,16 +762,8 @@ class App {
         settings.init();
         tags.init();
 
-        if (
-            (!settings.getDefaultPage() || settings.getDefaultPage() === 'list') &&
-            settings.isTimeToUpdate()
-        ) {
-            helpers.showMessage(
-                `${chrome.i18n.getMessage('SYNCHRONIZING')}...`,
-                true,
-                false,
-                false,
-            );
+        if ((!settings.getDefaultPage() || settings.getDefaultPage() === 'list') && settings.isTimeToUpdate()) {
+            helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
             this.getContent();
         }
     }
@@ -881,9 +801,7 @@ class App {
         localStorage.clear();
         this.setActivePage('list');
         header.changeMenuActiveState('list');
-        document.querySelector('#js-title').innerText = chrome.i18n.getMessage(
-            'EXTENSION_SHORT_NAME',
-        );
+        document.querySelector('#js-title').innerText = chrome.i18n.getMessage('EXTENSION_SHORT_NAME');
 
         this.removeLoggedInClickEvents();
         this.bindLoggedOutClickEvents();

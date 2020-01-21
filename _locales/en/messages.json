@@ -250,7 +250,10 @@
     "ARCHIVE_ITEM_AFTER_OPEN": {
         "message": "Archive Item after open?"
     },
-    "ENABLE": {
-        "message": "Enable"
+    "ENABLED": {
+        "message": "Enabled"
+    },
+    "DISABLED": {
+        "message": "Disabled"
     }
 }

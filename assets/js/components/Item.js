@@ -1,6 +1,6 @@
 import * as helpers from '../utils/helpers.js';
 import pocket from '../App.js';
-import { modal, tags, search } from './index.js';
+import { modal, tags, search, settings } from './index.js';
 import { apiService } from '../services/index.js';
 
 class Item {
@@ -11,7 +11,6 @@ class Item {
         this.timeout = false;
         this.pageResize = this.handlePageResize.bind(this);
         this.submitTags = this.handleSaveTagsClick.bind(this);
-        this.fakeLinkElementOnClick = this.fakeLinkElementOnClick.bind(this);
     }
 
     /**
@@ -90,22 +89,16 @@ class Item {
 
         // fake link
         fakeLinkElement.setAttribute('href', link);
-        fakeLinkElement.setAttribute('target', '_blank');
-        fakeLinkElement.setAttribute('class', 'item__link-fake');
-        fakeLinkElement.addEventListener('click', (e) => this.fakeLinkElementOnClick(e, element.item_id), false);
+        fakeLinkElement.setAttribute('class', 'item__link-fake js-link');
+        fakeLinkElement.setAttribute('data-id', element.item_id);
 
         // favourite
-        favouriteElement.setAttribute(
-            'data-favourite',
-            element.favorite === '1' ? 'true' : 'false',
-        );
+        favouriteElement.setAttribute('data-favourite', element.favorite === '1' ? 'true' : 'false');
         favouriteElement.setAttribute('class', 'item__favourite js-toggleFavouriteButton');
         favouriteElement.setAttribute('href', '#0');
         favouriteElement.setAttribute(
             'title',
-            element.favorite === '1'
-                ? chrome.i18n.getMessage('UNFAVOURITE')
-                : chrome.i18n.getMessage('FAVOURITE'),
+            element.favorite === '1' ? chrome.i18n.getMessage('UNFAVOURITE') : chrome.i18n.getMessage('FAVOURITE')
         );
         favouriteElement.setAttribute('data-id', element.item_id);
 
@@ -156,7 +149,7 @@ class Item {
         const pathElement = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         pathElement.setAttribute(
             'd',
-            'M84.7,121.2c-20.1,0-36.4-16.3-36.4-36.4c0-20.1,16.3-36.5,36.5-36.5c20.1,0,36.4,16.3,36.4,36.4C121.2,104.9,104.9,121.3,84.7,121.2z M526.3,299.6c-1.6-2.4-3.4-4.7-5.6-6.9L260.2,32.3c-17-17-50.6-31.5-74.7-32.3L42.4,0C18.4-0.7-0.7,18.4,0,42.4l0,143.1c0.8,24.1,15.3,57.7,32.3,74.7l260.5,260.5c2.1,2.1,4.4,4,6.8,5.6c28.6,22.3,70.1,20.6,96.3-5.6l124.8-124.9C547,369.7,548.6,328.2,526.3,299.6z',
+            'M84.7,121.2c-20.1,0-36.4-16.3-36.4-36.4c0-20.1,16.3-36.5,36.5-36.5c20.1,0,36.4,16.3,36.4,36.4C121.2,104.9,104.9,121.3,84.7,121.2z M526.3,299.6c-1.6-2.4-3.4-4.7-5.6-6.9L260.2,32.3c-17-17-50.6-31.5-74.7-32.3L42.4,0C18.4-0.7-0.7,18.4,0,42.4l0,143.1c0.8,24.1,15.3,57.7,32.3,74.7l260.5,260.5c2.1,2.1,4.4,4,6.8,5.6c28.6,22.3,70.1,20.6,96.3-5.6l124.8-124.9C547,369.7,548.6,328.2,526.3,299.6z'
         );
         helpers.append(svgElement, pathElement);
         helpers.append(tagLinkElement, svgElement);
@@ -193,15 +186,12 @@ class Item {
         }
 
         readButtonElement.setAttribute('href', '#0');
-        readButtonElement.setAttribute(
-            'class',
-            'item__link item__link--set-read js-toggleReadButton',
-        );
+        readButtonElement.setAttribute('class', 'item__link item__link--set-read js-toggleReadButton');
         readButtonElement.setAttribute('data-id', element.item_id);
         readButtonElement.setAttribute('data-read', isRead);
         readButtonElement.setAttribute(
             'title',
-            isRead ? chrome.i18n.getMessage('MARK_UNREAD') : chrome.i18n.getMessage('MARK_READ'),
+            isRead ? chrome.i18n.getMessage('MARK_UNREAD') : chrome.i18n.getMessage('MARK_READ')
         );
         helpers.append(readButtonElement, readNode);
 
@@ -282,10 +272,7 @@ class Item {
             array = helpers.prependArray(array, response.item);
             helpers.setToStorage('listFromLocalStorage', JSON.stringify(array));
 
-            helpers.setToStorage(
-                'listCount',
-                (parseInt(helpers.getFromStorage('listCount'), 10) + 1).toString(),
-            );
+            helpers.setToStorage('listCount', (parseInt(helpers.getFromStorage('listCount'), 10) + 1).toString());
             if (pocket.getActivePage() === 'list') {
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
             }
@@ -303,10 +290,7 @@ class Item {
                 // array has new item but it is not in dom yet
                 // #js-list has .sentinel too
                 // that's why array.length and #js-list.childElementCount can be equal
-                if (
-                    !pocket.orderItemsAsc &&
-                    array.length !== document.querySelector('#js-list').childElementCount
-                ) {
+                if (!pocket.orderItemsAsc && array.length !== document.querySelector('#js-list').childElementCount) {
                     return;
                 }
 
@@ -339,7 +323,10 @@ class Item {
      * @return {void}
      */
     archive(e) {
-        e.preventDefault();
+        if (!settings.getArchiveAfterOpen()) {
+            e.preventDefault();
+        }
+
         const id = e.target.dataset.id;
         pocket.changeItemState(e, 'read', id);
     }
@@ -362,11 +349,9 @@ class Item {
         document.addEventListener(
             'closed.modal',
             () => {
-                document
-                    .querySelector('#js-deleteSubmit')
-                    .removeEventListener('click', newEvent, false);
+                document.querySelector('#js-deleteSubmit').removeEventListener('click', newEvent, false);
             },
-            { once: true },
+            { once: true }
         );
     }
 
@@ -410,7 +395,7 @@ class Item {
                 tagsItemIdInput.value = '';
                 tagsInput.value = '';
             },
-            { once: true },
+            { once: true }
         );
     }
 
@@ -485,12 +470,6 @@ class Item {
         }
 
         this.timeout = false;
-    }
-
-    fakeLinkElementOnClick(e, itemId) {
-        if (pocket.getArchiveAfterOpen()) {
-            pocket.changeItemState(e, 'read', itemId);
-        }
     }
 
     /**
