@@ -18,8 +18,7 @@ class App {
         };
 
         this.fullSync = false;
-        this.orderItemsAsc =
-            helpers.getFromStorage('order') && helpers.getFromStorage('order') === 'desc' ? false : true;
+        this.orderItemsAsc = settings.getOrder() === globals.ORDER.DESCENDING ? false : true;
 
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
@@ -196,7 +195,7 @@ class App {
                         helpers.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
                         helpers.setToStorage('listCount', newArray.length);
 
-                        // only add to localstorage archive list if archive is loaded
+                        // only add to localStorage archive list if archive is loaded
                         if (this.isArchiveLoaded()) {
                             newArray = JSON.parse(helpers.getFromStorage('archiveFromLocalStorage'));
                             newArray = helpers.prependArray(newArray, newItem);
@@ -632,7 +631,7 @@ class App {
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
                 this.orderItemsAsc =
-                    !helpers.getFromStorage('order') || helpers.getFromStorage('order') === 'asc' ? true : false;
+                    !settings.getOrder() || settings.getOrder() === globals.ORDER.ASCENDING ? true : false;
 
                 this.render();
                 this.getContent();
@@ -820,7 +819,7 @@ class App {
         tags.destroy();
 
         this.toggleLoggedInContent(false);
-        helpers.removeClass(document.body, globals.THEMES);
+        helpers.removeClass(document.body, Object.values(globals.THEMES));
 
         helpers.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }

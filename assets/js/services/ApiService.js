@@ -34,8 +34,10 @@ class ApiService {
 
         switch (pocket.getActivePage()) {
             case globals.PAGES.LIST:
-                if (helpers.getFromStorage('listSince')) {
-                    this._fetchData.body.since = helpers.getFromStorage('listSince');
+                const listSince = helpers.getFromStorage('listSince');
+
+                if (listSince) {
+                    this._fetchData.body.since = listSince;
                 } else {
                     state = 'unread';
                 }
@@ -91,7 +93,7 @@ class ApiService {
         });
 
         return await helpers.makeFetch(globals.API.url_send, this._fetchData).catch(error => {
-            console.log(error);
+            console.error(error);
             helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
 
             if (error.response.status === 401) {
@@ -115,7 +117,7 @@ class ApiService {
         });
 
         return await helpers.makeFetch(globals.API.url_add, this._fetchData).catch(error => {
-            console.log(error);
+            console.error(error);
             helpers.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
 
             if (error.response.status === 401) {

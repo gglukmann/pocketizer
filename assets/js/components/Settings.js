@@ -81,7 +81,7 @@ class Settings {
      * @param {String} theme - Theme to set.
      * @return {void}
      */
-    setTheme(theme = globals.THEMES[0]) {
+    setTheme(theme = globals.THEMES.LIGHT) {
         helpers.setToStorage('theme', theme);
     }
 
@@ -124,21 +124,21 @@ class Settings {
     loadTheme() {
         let theme = this.getTheme();
 
-        if (!theme && !globals.THEMES.includes(theme)) {
+        if (!theme && !Object.values(globals.THEMES).includes(theme)) {
             this.setTheme();
             theme = this.getTheme();
         }
 
-        if (globals.THEMES.includes(theme)) {
-            if (theme === 'theme-dynamic') {
+        if (Object.values(globals.THEMES).includes(theme)) {
+            if (theme === globals.THEMES.DYNAMIC) {
                 helpers
                     .getCurrentPosition()
                     .then(position => {
                         const isNight = this.isNightTime(position);
-                        helpers.addClass(document.body, isNight ? globals.THEMES[1] : globals.THEMES[0]);
+                        helpers.addClass(document.body, isNight ? globals.THEMES.DARK : globals.THEMES.LIGHT);
                     })
                     .catch(() => {
-                        helpers.setToStorage('theme', globals.THEMES[0]);
+                        this.setTheme(globals.THEMES.LIGHT)
                         helpers.showMessage(
                             chrome.i18n.getMessage('ERROR_GETTING_LOCATION'),
                             false,
@@ -197,7 +197,7 @@ class Settings {
         const order = this.getOrder();
 
         if (order) {
-            this.rotateOrderButton(order === 'asc' ? true : false);
+            this.rotateOrderButton(order === globals.ORDER.ASCENDING ? true : false);
 
             const orderSelector = [...document.querySelectorAll('[name=selector-order]')];
             for (const selector of orderSelector) {
@@ -300,8 +300,8 @@ class Settings {
             case 'selector-theme':
                 const value = e.detail.value.toString();
 
-                if (globals.THEMES.includes(value)) {
-                    if (value === 'theme-dynamic') {
+                if (Object.values(globals.THEMES).includes(value)) {
+                    if (value === globals.THEMES.DYNAMIC) {
                         selector.showMessage(e, true, chrome.i18n.getMessage('LOADING_THEME'), 'infinite');
 
                         helpers
@@ -309,9 +309,9 @@ class Settings {
                             .then(position => {
                                 const isNight = this.isNightTime(position);
 
-                                helpers.removeClass(document.body, helpers.getFromStorage('theme'));
-                                helpers.addClass(document.body, isNight ? globals.THEMES[1] : globals.THEMES[0]);
-                                helpers.setToStorage('theme', value);
+                                helpers.removeClass(document.body, this.getTheme());
+                                helpers.addClass(document.body, isNight ? globals.THEMES.DARK : globals.THEMES.LIGHT);
+                                this.setTheme(value);
 
                                 selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                             })
@@ -320,9 +320,9 @@ class Settings {
                                 selector.showMessage(e, false, chrome.i18n.getMessage('ERROR_THEME'), 10000);
                             });
                     } else {
-                        helpers.removeClass(document.body, helpers.getFromStorage('theme'));
+                        helpers.removeClass(document.body, this.getTheme());
                         helpers.addClass(document.body, value);
-                        helpers.setToStorage('theme', value);
+                        this.setTheme(value);
 
                         selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                     }
@@ -340,7 +340,7 @@ class Settings {
             case 'selector-order':
                 const order = e.detail.value.toString();
 
-                if (order === 'asc' || order === 'desc') {
+                if (Object.values(globals.ORDER).includes(order)) {
                     helpers.setToStorage('order', order);
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }

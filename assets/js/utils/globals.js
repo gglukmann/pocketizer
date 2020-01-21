@@ -15,5 +15,17 @@ export const PAGES = {
     LIST: 'list',
     ARCHIVE: 'archive'
 };
-export const THEMES = ['theme-light', 'theme-dark', 'theme-sepia', 'theme-dynamic'];
+
+export const THEMES = {
+    LIGHT: 'theme-light',
+    DARK: 'theme-dark',
+    SEPIA: 'theme-sepia',
+    DYNAMIC: 'theme-dynamic'
+};
+
 export const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];
+
+export const ORDER = {
+    DESCENDING: 'desc',
+    ASCENDING: 'asc'
+};
