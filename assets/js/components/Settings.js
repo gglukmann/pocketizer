@@ -71,7 +71,7 @@ class Settings {
      * @return {String | null}
      */
     getDefaultPage() {
-        return helpers.getFromStorage('defaultPage') || globals.PAGES[0];
+        return helpers.getFromStorage('defaultPage') || globals.PAGES.LIST;
     }
 
     /**
@@ -170,8 +170,8 @@ class Settings {
     loadDefaultPage() {
         let defaultPage = this.getDefaultPage();
 
-        if (defaultPage !== globals.PAGES[0] && !globals.PAGES.includes(defaultPage)) {
-            defaultPage = globals.PAGES[0];
+        if (defaultPage !== globals.PAGES.LIST && !Object.values(globals.PAGES).includes(defaultPage)) {
+            defaultPage = globals.PAGES.LIST;
             this.setDefaultPage(defaultPage);
         }
 
@@ -331,7 +331,7 @@ class Settings {
             case 'selector-page':
                 const page = e.detail.value.toString();
 
-                if (globals.PAGES.includes(page)) {
+                if (Object.values(globals.PAGES).includes(page)) {
                     this.setDefaultPage(page);
 
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);

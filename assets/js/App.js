@@ -610,7 +610,7 @@ class App {
     changePage(page, isPageLoad) {
         page = page ? page : 'list';
 
-        if (!globals.PAGES.includes(page)) {
+        if (!Object.values(globals.PAGES).includes(page)) {
             return;
         }
 

@@ -11,6 +11,9 @@ export const API = {
     url_add: API_URL + API_VERSION + '/add'
 };
 
-export const PAGES = ['list', 'archive'];
+export const PAGES = {
+    LIST: 'list',
+    ARCHIVE: 'archive'
+};
 export const THEMES = ['theme-light', 'theme-dark', 'theme-sepia', 'theme-dynamic'];
 export const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];
