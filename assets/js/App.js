@@ -8,7 +8,7 @@ class App {
      * @constructor
      */
     constructor() {
-        this.active_page = 'list';
+        this.active_page = globals.PAGES.LIST;
         this.items_shown = 0;
         this.load_count = 18;
 
@@ -130,12 +130,12 @@ class App {
         let isFirstLoad = false;
 
         switch (this.getActivePage()) {
-            case 'list':
+            case globals.PAGES.LIST:
                 if (!helpers.getFromStorage('listSince')) {
                     isFirstLoad = true;
                 }
                 break;
-            case 'archive':
+            case globals.PAGES.ARCHIVE:
                 if (!this.isArchiveLoaded()) {
                     isFirstLoad = true;
                 }
@@ -282,7 +282,6 @@ class App {
      */
     createItems(array) {
         const newArray = [];
-        let newItem;
 
         for (const key in array) {
             let newItem = item.create(array[key]);
@@ -415,7 +414,7 @@ class App {
             this.render();
             settings.rotateOrderButton(this.orderItemsAsc, e);
         } else if (e.target.classList.contains('js-link')) {
-            const canSetAsArchived = settings.getArchiveAfterOpen() && this.getActivePage() === 'list';
+            const canSetAsArchived = settings.getArchiveAfterOpen() && this.getActivePage() === globals.PAGES.LIST;
 
             if (canSetAsArchived) {
                 item.archive(e);
@@ -485,13 +484,13 @@ class App {
 
         if (state === 'read') {
             switch (this.getActivePage()) {
-                case 'archive':
-                    action = 'readd';
-                    helpers.showMessage(`${chrome.i18n.getMessage('UNARCHIVING')}...`, true, false, false);
-                    break;
-                case 'list':
+                case globals.PAGES.LIST:
                     action = 'archive';
                     helpers.showMessage(`${chrome.i18n.getMessage('ARCHIVING')}...`, true, false, false);
+                    break;
+                case globals.PAGES.ARCHIVE:
+                    action = 'readd';
+                    helpers.showMessage(`${chrome.i18n.getMessage('UNARCHIVING')}...`, true, false, false);
                     break;
             }
         } else if (state === 'favourite') {
@@ -586,10 +585,10 @@ class App {
 
         if (state === 'read') {
             switch (this.getActivePage()) {
-                case 'list':
+                case globals.PAGES.LIST:
                     helpers.showMessage(chrome.i18n.getMessage('ARCHIVING'));
                     break;
-                case 'archive':
+                case globals.PAGES.ARCHIVE:
                     helpers.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
                     break;
             }
@@ -608,7 +607,7 @@ class App {
      * @return {void}
      */
     changePage(page, isPageLoad) {
-        page = page ? page : 'list';
+        page = page ? page : globals.PAGES.LIST;
 
         if (!Object.values(globals.PAGES).includes(page)) {
             return;
@@ -625,9 +624,9 @@ class App {
         helpers.show(document.querySelector('#js-fullSync'), true);
 
         switch (page) {
-            case 'list':
+            case globals.PAGES.LIST:
                 helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
-                this.setActivePage('list');
+                this.setActivePage(globals.PAGES.LIST);
 
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
@@ -638,8 +637,8 @@ class App {
                 this.render();
                 this.getContent();
                 break;
-            case 'archive':
-                this.setActivePage('archive');
+            case globals.PAGES.ARCHIVE:
+                this.setActivePage(globals.PAGES.ARCHIVE);
 
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
@@ -741,7 +740,10 @@ class App {
     startSync() {
         this.toggleLoggedInContent(true);
 
-        if (settings.getDefaultPage() === null || (settings.getDefaultPage() && settings.getDefaultPage() === 'list')) {
+        if (
+            settings.getDefaultPage() === null ||
+            (settings.getDefaultPage() && settings.getDefaultPage() === globals.PAGES.LIST)
+        ) {
             this.render();
             document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
         } else {
@@ -762,7 +764,10 @@ class App {
         settings.init();
         tags.init();
 
-        if ((!settings.getDefaultPage() || settings.getDefaultPage() === 'list') && settings.isTimeToUpdate()) {
+        if (
+            (!settings.getDefaultPage() || settings.getDefaultPage() === globals.PAGES.LIST) &&
+            settings.isTimeToUpdate()
+        ) {
             helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
             this.getContent();
         }
@@ -799,8 +804,8 @@ class App {
     logout() {
         helpers.showMessage(`${chrome.i18n.getMessage('LOGGING_OUT')}...`, true, false, false);
         localStorage.clear();
-        this.setActivePage('list');
-        header.changeMenuActiveState('list');
+        this.setActivePage(globals.PAGES.LIST);
+        header.changeMenuActiveState(globals.PAGES.LIST);
         document.querySelector('#js-title').innerText = chrome.i18n.getMessage('EXTENSION_SHORT_NAME');
 
         this.removeLoggedInClickEvents();

@@ -60,7 +60,7 @@ class Settings {
      * @param {String} page - Page to set.
      * @return {void}
      */
-    setDefaultPage(page = 'list') {
+    setDefaultPage(page = globals.PAGES.LIST) {
         helpers.setToStorage('defaultPage', page);
     }
 
@@ -395,7 +395,7 @@ class Settings {
             e.preventDefault();
             helpers.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 
-            if (pocket.getActivePage() === 'list') {
+            if (pocket.getActivePage() === globals.PAGES.LIST) {
                 search.reset(true);
             }
 

@@ -33,14 +33,14 @@ class ApiService {
         let state;
 
         switch (pocket.getActivePage()) {
-            case 'list':
+            case globals.PAGES.LIST:
                 if (helpers.getFromStorage('listSince')) {
                     this._fetchData.body.since = helpers.getFromStorage('listSince');
                 } else {
                     state = 'unread';
                 }
                 break;
-            case 'archive':
+            case globals.PAGES.ARCHIVE:
                 if (pocket.isArchiveLoaded()) {
                     this._fetchData.body.since = helpers.getFromStorage('archiveSince');
                 } else {
@@ -55,10 +55,10 @@ class ApiService {
             this._fetchData.body.since = null;
 
             switch (pocket.getActivePage()) {
-                case 'list':
+                case globals.PAGES.LIST:
                     this._fetchData.body.state = 'unread';
                     break;
-                case 'archive':
+                case globals.PAGES.ARCHIVE:
                     this._fetchData.body.state = 'archive';
                     break;
             }

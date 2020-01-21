@@ -1,4 +1,5 @@
 import * as helpers from '../utils/helpers.js';
+import * as globals from '../utils/globals.js';
 import pocket from '../App.js';
 import { item, lazyload } from './index.js';
 
@@ -221,7 +222,7 @@ class Search {
         const resultsStringPrefix = document.querySelector('#js-resultsStringPrefix');
         const tagString = isTag ? ` ${chrome.i18n.getMessage('TAG')}` : '';
         const currentListString =
-            pocket.getActivePage() === 'list'
+            pocket.getActivePage() === globals.PAGES.LIST
                 ? ` ${chrome.i18n.getMessage('MY_LIST')}`
                 : ` ${chrome.i18n.getMessage('ARCHIVE')}`;
         if (count === 0) {

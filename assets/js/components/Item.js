@@ -1,4 +1,5 @@
 import * as helpers from '../utils/helpers.js';
+import * as globals from '../utils/globals.js';
 import pocket from '../App.js';
 import { modal, tags, search, settings } from './index.js';
 import { apiService } from '../services/index.js';
@@ -175,11 +176,11 @@ class Item {
         let isRead = false;
 
         switch (pocket.getActivePage()) {
-            case 'list':
+            case globals.PAGES.LIST:
                 readNode = helpers.createTextNode(chrome.i18n.getMessage('MARK_READ'));
                 isRead = false;
                 break;
-            case 'archive':
+            case globals.PAGES.ARCHIVE:
                 readNode = helpers.createTextNode(chrome.i18n.getMessage('MARK_UNREAD'));
                 isRead = true;
                 break;
@@ -246,7 +247,7 @@ class Item {
      * @param {Boolean} doPrepend - If item has to be prepended.
      * @return {*}
      */
-    render(itemElement, list = 'list', doPrepend = false) {
+    render(itemElement, list = globals.PAGES.LIST, doPrepend = false) {
         const listSelector = '#js-' + list;
         const listElement = document.querySelector(listSelector);
 
@@ -273,13 +274,13 @@ class Item {
             helpers.setToStorage('listFromLocalStorage', JSON.stringify(array));
 
             helpers.setToStorage('listCount', (parseInt(helpers.getFromStorage('listCount'), 10) + 1).toString());
-            if (pocket.getActivePage() === 'list') {
+            if (pocket.getActivePage() === globals.PAGES.LIST) {
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
             }
 
             helpers.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
 
-            if (pocket.getActivePage() === 'list') {
+            if (pocket.getActivePage() === globals.PAGES.LIST) {
                 const createdItem = this.create(response.item);
                 let doPrepend = false;
 
@@ -294,7 +295,7 @@ class Item {
                     return;
                 }
 
-                this.render(createdItem, 'list', doPrepend);
+                this.render(createdItem, globals.PAGES.LIST, doPrepend);
             }
         });
     }
