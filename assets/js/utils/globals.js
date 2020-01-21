@@ -11,6 +11,8 @@ export const API = {
     url_add: API_URL + API_VERSION + '/add'
 };
 
+export const LOAD_COUNT = 18;
+
 export const PAGES = {
     LIST: 'list',
     ARCHIVE: 'archive'
@@ -20,7 +22,8 @@ export const THEMES = {
     LIGHT: 'theme-light',
     DARK: 'theme-dark',
     SEPIA: 'theme-sepia',
-    DYNAMIC: 'theme-dynamic'
+    DYNAMIC: 'theme-dynamic',
+    SYSTEM_PREFERENCE: 'theme-system-preference'
 };
 
 export const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];

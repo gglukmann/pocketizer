@@ -175,6 +175,9 @@
     "CHOOSE_THEME": {
         "message": "Choose theme"
     },
+    "SYSTEM_PREFERENCE": {
+        "message": "System preference"
+    },
     "LIGHT": {
         "message": "Light"
     },

@@ -10,7 +10,7 @@ class App {
     constructor() {
         this.active_page = globals.PAGES.LIST;
         this.items_shown = 0;
-        this.load_count = 18;
+        this.load_count = globals.LOAD_COUNT;
 
         this.scroll = {
             lastKnownScrollY: 0,

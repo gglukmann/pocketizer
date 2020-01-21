@@ -130,7 +130,15 @@ class Settings {
         }
 
         if (Object.values(globals.THEMES).includes(theme)) {
-            if (theme === globals.THEMES.DYNAMIC) {
+            if (theme === globals.THEMES.SYSTEM_PREFERENCE) {
+                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    helpers.addClass(document.body, theme);
+                    helpers.addClass(document.body, 'theme-system-preference-dark');
+                } else {
+                    helpers.addClass(document.body, theme);
+                    helpers.removeClass(document.body, 'theme-system-preference-dark');
+                }
+            } else if (theme === globals.THEMES.DYNAMIC) {
                 helpers
                     .getCurrentPosition()
                     .then(position => {
@@ -138,7 +146,7 @@ class Settings {
                         helpers.addClass(document.body, isNight ? globals.THEMES.DARK : globals.THEMES.LIGHT);
                     })
                     .catch(() => {
-                        this.setTheme(globals.THEMES.LIGHT)
+                        this.setTheme(globals.THEMES.LIGHT);
                         helpers.showMessage(
                             chrome.i18n.getMessage('ERROR_GETTING_LOCATION'),
                             false,
@@ -301,7 +309,22 @@ class Settings {
                 const value = e.detail.value.toString();
 
                 if (Object.values(globals.THEMES).includes(value)) {
-                    if (value === globals.THEMES.DYNAMIC) {
+                    if (value === globals.THEMES.SYSTEM_PREFERENCE) {
+                        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                            helpers.removeClass(document.body, this.getTheme());
+                            helpers.addClass(document.body, value);
+                            helpers.addClass(document.body, 'theme-system-preference-dark');
+                            this.setTheme(value);
+
+                            selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                        } else {
+                            helpers.removeClass(document.body, this.getTheme());
+                            helpers.removeClass(document.body, 'theme-system-preference-dark');
+                            this.setTheme(value);
+
+                            selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                        }
+                    } else if (value === globals.THEMES.DYNAMIC) {
                         selector.showMessage(e, true, chrome.i18n.getMessage('LOADING_THEME'), 'infinite');
 
                         helpers
@@ -321,6 +344,7 @@ class Settings {
                             });
                     } else {
                         helpers.removeClass(document.body, this.getTheme());
+                        helpers.removeClass(document.body, 'theme-system-preference-dark');
                         helpers.addClass(document.body, value);
                         this.setTheme(value);
 
