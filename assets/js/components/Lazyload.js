@@ -19,7 +19,7 @@ class Lazyload {
         const config = {
             // If the image gets within 50px in the Y axis, start the download.
             rootMargin: '50px 0px',
-            threshold: 0.01,
+            threshold: 0.01
         };
         this.imageCount = images.length;
 

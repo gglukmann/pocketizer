@@ -57,10 +57,7 @@ Date.prototype.sunriseSet = function(latitude, longitude, sunrise, zenith) {
     sunMeanAnomaly = 0.9856 * approxTimeOfEventInDays - 3.289;
 
     sunTrueLongitude =
-        sunMeanAnomaly +
-        1.916 * Math.sinDeg(sunMeanAnomaly) +
-        0.02 * Math.sinDeg(2 * sunMeanAnomaly) +
-        282.634;
+        sunMeanAnomaly + 1.916 * Math.sinDeg(sunMeanAnomaly) + 0.02 * Math.sinDeg(2 * sunMeanAnomaly) + 282.634;
     sunTrueLongitude = Math.mod(sunTrueLongitude, 360);
 
     ascension = 0.91764 * Math.tanDeg(sunTrueLongitude);
@@ -74,8 +71,7 @@ Date.prototype.sunriseSet = function(latitude, longitude, sunrise, zenith) {
 
     sinDec = 0.39782 * Math.sinDeg(sunTrueLongitude);
     cosDec = Math.cosDeg(Math.asinDeg(sinDec));
-    cosLocalHourAngle =
-        (Math.cosDeg(zenith) - sinDec * Math.sinDeg(latitude)) / (cosDec * Math.cosDeg(latitude));
+    cosLocalHourAngle = (Math.cosDeg(zenith) - sinDec * Math.sinDeg(latitude)) / (cosDec * Math.cosDeg(latitude));
 
     localHourAngle = Math.acosDeg(cosLocalHourAngle);
 

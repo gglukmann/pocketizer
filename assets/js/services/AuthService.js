@@ -11,8 +11,8 @@ class AuthService {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json; charset=UTF8',
-                'X-Accept': 'application/json',
-            },
+                'X-Accept': 'application/json'
+            }
         };
     }
 
@@ -30,7 +30,7 @@ class AuthService {
 
             return {
                 status: 'authenticated',
-                user: username,
+                user: username
             };
         } catch (e) {
             helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
@@ -50,7 +50,7 @@ class AuthService {
 
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,
-            redirect_uri: globals.API.redirect_url,
+            redirect_uri: globals.API.redirect_url
         });
 
         return helpers.makeFetch(globals.API.url_request, this._fetchData);
@@ -65,10 +65,8 @@ class AuthService {
      */
     launchChromeWebAuthFlow(requestToken) {
         const options = {
-            url: `${globals.API.url_auth}?request_token=${requestToken}&redirect_uri=${
-                globals.API.redirect_url
-            }`,
-            interactive: true,
+            url: `${globals.API.url_auth}?request_token=${requestToken}&redirect_uri=${globals.API.redirect_url}`,
+            interactive: true
         };
 
         return new Promise((resolve, reject) => {
@@ -93,7 +91,7 @@ class AuthService {
     getAccessToken(requestToken) {
         this._fetchData.body = JSON.stringify({
             consumer_key: __consumer_key,
-            code: requestToken,
+            code: requestToken
         });
 
         return helpers.makeFetch(globals.API.url_authorize, this._fetchData).then(response => {

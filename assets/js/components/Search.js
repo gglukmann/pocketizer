@@ -8,7 +8,7 @@ class Search {
      */
     constructor() {
         this.state = {
-            hasSearched: false,
+            hasSearched: false
         };
 
         this.makeSearchClick = this.handleMakeSearchClick.bind(this);
@@ -44,12 +44,8 @@ class Search {
      * @return {void}
      */
     bindEvents() {
-        document
-            .querySelector('#js-searchInput')
-            .addEventListener('keyup', this.makeSearchClick, false);
-        document
-            .querySelector('#js-emptySearch')
-            .addEventListener('click', this.closeSearchClick, false);
+        document.querySelector('#js-searchInput').addEventListener('keyup', this.makeSearchClick, false);
+        document.querySelector('#js-emptySearch').addEventListener('click', this.closeSearchClick, false);
     }
 
     /**
@@ -59,12 +55,8 @@ class Search {
      * @return {void}
      */
     removeEvents() {
-        document
-            .querySelector('#js-searchInput')
-            .removeEventListener('keyup', this.makeSearchClick, false);
-        document
-            .querySelector('#js-emptySearch')
-            .removeEventListener('click', this.closeSearchClick, false);
+        document.querySelector('#js-searchInput').removeEventListener('keyup', this.makeSearchClick, false);
+        document.querySelector('#js-emptySearch').removeEventListener('click', this.closeSearchClick, false);
     }
 
     /**
@@ -233,15 +225,13 @@ class Search {
                 ? ` ${chrome.i18n.getMessage('MY_LIST')}`
                 : ` ${chrome.i18n.getMessage('ARCHIVE')}`;
         if (count === 0) {
-            resultsStringElement.innerText =
-                chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
+            resultsStringElement.innerText = chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
             helpers.hide(searchCountElement);
         } else {
             resultsStringElement.innerText =
-                (count === 1
-                    ? chrome.i18n.getMessage('RESULT_MESSAGE')
-                    : chrome.i18n.getMessage('RESULTS_MESSAGE')) + tagString;
+                (count === 1 ? chrome.i18n.getMessage('RESULT_MESSAGE') : chrome.i18n.getMessage('RESULTS_MESSAGE')) +
+                tagString;
             resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
             helpers.show(searchCountElement, true);
             searchCountElement.innerText = count;

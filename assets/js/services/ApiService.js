@@ -1,5 +1,5 @@
 import __consumer_key from '../../../env.js';
-import { authService } from './index.js';
+import { authService } from './index.js';
 import pocket from '../App.js';
 import * as helpers from '../utils/helpers.js';
 import * as globals from '../utils/globals.js';
@@ -12,8 +12,8 @@ class ApiService {
         this._fetchData = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json; charset=UTF8',
-            },
+                'Content-Type': 'application/json; charset=UTF8'
+            }
         };
     }
 
@@ -27,7 +27,7 @@ class ApiService {
         this._fetchData.body = {
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            detailType: 'complete',
+            detailType: 'complete'
         };
 
         let state;
@@ -66,15 +66,14 @@ class ApiService {
 
         this._fetchData.body = JSON.stringify(this._fetchData.body);
 
-        return await helpers.makeFetch(globals.API.url_get, this._fetchData)
-            .catch(error => {
-                console.log(error);
-                helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
+        return await helpers.makeFetch(globals.API.url_get, this._fetchData).catch(error => {
+            console.log(error);
+            helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
 
-                if (error.response.status === 401) {
-                    pocket.logout();
-                }
-            });
+            if (error.response.status === 401) {
+                pocket.logout();
+            }
+        });
     }
 
     /**
@@ -88,18 +87,17 @@ class ApiService {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            actions: actions,
+            actions: actions
         });
 
-        return await helpers.makeFetch(globals.API.url_send, this._fetchData)
-            .catch(error => {
-                console.log(error);
-                helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
+        return await helpers.makeFetch(globals.API.url_send, this._fetchData).catch(error => {
+            console.log(error);
+            helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
 
-                if (error.response.status === 401) {
-                    pocket.logout();
-                }
-            });
+            if (error.response.status === 401) {
+                pocket.logout();
+            }
+        });
     }
 
     /**
@@ -113,18 +111,17 @@ class ApiService {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            url: data.url,
+            url: data.url
         });
 
-        return await helpers.makeFetch(globals.API.url_add, this._fetchData)
-            .catch(error => {
-                console.log(error);
-                helpers.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
+        return await helpers.makeFetch(globals.API.url_add, this._fetchData).catch(error => {
+            console.log(error);
+            helpers.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
 
-                if (error.response.status === 401) {
-                    pocket.logout();
-                }
-            });
+            if (error.response.status === 401) {
+                pocket.logout();
+            }
+        });
     }
 }
 

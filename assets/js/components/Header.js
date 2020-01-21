@@ -8,7 +8,7 @@ class Header {
      */
     constructor() {
         this.options = {
-            scrolledClass: 'is-scrolled',
+            scrolledClass: 'is-scrolled'
         };
 
         this.timeout = false;
@@ -37,12 +37,8 @@ class Header {
     bindEvents() {
         window.addEventListener('scroll', this.scrollHeader, false);
         document.body.addEventListener('click', this.menuClicks, false);
-        document
-            .querySelector('#js-searchButton')
-            .addEventListener('click', this.searchButtonClick, false);
-        document
-            .querySelector('#js-fullSync')
-            .addEventListener('click', this.fullSyncButtonClick, false);
+        document.querySelector('#js-searchButton').addEventListener('click', this.searchButtonClick, false);
+        document.querySelector('#js-fullSync').addEventListener('click', this.fullSyncButtonClick, false);
     }
 
     /**
@@ -54,12 +50,8 @@ class Header {
     removeEvents() {
         window.removeEventListener('scroll', this.scrollHeader, false);
         document.body.removeEventListener('click', this.menuClicks, false);
-        document
-            .querySelector('#js-searchButton')
-            .removeEventListener('click', this.searchButtonClick, false);
-        document
-            .querySelector('#js-fullSync')
-            .removeEventListener('click', this.fullSyncButtonClick, false);
+        document.querySelector('#js-searchButton').removeEventListener('click', this.searchButtonClick, false);
+        document.querySelector('#js-fullSync').removeEventListener('click', this.fullSyncButtonClick, false);
     }
 
     /**

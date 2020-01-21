@@ -156,8 +156,5 @@ class Autocomplete {
     }
 }
 
-const autocomplete = new Autocomplete(
-    '#js-tagsInput',
-    JSON.parse(helpers.getFromStorage('tags')),
-);
+const autocomplete = new Autocomplete('#js-tagsInput', JSON.parse(helpers.getFromStorage('tags')));
 export default autocomplete;

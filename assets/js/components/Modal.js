@@ -80,9 +80,7 @@ class Modal {
             !this.preventClose &&
             (e.target.id !== 'js-tagsInput' ||
                 e.target.parentNode.querySelector('.autocomplete') === null ||
-                !e.target.parentNode
-                    .querySelector('.autocomplete')
-                    .classList.contains('is-open')) &&
+                !e.target.parentNode.querySelector('.autocomplete').classList.contains('is-open')) &&
             e.keyCode === 27
         ) {
             this.close();

@@ -9,13 +9,7 @@
  * @param {Number} timeout - Timeout for how long to show message.
  * @return {void}
  */
-export function showMessage(
-    message,
-    isSuccess = true,
-    hasSuffix = true,
-    hasEnding = true,
-    timeout = 2000,
-) {
+export function showMessage(message, isSuccess = true, hasSuffix = true, hasEnding = true, timeout = 2000) {
     if (hasSuffix) {
         message += ` ${chrome.i18n.getMessage(isSuccess ? 'SUCCESSFUL' : 'FAILED')}!`;
     }
@@ -373,7 +367,7 @@ export function getCurrentPosition() {
             },
             () => {
                 reject();
-            },
+            }
         );
     });
 }

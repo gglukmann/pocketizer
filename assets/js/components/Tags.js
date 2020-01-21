@@ -1,5 +1,5 @@
 import * as helpers from '../utils/helpers.js';
-import { search } from './index.js';
+import { search } from './index.js';
 
 class Tags {
     constructor() {
