@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://ladybug.dev">
+  <a href="http://gglukmann.github.io/pocket">
     <img alt="http://gglukmann.github.io/pocket" src="http://gglukmann.github.io/pocket/icon64.png" width="64" />
   </a>
 </p>
