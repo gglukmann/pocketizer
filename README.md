@@ -1,6 +1,11 @@
-[![alt text](http://gglukmann.github.io/pocket/icon64.png)](http://gglukmann.github.io/pocket/)
-
-# New tab - Pocketizer
+<p align="center">
+  <a href="https://ladybug.dev">
+    <img alt="http://gglukmann.github.io/pocket" src="http://gglukmann.github.io/pocket/icon64.png" width="320" />
+  </a>
+</p>
+<h1 align="center">
+  New tab - Pocketizer
+</h1>
 
 > Browser extension - Unofficial Pocket new tab extension for Chrome and Firefox
 
