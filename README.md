@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://ladybug.dev">
-    <img alt="http://gglukmann.github.io/pocket" src="http://gglukmann.github.io/pocket/icon64.png" width="320" />
+    <img alt="http://gglukmann.github.io/pocket" src="http://gglukmann.github.io/pocket/icon64.png" width="64" />
   </a>
 </p>
 <h1 align="center">
