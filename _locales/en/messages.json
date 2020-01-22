@@ -223,17 +223,17 @@
     "SAVE": {
         "message": "Save"
     },
-    "ORDER": {
-        "message": "Order"
+    "SHOW_ITEMS_NEWEST_FIRST": {
+        "message": "Show items by newest first"
     },
-    "ORDER_ITEMS": {
-        "message": "Order list asc/desc"
+    "SHOW_ITEMS_OLDEST_FIRST": {
+        "message": "Show items by oldest first"
     },
-    "ASC": {
-        "message": "ascending"
+    "NEWEST_FIRST": {
+        "message": "Newest first"
     },
-    "DESC": {
-        "message": "descending"
+    "OLDEST_FIRST": {
+        "message": "Oldest first"
     },
     "CHOOSE_ORDER": {
         "message": "Choose default order of My List items"
@@ -248,7 +248,7 @@
         "message": "Choose items update interval from Pocket"
     },
     "ALWAYS": {
-        "message": "opening new tab"
+        "message": "Opening new tab"
     },
     "ARCHIVE_ITEM_AFTER_OPEN": {
         "message": "Archive Item after open?"

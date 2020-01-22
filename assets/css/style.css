@@ -1353,10 +1353,6 @@ a > svg {
     margin-right: calc(var(--grid-gutter) / 2);
 }
 
-.filter__button .btn__icon {
-    transition: transform 0.25s;
-}
-
 .filter__button.is-rotated .btn__icon {
     transform: rotate(180deg);
 }

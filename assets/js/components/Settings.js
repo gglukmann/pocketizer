@@ -226,14 +226,14 @@ class Settings {
      */
     rotateOrderButton(orderItemsAsc, e) {
         const target = e && e.target ? e.target : document.querySelector('#js-orderButton');
-        const orderDirectionText = document.querySelector('#js-orderDirectionText');
+        const orderButton = document.querySelector('#js-orderButton');
 
         if (orderItemsAsc) {
             target.classList.remove('is-rotated');
-            orderDirectionText.innerText = chrome.i18n.getMessage('DESC');
+            orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_OLDEST_FIRST'));
         } else {
             helpers.addClass(target, 'is-rotated');
-            orderDirectionText.innerText = chrome.i18n.getMessage('ASC');
+            orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_NEWEST_FIRST'));
         }
     }
 
