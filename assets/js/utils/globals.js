@@ -32,3 +32,8 @@ export const ORDER = {
     DESCENDING: 'desc',
     ASCENDING: 'asc'
 };
+
+export const VIEW_TYPES = {
+    GRID: 'grid',
+    LIST: 'list',
+};

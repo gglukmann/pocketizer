@@ -120,6 +120,10 @@ a > svg {
     width: 100%;
 }
 
+.container--narrow {
+    max-width: calc(var(--page-width) / 1.5);
+}
+
 .icon {
     height: 1em;
     width: 1em;
@@ -332,6 +336,11 @@ a > svg {
     padding: 10px 0;
 }
 
+.menu__link:focus {
+    outline: 1px dashed;
+    outline-offset: 3px;
+}
+
 @media (min-width: 850px) {
     .header.is-scrolled .menu__link {
         padding-top: 16px;
@@ -443,19 +452,23 @@ a > svg {
 .item {
     display: flex;
     position: relative;
-    width: 100%;
+    width: calc(100% / 2);
 }
 
 @media (min-width: 720px) {
     .item {
-        max-width: calc(100% / 3);
+        width: calc(100% / 3);
     }
 }
 
 @media (min-width: 1024px) {
     .item {
-        max-width: calc(100% / 4);
+        width: calc(100% / 4);
     }
+}
+
+.container--narrow .item {
+    width: 100%;
 }
 
 .item.move-up {
@@ -470,6 +483,7 @@ a > svg {
     border: 1px solid var(--border-light);
     background-color: var(--white);
     padding: 0 0 4em;
+    margin: calc(var(--grid-gutter) / 4);
     transition: opacity 0.2s ease-out;
     width: 100%;
     overflow: hidden;
@@ -482,6 +496,12 @@ a > svg {
         height: 300px;
         padding-bottom: 0;
     }
+}
+
+.container--narrow .item__content {
+    margin: calc(var(--grid-gutter) / 4);
+    height: auto;
+    padding-bottom: 4em;
 }
 
 .theme-system-preference-dark .item__content,
@@ -570,6 +590,10 @@ a > svg {
     .item__excerpt {
         display: block;
     }
+}
+
+.container--narrow .item__excerpt--background {
+    display: none;
 }
 
 .item__excerpt--background {
@@ -697,13 +721,17 @@ a > svg {
     transition: background-position 0.1s linear;
     width: auto;
     cursor: pointer;
-    outline: none;
 }
 
 .btn:hover {
     background-position: 0 -15px;
     color: var(--white);
     text-decoration: none;
+}
+
+.btn:focus {
+    outline: 1px dashed;
+    outline-offset: 3px;
 }
 
 .btn:disabled {
@@ -1113,6 +1141,10 @@ a > svg {
     color: white;
 }
 
+.selector__input:focus ~ .selector__indicator {
+    outline: 2px solid var(--red);
+}
+
 .selector__input:checked ~ .selector__indicator {
     background-color: var(--color-primary);
     border-color: var(--color-primary);
@@ -1360,6 +1392,17 @@ a > svg {
 .filter__button .btn__text {
     font-size: 0.6em;
     font-weight: normal;
+}
+
+.filter__button .view-type-grid {
+    display: none;
+}
+
+.filter__button.is-view-type-list .view-type-list {
+    display: none;
+}
+.filter__button.is-view-type-list .view-type-grid {
+    display: block;
 }
 
 /* HELPERS */

@@ -258,5 +258,20 @@
     },
     "DISABLED": {
         "message": "Disabled"
+    },
+    "DISPLAY_IN_LIST": {
+        "message": "Display items in list"
+    },
+    "DISPLAY_IN_GRID": {
+        "message": "Display items in grid"
+    },
+    "CHOOSE_DEFAULT_VIEW_TYPE": {
+        "message": "Choose default view type"
+    },
+    "GRID": {
+        "message": "Grid"
+    },
+    "LIST": {
+        "message": "List"
     }
 }

@@ -36,6 +36,7 @@ class App {
         this.handleInternetConnection();
         helpers.localizeHtml();
         settings.loadTheme(); // this is here for faster load time
+        settings.loadViewType();
 
         if (authService.isLoggedIn()) {
             this.startSync();
@@ -252,7 +253,7 @@ class App {
             this.getContent();
         } else if (array.length === 0) {
             helpers.show(document.querySelector('#js-empty-list-message'));
-            helpers.hide(document.querySelector('#js-orderButton'));
+            helpers.hide(document.querySelector('#js-filterButtons'));
         } else {
             tags.createTags(array);
 
@@ -262,7 +263,7 @@ class App {
 
             array = array.filter((item, index) => index < this.load_count);
             helpers.hide(document.querySelector('#js-empty-list-message'));
-            helpers.show(document.querySelector('#js-orderButton'), true);
+            helpers.show(document.querySelector('#js-filterButtons'), true);
 
             const domItemsArray = this.createItems(array);
             this.createSentinel();
@@ -412,6 +413,15 @@ class App {
             this.orderItemsAsc = !this.orderItemsAsc;
             this.render();
             settings.rotateOrderButton(this.orderItemsAsc, e);
+        } else if (e.target.id === 'js-viewTypeButton') {
+            const mainSelector = document.querySelector('main');
+            helpers.toggleClass(mainSelector, 'container--narrow');
+
+            const viewType = mainSelector.classList.contains('container--narrow') ? 'list' : 'grid';
+            settings.showRightViewTypeButton(viewType, e);
+
+            lazyload.load();
+            item.calcBackgroundHeights();
         } else if (e.target.classList.contains('js-link')) {
             const canSetAsArchived = settings.getArchiveAfterOpen() && this.getActivePage() === globals.PAGES.LIST;
 
@@ -681,7 +691,7 @@ class App {
             helpers.show(document.querySelector('#js-searchButton'), true);
             helpers.show(document.querySelector('#js-settings'), true);
             helpers.show(document.querySelector('#js-fullSync'), true);
-            helpers.show(document.querySelector('#js-orderButton'), true);
+            helpers.show(document.querySelector('#js-filterButtons'), true);
         } else {
             helpers.show(document.querySelector('#js-default-message'));
             document.querySelector('#js-count').innerText = '0';
@@ -697,7 +707,7 @@ class App {
             helpers.hide(document.querySelector('#js-settings'));
             helpers.hide(document.querySelector('#js-fullSync'));
             helpers.hide(document.querySelector('#js-tags'));
-            helpers.hide(document.querySelector('#js-orderButton'));
+            helpers.hide(document.querySelector('#js-filterButtons'));
         }
     }
 

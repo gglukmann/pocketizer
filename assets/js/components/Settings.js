@@ -96,6 +96,17 @@ class Settings {
     }
 
     /**
+     * Set items order.
+     *
+     * @function setOrder
+     * @param {String} order - Order to set.
+     * @return {void}
+     */
+    setOrder(order = globals.ORDER.DESCENDING) {
+        helpers.setToStorage('order', order);
+    }
+
+    /**
      * Get items order to load on extension load.
      *
      * @function getOrder
@@ -103,6 +114,17 @@ class Settings {
      */
     getOrder() {
         return helpers.getFromStorage('order');
+    }
+
+    /**
+     * Set update interval.
+     *
+     * @function setUpdateInterval
+     * @param {String} interval - Interval to set.
+     * @return {void}
+     */
+    setUpdateInterval(interval = globals.UPDATE_INTERVALS[0]) {
+        return helpers.setToStorage('updateInterval', interval);
     }
 
     /**
@@ -225,11 +247,11 @@ class Settings {
      * @return {void}
      */
     rotateOrderButton(orderItemsAsc, e) {
-        const target = e && e.target ? e.target : document.querySelector('#js-orderButton');
         const orderButton = document.querySelector('#js-orderButton');
+        const target = e && e.target ? e.target : orderButton;
 
         if (orderItemsAsc) {
-            target.classList.remove('is-rotated');
+            helpers.removeClass(target, 'is-rotated');
             orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_OLDEST_FIRST'));
         } else {
             helpers.addClass(target, 'is-rotated');
@@ -260,7 +282,7 @@ class Settings {
      * Set the value of "archive after open"
      *
      * @function setArchiveAfterOpen
-     * @param {Boolean}
+     * @param {String} val - ['enabled', 'disabled']
      * @return {void}
      */
     setArchiveAfterOpen(val) {
@@ -287,12 +309,78 @@ class Settings {
         const archiveAfterOpen = this.getArchiveAfterOpen();
 
         if (archiveAfterOpen) {
-            const archiveAfterOpenSelector = [...document.querySelectorAll('[name=archive-after-open]')];
+            const archiveAfterOpenSelector = [...document.querySelectorAll('[name=selector-archive-after-open]')];
             for (const selector of archiveAfterOpenSelector) {
                 if (selector.value === archiveAfterOpen) {
                     selector.checked = true;
                 }
             }
+        }
+    }
+
+    /**
+     * Set the value of view type
+     *
+     * @function setViewType
+     * @param {String} type - View type
+     * @return {void}
+     */
+    setViewType(type = globals.VIEW_TYPES.GRID) {
+        helpers.setToStorage('viewType', type);
+    }
+
+    /**
+     * Get "view type" to load on extension load.
+     *
+     * @function getViewType
+     * @return {String | null}
+     */
+    getViewType() {
+        return helpers.getFromStorage('viewType');
+    }
+
+    /**
+     * Load the "view type" option
+     *
+     * @function loadViewType
+     */
+    loadViewType() {
+        const viewType = this.getViewType();
+
+        if (viewType) {
+            if (viewType === globals.VIEW_TYPES.LIST) {
+                helpers.addClass(document.querySelector('main'), 'container--narrow');
+            }
+
+            this.showRightViewTypeButton(viewType);
+
+            const viewTypeSelector = [...document.querySelectorAll('[name=selector-view-type]')];
+            for (const selector of viewTypeSelector) {
+                if (selector.value === viewType) {
+                    selector.checked = true;
+                }
+            }
+        }
+    }
+
+    /**
+     * Add class and change text in view type by button.
+     *
+     * @function showRightViewTypeButton
+     * @param {String} viewType - View type.
+     * @param {Event} e - Event from button click.
+     * @return {void}
+     */
+    showRightViewTypeButton(viewType, e) {
+        const viewTypeButton = document.querySelector('#js-viewTypeButton');
+        const target = e && e.target ? e.target : viewTypeButton;
+
+        if (viewType === globals.VIEW_TYPES.LIST) {
+            helpers.addClass(target, 'is-view-type-list');
+            viewTypeButton.setAttribute('title', chrome.i18n.getMessage('DISPLAY_IN_GRID'));
+        } else {
+            helpers.removeClass(target, 'is-view-type-list');
+            viewTypeButton.setAttribute('title', chrome.i18n.getMessage('DISPLAY_IN_LIST'));
         }
     }
 
@@ -365,7 +453,7 @@ class Settings {
                 const order = e.detail.value.toString();
 
                 if (Object.values(globals.ORDER).includes(order)) {
-                    helpers.setToStorage('order', order);
+                    this.setOrder(order);
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
@@ -373,15 +461,24 @@ class Settings {
                 const interval = e.detail.value.toString();
 
                 if (globals.UPDATE_INTERVALS.includes(interval)) {
-                    helpers.setToStorage('updateInterval', interval);
+                    this.setUpdateInterval(interval);
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
-            case 'archive-after-open':
+            case 'selector-archive-after-open':
                 const archiveAfterOpen = e.detail.value.toString();
 
                 this.setArchiveAfterOpen(archiveAfterOpen);
                 selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                break;
+            case 'selector-view-type':
+                const viewType = e.detail.value.toString();
+
+                if (Object.values(globals.VIEW_TYPES).includes(viewType)) {
+                    this.setViewType(viewType);
+                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                }
+                break;
         }
     }
 

@@ -267,6 +267,18 @@ export function removeClass(element, className) {
 }
 
 /**
+ * Toggle class from HTMLElement.
+ *
+ * @function toggleClass
+ * @param {Element} element - HTMLElement.
+ * @param {String} className - Class name to toggle.
+ * @returns {void}
+ */
+export function toggleClass(element, className) {
+    element.classList.toggle(className);
+}
+
+/**
  * Hide element.
  *
  * @function hide
