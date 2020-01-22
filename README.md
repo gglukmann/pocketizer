@@ -15,27 +15,27 @@ You can mark your items as read, delete them or add to favorites list. You can f
 
 ![New Tab](http://gglukmann.github.io/pocket/screenshots/screenshot1280x800.jpg)
 
-
 ## Installation
 
 ### For all users
 
-- Install it from [Chrome Webstore](https://chrome.google.com/webstore/detail/new-tab-pocket/ikndkhohinloomoacdggllledgjehkcf).
-- Install it from [Firefox Addons](https://addons.mozilla.org/en-GB/firefox/addon/new-tab-pocket/).
-- Log in with your pocket account and you're done.
+-   Install it from [Chrome Webstore](https://chrome.google.com/webstore/detail/new-tab-pocket/ikndkhohinloomoacdggllledgjehkcf).
+-   Install it from [Firefox Addons](https://addons.mozilla.org/en-GB/firefox/addon/new-tab-pocket/).
+-   Log in with your pocket account and you're done.
 
 ### For developers
 
-- Get your [pocket consumer key](https://getpocket.com/developer/apps/new)
-- Rename env.example.js to env.js
-- Add consumer key to env.js
-- Install it for Chrome [manually](https://stackoverflow.com/a/24577660/5762960)
-- Install it for Firefox [manually](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox)
-- Start developing.
-
+-   Get your [pocket consumer key](https://getpocket.com/developer/apps/new)
+-   Rename env.example.js to env.js
+-   Add consumer key to env.js
+-   Install it for Chrome [manually](https://stackoverflow.com/a/24577660/5762960)
+-   Install it for Firefox [manually](https://developer.mozilla.org/en-US/Add-ons/WebExtensions/Temporary_Installation_in_Firefox)
+-   Start developing.
 
 ## Contribution
+
 If you have any feedback, please let me know. Reach me out at gglukmann@gmail.com or on twitter [@glukmann](http://twitter.com/glukmann)
 
 ## License
+
 MIT © [Gert Glükmann](http://fortis.planet.ee/gg/)

@@ -219,6 +219,7 @@ class Settings {
 
     /**
      * Set order button direction and init selector in settings.
+     * This function does not handle real ordering of items, this is done in App.js
      *
      * @function loadOrder
      * @return {void}

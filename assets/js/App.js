@@ -27,7 +27,7 @@ class App {
     }
 
     /**
-     * Initialize Pocket.
+     * Initialize Pocketizer.
      *
      * @function init
      * @return {void}

@@ -464,14 +464,13 @@ class Item {
                     titleHeight = child.offsetHeight;
                 }
 
-                if (
-                    child.classList.contains('js-itemExcerpt') &&
-                    !document.querySelector('main').classList.contains('container--narrow')
-                ) {
-                    // 300 is item height, 20 is item__time, 52 is item__content padding bottom
-                    child.style.height = 300 - (titleHeight + 20 + 52) + 'px';
-                } else {
-                    child.style.height = 'auto';
+                if (child.classList.contains('js-itemExcerpt')) {
+                    if (document.querySelector('main').classList.contains('container--narrow')) {
+                        child.style.height = 'auto';
+                    } else {
+                        // 300 is item height, 20 is item__time, 52 is item__content padding bottom
+                        child.style.height = 300 - (titleHeight + 20 + 52) + 'px';
+                    }
                 }
             }
         }
