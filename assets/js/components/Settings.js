@@ -160,24 +160,6 @@ class Settings {
                     helpers.addClass(document.body, theme);
                     helpers.removeClass(document.body, 'theme-system-preference-dark');
                 }
-            } else if (theme === globals.THEMES.DYNAMIC) {
-                helpers
-                    .getCurrentPosition()
-                    .then(position => {
-                        const isNight = this.isNightTime(position);
-                        helpers.addClass(document.body, isNight ? globals.THEMES.DARK : globals.THEMES.LIGHT);
-                    })
-                    .catch(() => {
-                        this.setTheme(globals.THEMES.LIGHT);
-                        helpers.showMessage(
-                            chrome.i18n.getMessage('ERROR_GETTING_LOCATION'),
-                            false,
-                            false,
-                            true,
-                            10000
-                        );
-                        this.loadTheme();
-                    });
             } else {
                 helpers.addClass(document.body, theme);
             }
@@ -413,24 +395,6 @@ class Settings {
 
                             selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                         }
-                    } else if (value === globals.THEMES.DYNAMIC) {
-                        selector.showMessage(e, true, chrome.i18n.getMessage('LOADING_THEME'), 'infinite');
-
-                        helpers
-                            .getCurrentPosition()
-                            .then(position => {
-                                const isNight = this.isNightTime(position);
-
-                                helpers.removeClass(document.body, this.getTheme());
-                                helpers.addClass(document.body, isNight ? globals.THEMES.DARK : globals.THEMES.LIGHT);
-                                this.setTheme(value);
-
-                                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
-                            })
-                            .catch(() => {
-                                this.loadTheme();
-                                selector.showMessage(e, false, chrome.i18n.getMessage('ERROR_THEME'), 10000);
-                            });
                     } else {
                         helpers.removeClass(document.body, this.getTheme());
                         helpers.removeClass(document.body, 'theme-system-preference-dark');
@@ -550,21 +514,6 @@ class Settings {
         }
 
         return isTime;
-    }
-
-    /**
-     * If is between sunset and sunrise in your geolocation.
-     *
-     * @function isNightTime
-     * @param {Object} position - Position from navigator.geolocation
-     * @return {Boolean}
-     */
-    isNightTime(position) {
-        const sunset = new Date().sunset(position.coords.latitude, position.coords.longitude);
-        const tomorrow = helpers.getFutureDate(1);
-        const sunrise = tomorrow.sunrise(position.coords.latitude, position.coords.longitude);
-
-        return new Date().getTime() > sunset.getTime() && new Date().getTime() < sunrise.getTime();
     }
 
     /**

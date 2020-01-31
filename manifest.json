@@ -37,8 +37,7 @@
         "tabs",
         "https://*.getpocket.com/*",
         "https://getpocket.com/",
-        "https://getpocket.com/a/read/",
-        "geolocation"
+        "https://getpocket.com/a/read/"
     ],
     "applications": {
         "gecko": {

@@ -22,7 +22,6 @@ export const THEMES = {
     LIGHT: 'theme-light',
     DARK: 'theme-dark',
     SEPIA: 'theme-sepia',
-    DYNAMIC: 'theme-dynamic',
     SYSTEM_PREFERENCE: 'theme-system-preference'
 };
 

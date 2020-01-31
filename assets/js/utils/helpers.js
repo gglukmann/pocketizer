@@ -366,25 +366,6 @@ export function removeFromStorage(key) {
 }
 
 /**
- * Get current geolocation.
- *
- * @function getCurrentPosition
- * @return {Promise} - Promise with position.
- */
-export function getCurrentPosition() {
-    return new Promise((resolve, reject) => {
-        navigator.geolocation.getCurrentPosition(
-            position => {
-                resolve(position);
-            },
-            () => {
-                reject();
-            }
-        );
-    });
-}
-
-/**
  * Get future date.
  *
  * @function getFutureDate
