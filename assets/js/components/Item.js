@@ -206,7 +206,7 @@ class Item {
 
         // open in pocket link
         const pocketLinkNode = helpers.createTextNode(chrome.i18n.getMessage('OPEN_IN_POCKET'));
-        pocketLinkElement.setAttribute('href', 'https://getpocket.com/a/read/' + element.item_id);
+        pocketLinkElement.setAttribute('href', 'https://app.getpocket.com/read/' + element.item_id);
         pocketLinkElement.setAttribute('class', 'item__link item__link--open-pocket');
         pocketLinkElement.setAttribute('title', chrome.i18n.getMessage('OPEN_IN_POCKET'));
         helpers.append(pocketLinkElement, pocketLinkNode);
