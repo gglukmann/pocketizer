@@ -7,11 +7,13 @@
   New tab - Pocketizer
 </h1>
 
-> Browser extension - Unofficial Pocket new tab extension for Chrome and Firefox
+> Browser extension - Unofficial Pocket new tab extension for Chrome, Firefox and Edge
 
 Get your Pocket unread list and archive right on your browsers new tab.
 
-You can mark your items as read, delete them or add to favorites list. You can find your items faster with search over titles and urls and if you don't have Pocket original extension installed, you can add new links too.
+You can mark your items as read, delete them or add to the favorites list. You can find your items faster with searching over titles and URLs and if you don't have Pocket original extension installed, you can add new links too.
+
+PS! Redirecting back from social login doesn't go back to extension. If you only use Firefox or Google login then you can't log in into extension. But you can set a password in Pocket website and then login with that as a workaround.
 
 ![New Tab](http://gglukmann.github.io/pocket/screenshots/screenshot1280x800.jpg)
 
@@ -21,6 +23,7 @@ You can mark your items as read, delete them or add to favorites list. You can f
 
 -   Install it from [Chrome Webstore](https://chrome.google.com/webstore/detail/new-tab-pocket/ikndkhohinloomoacdggllledgjehkcf).
 -   Install it from [Firefox Addons](https://addons.mozilla.org/en-GB/firefox/addon/new-tab-pocket/).
+-   Install it from [Edge Add-ons](https://microsoftedge.microsoft.com/addons/category/EdgeExtensionsEditorsPick?hl=en-GB).
 -   Log in with your pocket account and you're done.
 
 ### For developers

@@ -4,7 +4,7 @@
         "description": "Name of the extension."
     },
     "EXTENSION_DESCRIPTION": {
-        "message": "Unofficial Pocket new tab extension for Chrome and Firefox. See all your Pocket links right on new tab.",
+        "message": "Unofficial Pocket new tab extension for Chrome, Firefox and Edge. See all your Pocket links right on new tab.",
         "description": "Description of the add-on."
     },
     "EXTENSION_SHORT_NAME": {
