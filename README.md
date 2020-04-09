@@ -7,7 +7,7 @@
   New tab - Pocketizer
 </h1>
 
-> Browser extension - Unofficial Pocket new tab extension for Chrome, Firefox and Edge
+> Browser extension - Unofficial Pocket new tab extension for Chrome, Firefox, and Edge
 
 Get your Pocket unread list and archive right on your browsers new tab.
 
@@ -24,7 +24,7 @@ PS! Redirecting back from social login doesn't go back to extension. If you only
 -   Install it from [Chrome Webstore](https://chrome.google.com/webstore/detail/new-tab-pocket/ikndkhohinloomoacdggllledgjehkcf).
 -   Install it from [Firefox Addons](https://addons.mozilla.org/en-GB/firefox/addon/new-tab-pocket/).
 -   Install it from [Edge Add-ons](https://microsoftedge.microsoft.com/addons/category/EdgeExtensionsEditorsPick?hl=en-GB).
--   Log in with your pocket account and you're done.
+-   Log in with your Pocket account username and password and you're done.
 
 ### For developers
 
