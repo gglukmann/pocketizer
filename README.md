@@ -15,7 +15,7 @@ You can mark your items as read, delete them or add to the favorites list. You c
 
 PS! Redirecting back from social login doesn't go back to extension. If you only use Firefox or Google login then you can't log in into extension. But you can set a password in Pocket website and then login with that as a workaround.
 
-![New Tab](http://gglukmann.github.io/pocket/screenshots/screenshot1280x800.jpg)
+![New Tab](https://gglukmann.github.io/pocketizer/screenshots/screenshot1280x800.jpg)
 
 ## Installation
 
