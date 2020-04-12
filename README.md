@@ -1,6 +1,6 @@
 <p align="center">
-  <a href="http://gglukmann.github.io/pocket">
-    <img alt="http://gglukmann.github.io/pocket" src="http://gglukmann.github.io/pocket/icon64.png" width="64" />
+  <a href="https://gglukmann.github.io/pocketizer">
+    <img alt="https://gglukmann.github.io/pocketizer" src="https://gglukmann.github.io/pocketizer/icon64.png" width="64" />
   </a>
 </p>
 <h1 align="center">
