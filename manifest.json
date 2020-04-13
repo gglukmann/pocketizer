@@ -5,7 +5,7 @@
     "default_locale": "en",
     "description": "__MSG_EXTENSION_DESCRIPTION__",
     "author": "Gert Glükmann @glukmann",
-    "homepage_url": "http://gglukmann.github.io/pocket",
+    "homepage_url": "https://gglukmann.github.io/pocketizer",
     "icons": {
         "16": "assets/images/icon16.png",
         "32": "assets/images/icon32.png",
