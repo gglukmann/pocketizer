@@ -267,5 +267,8 @@
     },
     "LIST": {
         "message": "List"
+    },
+    "ASK_DELETE_CONFIRMATION": {
+        "message": "Ask delete confirmation before deleting?"
     }
 }

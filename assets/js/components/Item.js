@@ -266,7 +266,7 @@ class Item {
      * @return {void}
      */
     add(data) {
-        apiService.add(data).then(response => {
+        apiService.add(data).then((response) => {
             modal.close();
 
             let array = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
@@ -341,19 +341,24 @@ class Item {
      */
     delete(e) {
         e.preventDefault();
-        modal.open('#js-deleteModal');
 
-        const newEvent = this.handleDeleteClick.bind(this, e);
+        if (settings.getAskDeleteConfirmation() === 'enabled') {
+            modal.open('#js-deleteModal');
 
-        document.querySelector('#js-deleteSubmit').addEventListener('click', newEvent, false);
+            const newEvent = this.handleDeleteClick.bind(this, e);
 
-        document.addEventListener(
-            'closed.modal',
-            () => {
-                document.querySelector('#js-deleteSubmit').removeEventListener('click', newEvent, false);
-            },
-            { once: true }
-        );
+            document.querySelector('#js-deleteSubmit').addEventListener('click', newEvent, false);
+
+            document.addEventListener(
+                'closed.modal',
+                () => {
+                    document.querySelector('#js-deleteSubmit').removeEventListener('click', newEvent, false);
+                },
+                { once: true }
+            );
+        } else {
+            this.handleDeleteClick(e);
+        }
     }
 
     /**
@@ -417,7 +422,7 @@ class Item {
             const allTags = form.elements.namedItem('tags').value;
             const newTags = [];
 
-            allTags.split(/\s*,\s*/).forEach(tag => {
+            allTags.split(/\s*,\s*/).forEach((tag) => {
                 if (!tag.length) {
                     return;
                 }

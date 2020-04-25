@@ -25,6 +25,7 @@ class Settings {
         this.loadOrder();
         this.loadUpdateInterval();
         this.loadArchiveAfterOpen();
+        this.loadAskDeleteConfirmation();
     }
 
     /**
@@ -135,6 +136,69 @@ class Settings {
      */
     getUpdateInterval() {
         return helpers.getFromStorage('updateInterval') || globals.UPDATE_INTERVALS[0];
+    }
+
+    /**
+     * Set the value of "archive after open"
+     *
+     * @function setArchiveAfterOpen
+     * @param {String} val - ['enabled', 'disabled']
+     * @return {void}
+     */
+    setArchiveAfterOpen(val) {
+        helpers.setToStorage('archiveAfterOpen', val);
+    }
+
+    /**
+     * Get "archive after open" to load on extension load.
+     *
+     * @function getArchiveAfterOpen
+     * @return {String | null}
+     */
+    getArchiveAfterOpen() {
+        return helpers.getFromStorage('archiveAfterOpen');
+    }
+
+    /**
+     * Set the value of view type
+     *
+     * @function setViewType
+     * @param {String} type - View type
+     * @return {void}
+     */
+    setViewType(type = globals.VIEW_TYPES.GRID) {
+        helpers.setToStorage('viewType', type);
+    }
+
+    /**
+     * Get "view type" to load on extension load.
+     *
+     * @function getViewType
+     * @return {String | null}
+     */
+    getViewType() {
+        return helpers.getFromStorage('viewType');
+    }
+
+    /**
+     * Set ask delete confirmation.
+     *
+     * @function setAskDeleteConfirmation
+     * @param {Boolean} val - ['enabled', 'disabled'].
+     * @return {void}
+     */
+    setAskDeleteConfirmation(ask) {
+        return helpers.setToStorage('askDeleteConfirmation', ask);
+    }
+
+    /**
+     * Get whether ask delete confirmation.
+     *
+     * @function getAskDeleteConfirmation
+     * @return {Boolean | null}
+     */
+    getAskDeleteConfirmation() {
+        return helpers.getFromStorage('askDeleteConfirmation') || 'enabled';
     }
 
     /**
@@ -262,27 +326,6 @@ class Settings {
     }
 
     /**
-     * Set the value of "archive after open"
-     *
-     * @function setArchiveAfterOpen
-     * @param {String} val - ['enabled', 'disabled']
-     * @return {void}
-     */
-    setArchiveAfterOpen(val) {
-        helpers.setToStorage('archiveAfterOpen', val);
-    }
-
-    /**
-     * Get "archive after open" to load on extension load.
-     *
-     * @function getArchiveAfterOpen
-     * @return {String | null}
-     */
-    getArchiveAfterOpen() {
-        return helpers.getFromStorage('archiveAfterOpen');
-    }
-
-    /**
      * Load the "archive after open" option
      *
      * @function loadArchiveAfterOpen
@@ -299,27 +342,6 @@ class Settings {
                 }
             }
         }
-    }
-
-    /**
-     * Set the value of view type
-     *
-     * @function setViewType
-     * @param {String} type - View type
-     * @return {void}
-     */
-    setViewType(type = globals.VIEW_TYPES.GRID) {
-        helpers.setToStorage('viewType', type);
-    }
-
-    /**
-     * Get "view type" to load on extension load.
-     *
-     * @function getViewType
-     * @return {String | null}
-     */
-    getViewType() {
-        return helpers.getFromStorage('viewType');
     }
 
     /**
@@ -364,6 +386,27 @@ class Settings {
         } else {
             helpers.removeClass(target, 'is-view-type-list');
             viewTypeButton.setAttribute('title', chrome.i18n.getMessage('DISPLAY_IN_LIST'));
+        }
+    }
+
+    /**
+     * Load the "ask delete confirmation" option
+     *
+     * @function loadAskDeleteConfirmation
+     * @return {void}
+     */
+    loadAskDeleteConfirmation() {
+        const askDeleteConfirmation = this.getAskDeleteConfirmation();
+
+        if (askDeleteConfirmation) {
+            const askDeleteConfirmationSelector = [
+                ...document.querySelectorAll('[name=selector-ask-delete-confirmation]'),
+            ];
+            for (const selector of askDeleteConfirmationSelector) {
+                if (selector.value === askDeleteConfirmation) {
+                    selector.checked = true;
+                }
+            }
         }
     }
 
@@ -444,6 +487,13 @@ class Settings {
                     selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
+            case 'selector-ask-delete-confirmation':
+                const askDeleteConfirmation = e.detail.value.toString();
+
+                this.setAskDeleteConfirmation(askDeleteConfirmation);
+                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                break;
+            default:
         }
     }
 
