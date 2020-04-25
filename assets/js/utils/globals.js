@@ -8,28 +8,28 @@ export const API = {
     url_auth: API_URL + 'auth/authorize',
     url_get: API_URL + API_VERSION + '/get',
     url_send: API_URL + API_VERSION + '/send',
-    url_add: API_URL + API_VERSION + '/add'
+    url_add: API_URL + API_VERSION + '/add',
 };
 
 export const LOAD_COUNT = 18;
 
 export const PAGES = {
     LIST: 'list',
-    ARCHIVE: 'archive'
+    ARCHIVE: 'archive',
 };
 
 export const THEMES = {
     LIGHT: 'theme-light',
     DARK: 'theme-dark',
     SEPIA: 'theme-sepia',
-    SYSTEM_PREFERENCE: 'theme-system-preference'
+    SYSTEM_PREFERENCE: 'theme-system-preference',
 };
 
 export const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];
 
 export const ORDER = {
     DESCENDING: 'desc',
-    ASCENDING: 'asc'
+    ASCENDING: 'asc',
 };
 
 export const VIEW_TYPES = {

@@ -12,8 +12,8 @@ class ApiService {
         this._fetchData = {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json; charset=UTF8'
-            }
+                'Content-Type': 'application/json; charset=UTF8',
+            },
         };
     }
 
@@ -27,7 +27,7 @@ class ApiService {
         this._fetchData.body = {
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            detailType: 'complete'
+            detailType: 'complete',
         };
 
         let state;
@@ -68,7 +68,7 @@ class ApiService {
 
         this._fetchData.body = JSON.stringify(this._fetchData.body);
 
-        return await helpers.makeFetch(globals.API.url_get, this._fetchData).catch(error => {
+        return await helpers.makeFetch(globals.API.url_get, this._fetchData).catch((error) => {
             console.log(error);
             helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
 
@@ -89,10 +89,10 @@ class ApiService {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            actions: actions
+            actions: actions,
         });
 
-        return await helpers.makeFetch(globals.API.url_send, this._fetchData).catch(error => {
+        return await helpers.makeFetch(globals.API.url_send, this._fetchData).catch((error) => {
             console.error(error);
             helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
 
@@ -113,10 +113,10 @@ class ApiService {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
-            url: data.url
+            url: data.url,
         });
 
-        return await helpers.makeFetch(globals.API.url_add, this._fetchData).catch(error => {
+        return await helpers.makeFetch(globals.API.url_add, this._fetchData).catch((error) => {
             console.error(error);
             helpers.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
 

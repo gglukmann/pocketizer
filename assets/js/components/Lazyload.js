@@ -19,7 +19,7 @@ class Lazyload {
         const config = {
             // If the image gets within 50px in the Y axis, start the download.
             rootMargin: '50px 0px',
-            threshold: 0.01
+            threshold: 0.01,
         };
         this.imageCount = images.length;
 
@@ -28,7 +28,7 @@ class Lazyload {
             this.loadImagesImmediately(images);
         } else {
             // It is supported, load the images
-            this.observer = new IntersectionObserver(entries => {
+            this.observer = new IntersectionObserver((entries) => {
                 // Disconnect if we've already loaded all of the images
                 if (this.imageCount === 0) {
                     this.disconnect();

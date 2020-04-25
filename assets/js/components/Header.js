@@ -8,7 +8,7 @@ class Header {
      */
     constructor() {
         this.options = {
-            scrolledClass: 'is-scrolled'
+            scrolledClass: 'is-scrolled',
         };
 
         this.timeout = false;

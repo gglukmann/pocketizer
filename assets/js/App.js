@@ -14,7 +14,7 @@ class App {
 
         this.scroll = {
             lastKnownScrollY: 0,
-            ticking: false
+            ticking: false,
         };
 
         this.fullSync = false;
@@ -79,7 +79,7 @@ class App {
         window.addEventListener('offline', this.toggleOfflineTheme, false);
         window.addEventListener('online', this.toggleOfflineTheme, false);
 
-        document.querySelector('#js-offlineRefresh').addEventListener('click', e => {
+        document.querySelector('#js-offlineRefresh').addEventListener('click', (e) => {
             helpers.addClass(e.target, 'is-syncing');
             window.location.reload();
         });
@@ -112,7 +112,7 @@ class App {
      * @return {void}
      */
     getContent() {
-        apiService.get().then(response => {
+        apiService.get().then((response) => {
             this.handleApiGetResponse(response);
         });
     }
@@ -191,7 +191,7 @@ class App {
                     case '1':
                         // delete old item, if it is added to archive from somewhere else and is in unread list in extension
                         newArray = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
-                        newArray = newArray.filter(item => item.item_id !== newItem.item_id);
+                        newArray = newArray.filter((item) => item.item_id !== newItem.item_id);
 
                         helpers.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
                         helpers.setToStorage('listCount', newArray.length);
@@ -209,14 +209,14 @@ class App {
                     case '2':
                         let listArray = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
 
-                        listArray = listArray.filter(item => item.item_id !== newItem.item_id);
+                        listArray = listArray.filter((item) => item.item_id !== newItem.item_id);
 
                         helpers.setToStorage('listFromLocalStorage', JSON.stringify(listArray));
                         helpers.setToStorage('listCount', listArray.length);
 
                         if (this.isArchiveLoaded()) {
                             let archiveArray = JSON.parse(helpers.getFromStorage('archiveFromLocalStorage'));
-                            archiveArray = archiveArray.filter(item => item.item_id !== newItem.item_id);
+                            archiveArray = archiveArray.filter((item) => item.item_id !== newItem.item_id);
 
                             helpers.setToStorage('archiveFromLocalStorage', JSON.stringify(archiveArray));
                             helpers.setToStorage('archiveCount', archiveArray.length);
@@ -318,7 +318,7 @@ class App {
         const sentinel = document.querySelector('#js-sentinel');
         const list = document.querySelector('#js-list');
 
-        const io = new IntersectionObserver(entries => {
+        const io = new IntersectionObserver((entries) => {
             if (entries[0].intersectionRatio <= 0) {
                 return;
             }
@@ -517,8 +517,8 @@ class App {
             {
                 action: action,
                 item_id: id,
-                time: helpers.getCurrentUNIX()
-            }
+                time: helpers.getCurrentUNIX(),
+            },
         ];
 
         if (state === 'tags') {
@@ -527,12 +527,12 @@ class App {
 
         apiService
             .send(actions)
-            .then(response => {
+            .then((response) => {
                 if (response.status === 1) {
                     this.handleActionResponse(e, state, id, isFavourited, response, tags);
                 }
             })
-            .catch(error => {
+            .catch((error) => {
                 console.log(error);
                 helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
             });
@@ -789,7 +789,7 @@ class App {
      * @return {void}
      */
     startLogin() {
-        authService.authenticate().then(response => {
+        authService.authenticate().then((response) => {
             if (response.status !== 'authenticated') {
                 helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
                 document.querySelector('#js-login').disabled = false;

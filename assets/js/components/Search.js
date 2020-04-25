@@ -9,7 +9,7 @@ class Search {
      */
     constructor() {
         this.state = {
-            hasSearched: false
+            hasSearched: false,
         };
 
         this.makeSearchClick = this.handleMakeSearchClick.bind(this);
