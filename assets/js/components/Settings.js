@@ -217,12 +217,17 @@ class Settings {
 
         if (Object.values(globals.THEMES).includes(theme)) {
             if (theme === globals.THEMES.SYSTEM_PREFERENCE) {
-                if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                    helpers.addClass(document.body, theme);
-                    helpers.addClass(document.body, 'theme-system-preference-dark');
-                } else {
-                    helpers.addClass(document.body, theme);
-                    helpers.removeClass(document.body, 'theme-system-preference-dark');
+                const mql = window.matchMedia('(prefers-color-scheme: dark)');
+                const hasMediaQueryPreference = typeof mql.matches === 'boolean';
+
+                if (hasMediaQueryPreference) {
+                    if (mql.matches) {
+                        helpers.addClass(document.body, theme);
+                        helpers.addClass(document.body, 'theme-system-preference-dark');
+                    } else {
+                        helpers.addClass(document.body, theme);
+                        helpers.removeClass(document.body, 'theme-system-preference-dark');
+                    }
                 }
             } else {
                 helpers.addClass(document.body, theme);
@@ -424,19 +429,24 @@ class Settings {
 
                 if (Object.values(globals.THEMES).includes(value)) {
                     if (value === globals.THEMES.SYSTEM_PREFERENCE) {
-                        if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                            helpers.removeClass(document.body, this.getTheme());
-                            helpers.addClass(document.body, value);
-                            helpers.addClass(document.body, 'theme-system-preference-dark');
-                            this.setTheme(value);
+                        const mql = window.matchMedia('(prefers-color-scheme: dark)');
+                        const hasMediaQueryPreference = typeof mql.matches === 'boolean';
 
-                            selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
-                        } else {
-                            helpers.removeClass(document.body, this.getTheme());
-                            helpers.removeClass(document.body, 'theme-system-preference-dark');
-                            this.setTheme(value);
+                        if (hasMediaQueryPreference) {
+                            if (mql.matches) {
+                                helpers.removeClass(document.body, this.getTheme());
+                                helpers.addClass(document.body, value);
+                                helpers.addClass(document.body, 'theme-system-preference-dark');
+                                this.setTheme(value);
 
-                            selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                            } else {
+                                helpers.removeClass(document.body, this.getTheme());
+                                helpers.removeClass(document.body, 'theme-system-preference-dark');
+                                this.setTheme(value);
+
+                                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                            }
                         }
                     } else {
                         helpers.removeClass(document.body, this.getTheme());
