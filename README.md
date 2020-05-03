@@ -21,8 +21,8 @@ PS! Redirecting back from social login doesn't go back to extension. If you only
 
 ### For all users
 
--   Install it from [Chrome Webstore](https://chrome.google.com/webstore/detail/new-tab-pocket/ikndkhohinloomoacdggllledgjehkcf).
--   Install it from [Firefox Addons](https://addons.mozilla.org/en-GB/firefox/addon/new-tab-pocket/).
+-   Install it from [Chrome Webstore](https://chrome.google.com/webstore/detail/new-tab-pocketizer/ikndkhohinloomoacdggllledgjehkcf).
+-   Install it from [Firefox Addons](https://addons.mozilla.org/en-GB/firefox/addon/new-tab-pocketizer/).
 -   Install it from [Edge Add-ons](https://microsoftedge.microsoft.com/addons/detail/pildgbnjndmpndgjafbagcigfaoifjka).
 -   Log in with your Pocket account username and password and you're done.
 
