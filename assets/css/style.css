@@ -336,7 +336,11 @@ a > svg {
     padding: 10px 0;
 }
 
-.menu__link:focus {
+.menu__link:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.menu__link:focus-visible {
     outline: 1px dashed;
     outline-offset: 3px;
 }
@@ -729,7 +733,11 @@ a > svg {
     text-decoration: none;
 }
 
-.btn:focus {
+.btn:focus:not(:focus-visible) {
+    outline: none;
+}
+
+.btn:focus-visible {
     outline: 1px dashed;
     outline-offset: 3px;
 }
@@ -1141,7 +1149,11 @@ a > svg {
     color: white;
 }
 
-.selector__input:focus ~ .selector__indicator {
+.selector__input:focus:not(:focus-visible) ~ .selector__indicator {
+    outline: none;
+}
+
+.selector__input:focus-visible ~ .selector__indicator {
     outline: 2px solid var(--red);
 }
 
