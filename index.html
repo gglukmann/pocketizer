@@ -163,14 +163,13 @@
         </header>
         <main class="container">
             <div id="js-default-message" class="message" style="display: none">
-                <h2 class="message__text message__text--text-color">
-                    <span data-translate="__MSG_LOG_IN_TEXT__">Hello, log in to get started!</span>
-                    <br />
-                    <small class="text-extra-small" data-translate="__MSG_LOG_IN_INFO__"
-                        >Please login with only email/username and password. Google and Firefox authentication does not
-                        redirect back to extension.</small
-                    >
+                <h2 class="message__text message__text--text-color" data-translate="__MSG_LOG_IN_TEXT__">
+                    Hello, log in to get started!
                 </h2>
+                <p class="message__info" data-translate="__MSG_LOG_IN_INFO__">
+                    Please login with only email/username and password. Google and Firefox authentication does not
+                    redirect back to extension.
+                </p>
                 <button type="button" id="js-login" class="btn btn--login" data-translate="__MSG_LOG_IN_WITH_POCKET__">
                     Log in with Pocket
                 </button>

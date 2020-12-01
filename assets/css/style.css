@@ -66,6 +66,7 @@ body {
     color: var(--text-color);
     font-family: var(--font);
     font-size: 1em;
+    line-height: 1.4;
     margin: 0;
     padding: 0;
     background: var(--body-bg);
@@ -399,6 +400,13 @@ a > svg {
 
 .theme-offline .message__text {
     color: var(--text-light);
+}
+
+.message__info {
+    font-weight: bold;
+    color: var(--red);
+    width: 50%;
+    margin: 1rem auto;
 }
 
 /* LIST */
@@ -1420,9 +1428,4 @@ a > svg {
 /* HELPERS */
 .hidden {
     display: none;
-}
-
-.text-extra-small {
-    font-size: small;
-    color: var(--text-light);
 }
