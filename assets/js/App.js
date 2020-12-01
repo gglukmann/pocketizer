@@ -801,7 +801,7 @@ class App {
      * @return {void}
      */
     async startLogin() {
-        const response = authService.authenticate();
+        const response = await authService.authenticate();
 
         if (response.status !== 'authenticated') {
             helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);

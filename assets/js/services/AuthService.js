@@ -26,7 +26,10 @@ class AuthService {
         try {
             const { code } = await this.getRequestToken();
             await this.launchChromeWebAuthFlow(code);
-            const { username } = await this.getAccessToken(code);
+            const { access_token, username } = await this.getAccessToken(code);
+
+            this.setToken(access_token);
+            helpers.setToStorage('username', username);
 
             return {
                 status: 'authenticated',
@@ -94,12 +97,7 @@ class AuthService {
             code: requestToken,
         });
 
-        const response = helpers.makeFetch(globals.API.url_authorize, this._fetchData);
-
-        this.setToken(response.access_token);
-        helpers.setToStorage('username', response.username);
-
-        return response;
+        return helpers.makeFetch(globals.API.url_authorize, this._fetchData);
     }
 
     /**
