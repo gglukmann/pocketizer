@@ -279,7 +279,7 @@ class Settings {
         const order = this.getOrder();
 
         if (order) {
-            this.rotateOrderButton(order === globals.ORDER.ASCENDING ? true : false);
+            this.rotateOrderButton(order);
 
             const orderSelector = [...document.querySelectorAll('[name=selector-order]')];
             for (const selector of orderSelector) {
@@ -294,20 +294,25 @@ class Settings {
      * Add class and change text in order by button.
      *
      * @function rotateOrderButton
-     * @param {Boolean} orderItemsAsc - Order asc or desc.
+     * @param {String} order - Order.
      * @param {Event} e - Event from button click.
      * @return {void}
      */
-    rotateOrderButton(orderItemsAsc, e) {
+    rotateOrderButton(order, e) {
         const orderButton = document.querySelector('#js-orderButton');
-        const target = e && e.target ? e.target : orderButton;
+        const target = e?.target ?? orderButton;
 
-        if (orderItemsAsc) {
-            helpers.removeClass(target, 'is-rotated');
-            orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_OLDEST_FIRST'));
-        } else {
-            helpers.addClass(target, 'is-rotated');
-            orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_NEWEST_FIRST'));
+        switch (order) {
+            case globals.ORDER.ASCENDING:
+            default:
+                helpers.removeClass(target, 'is-rotated');
+                orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_OLDEST_FIRST'));
+                break;
+            case globals.ORDER.RANDOM:
+            case globals.ORDER.DESCENDING:
+                helpers.addClass(target, 'is-rotated');
+                orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_NEWEST_FIRST'));
+                break;
         }
     }
 

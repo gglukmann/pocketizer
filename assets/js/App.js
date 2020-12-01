@@ -18,7 +18,7 @@ class App {
         };
 
         this.fullSync = false;
-        this.orderItemsAsc = settings.getOrder() === globals.ORDER.DESCENDING ? false : true;
+        this.order = settings.getOrder();
 
         this.itemClicks = this.handleItemClicks.bind(this);
         this.loggedOutClicks = this.handleLoginClick.bind(this);
@@ -231,7 +231,9 @@ class App {
             }
         }
 
-        this.render();
+        if (this.order !== globals.ORDER.RANDOM) {
+            this.render();
+        }
         helpers.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
     }
 
@@ -257,11 +259,9 @@ class App {
         } else {
             tags.createTags(array);
 
-            if (!this.orderItemsAsc) {
-                array = array.reverse();
-            }
+            array = this.getOrderedItemsArray(array);
+            array = array.filter((_, index) => index < this.load_count);
 
-            array = array.filter((item, index) => index < this.load_count);
             helpers.hide(document.querySelector('#js-empty-list-message'));
             helpers.show(document.querySelector('#js-filterButtons'), true);
 
@@ -339,12 +339,8 @@ class App {
     infiniteScroll() {
         helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
         let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
-
-        if (!this.orderItemsAsc) {
-            array = array.reverse();
-        }
-
-        array = array.filter((i, index) => index >= this.items_shown && index < this.items_shown + this.load_count);
+        array = this.getOrderedItemsArray(array);
+        array = array.filter((_, index) => index >= this.items_shown && index < this.items_shown + this.load_count);
 
         this.items_shown += this.load_count;
 
@@ -357,6 +353,25 @@ class App {
         const domItemsArray = this.createItems(array);
         lazyload.load();
         item.calcBackgroundHeights(domItemsArray);
+    }
+    /**
+     * Order items according to order from settings
+     *
+     * @param {Array} array - Array to order
+     * @returns {Array} Ordered array
+     * @memberof App
+     */
+    getOrderedItemsArray(array) {
+        let arr = [...array];
+
+        switch (this.order) {
+            case globals.ORDER.DESCENDING:
+                return arr.reverse();
+            case globals.ORDER.RANDOM:
+                return helpers.shuffleArray(arr);
+            default:
+                return arr;
+        }
     }
 
     /**
@@ -410,9 +425,9 @@ class App {
         } else if (e.target.classList.contains('js-tagsButton')) {
             item.addTags(e);
         } else if (e.target.id === 'js-orderButton') {
-            this.orderItemsAsc = !this.orderItemsAsc;
+            this.order = this.order === globals.ORDER.ASCENDING ? globals.ORDER.DESCENDING : globals.ORDER.ASCENDING;
             this.render();
-            settings.rotateOrderButton(this.orderItemsAsc, e);
+            settings.rotateOrderButton(this.order, e);
         } else if (e.target.id === 'js-viewTypeButton') {
             const mainSelector = document.querySelector('main');
             helpers.toggleClass(mainSelector, 'container--narrow');
@@ -640,8 +655,7 @@ class App {
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
-                this.orderItemsAsc =
-                    !settings.getOrder() || settings.getOrder() === globals.ORDER.ASCENDING ? true : false;
+                this.order = settings.getOrder() || globals.ORDER.ASCENDING;
 
                 this.render();
                 this.getContent();
@@ -652,7 +666,7 @@ class App {
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
 
-                this.orderItemsAsc = true;
+                this.order = globals.ORDER.ASCENDING;
 
                 if (this.isArchiveLoaded()) {
                     this.render();
@@ -668,7 +682,7 @@ class App {
                 break;
         }
 
-        settings.rotateOrderButton(this.orderItemsAsc);
+        settings.rotateOrderButton(this.order);
 
         window.scrollTo(0, 0);
     }

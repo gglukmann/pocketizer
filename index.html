@@ -3,9 +3,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <title data-translate="__MSG_EXTENSION_NAME__">
-            New Tab - Pocketizer
-        </title>
+        <title data-translate="__MSG_EXTENSION_NAME__">New Tab - Pocketizer</title>
         <link href="https://fonts.googleapis.com/css?family=Noto+Serif" rel="stylesheet" />
         <link rel="stylesheet" href="assets/css/style.css" />
     </head>
@@ -13,7 +11,7 @@
     <body>
         <header class="header" id="js-header">
             <div id="js-status" class="status"></div>
-            <div id="js-offlineStatus" class="status status--offline" style="display: none;">
+            <div id="js-offlineStatus" class="status status--offline" style="display: none">
                 <span data-translate="__MSG_OFFLINE_MESSAGE__"></span>
                 <button
                     id="js-offlineRefresh"
@@ -42,11 +40,11 @@
                             />
                         </svg>
                         <span id="js-title">Pocketizer</span>
-                        <small class="header__count" id="js-count-wrapper" style="display: none;"
+                        <small class="header__count" id="js-count-wrapper" style="display: none"
                             >(<span id="js-count">0</span>)</small
                         >
                     </h1>
-                    <ul class="menu" id="js-menu" style="display: none;">
+                    <ul class="menu" id="js-menu" style="display: none">
                         <li class="menu__item">
                             <a href="#0" class="menu__link is-active js-changeMenu" data-page="list">
                                 <span data-translate="__MSG_MY_LIST__">My List</span>
@@ -83,12 +81,7 @@
                                 </div>
                             </div>
                         </div>
-                        <button
-                            id="js-fullSync"
-                            class="btn btn--link"
-                            title="__MSG_FULL_SYNC__"
-                            style="display: none;"
-                        >
+                        <button id="js-fullSync" class="btn btn--link" title="__MSG_FULL_SYNC__" style="display: none">
                             <svg viewBox="0 0 64 64" class="icon icon--bigger">
                                 <path
                                     d="M31.5,15c8.5,0,15.2,4.6,16.7,14H40l12,12l12-12h-7.7C54.6,15.3,44.3,7,31.5,7c-8.1,0-15.9,4-20.7,10.6l6.5,4.7
@@ -109,7 +102,7 @@
                             id="js-searchButton"
                             class="btn btn--link search__button"
                             title="__MSG_TITLE_SEARCH__"
-                            style="display: none;"
+                            style="display: none"
                         >
                             <svg viewBox="0 0 32 32" class="icon">
                                 <path
@@ -122,7 +115,7 @@
                             class="btn btn--link"
                             data-modal-target="#js-addModal"
                             title="__MSG_SAVE_URL__"
-                            style="display: none;"
+                            style="display: none"
                         >
                             <svg viewBox="0 0 32 32" class="icon">
                                 <path
@@ -135,7 +128,7 @@
                             class="btn btn--link"
                             data-modal-target="#js-settingsModal"
                             title="__MSG_SETTINGS__"
-                            style="display: none;"
+                            style="display: none"
                         >
                             <svg viewBox="0 0 32 32" class="icon">
                                 <path
@@ -150,7 +143,7 @@
                                 id="js-logout"
                                 class="btn btn--link header__logout"
                                 title="__MSG_LOGOUT__"
-                                style="display: none;"
+                                style="display: none"
                             >
                                 <svg viewBox="-99.8 166.4 89.5 96.7" class="icon">
                                     <path
@@ -169,7 +162,7 @@
             </div>
         </header>
         <main class="container">
-            <div id="js-default-message" class="message" style="display: none;">
+            <div id="js-default-message" class="message" style="display: none">
                 <h2 class="message__text message__text--text-color">
                     <span data-translate="__MSG_LOG_IN_TEXT__">Hello, log in to get started!</span>
                     <br />
@@ -182,7 +175,7 @@
                     Log in with Pocket
                 </button>
             </div>
-            <div id="js-empty-list-message" class="message" style="display: none;">
+            <div id="js-empty-list-message" class="message" style="display: none">
                 <h2 class="message__text">
                     <span data-translate="__MSG_EMPTY_MESSAGE__"
                         >Looks like you haven't saved anything to Pocket yet!</span
@@ -193,7 +186,7 @@
                     >
                 </h2>
             </div>
-            <div id="js-results-message" class="message message--padding-small" style="display: none;">
+            <div id="js-results-message" class="message message--padding-small" style="display: none">
                 <h2 class="message__text">
                     <span id="js-searchCount"></span>
                     <span id="js-resultsString" data-translate="__MSG_RESULTS_MESSAGE__">results for</span>
@@ -203,7 +196,7 @@
             </div>
             <div class="filter">
                 <div>
-                    <div id="js-filterButtons" style="display: none;">
+                    <div id="js-filterButtons" style="display: none">
                         <button
                             id="js-orderButton"
                             class="btn btn--link filter__button"
@@ -257,7 +250,7 @@
                         </button>
                     </div>
                 </div>
-                <div id="js-tags" class="tags" style="display: none;">
+                <div id="js-tags" class="tags" style="display: none">
                     <span class="tags__title"> <span data-translate="__MSG_TAGS__">Tags</span>: </span>
                     <ul id="js-tagsList" class="tags__list"></ul>
                     <a href="#0" id="js-tagsMoreLink" class="btn btn--link btn--small">
@@ -313,9 +306,7 @@
             </button>
             <form name="newItemForm" method="post">
                 <div class="modal__content">
-                    <h3 class="modal__title" data-translate="__MSG_SAVE_NEW_LINK__">
-                        Save new link to Pocket
-                    </h3>
+                    <h3 class="modal__title" data-translate="__MSG_SAVE_NEW_LINK__">Save new link to Pocket</h3>
 
                     <div class="textfield">
                         <input
@@ -339,9 +330,7 @@
                         >
                             Cancel
                         </button>
-                        <button type="submit" class="btn" data-translate="__MSG_ADD__">
-                            Add
-                        </button>
+                        <button type="submit" class="btn" data-translate="__MSG_ADD__">Add</button>
                     </div>
                 </div>
             </form>
@@ -356,9 +345,7 @@
                 </svg>
             </button>
             <div class="modal__content">
-                <h3 class="modal__title" data-translate="__MSG_ARE_YOU_SURE__">
-                    Are you sure?
-                </h3>
+                <h3 class="modal__title" data-translate="__MSG_ARE_YOU_SURE__">Are you sure?</h3>
             </div>
             <div class="modal__footer">
                 <div class="btn-group">
@@ -392,9 +379,7 @@
                 </svg>
             </button>
             <div class="modal__content">
-                <h3 class="modal__title" data-translate="__MSG_SETTINGS__">
-                    Settings
-                </h3>
+                <h3 class="modal__title" data-translate="__MSG_SETTINGS__">Settings</h3>
                 <fieldset class="selector">
                     <legend class="selector__label" data-translate="__MSG_CHOOSE_LIST_UPDATE_INTERVAL__">
                         Choose items update interval from Pocket
@@ -456,9 +441,7 @@
                     </div>
                 </fieldset>
                 <fieldset class="selector">
-                    <legend class="selector__label" data-translate="__MSG_CHOOSE_THEME__">
-                        Choose theme
-                    </legend>
+                    <legend class="selector__label" data-translate="__MSG_CHOOSE_THEME__">Choose theme</legend>
                     <div class="selector__list">
                         <div class="selector__item">
                             <input
@@ -580,6 +563,21 @@
                                 class="selector__indicator"
                                 data-translate="__MSG_OLDEST_FIRST__"
                                 >oldest first</label
+                            >
+                        </div>
+                        <div class="selector__item">
+                            <input
+                                type="radio"
+                                name="selector-order"
+                                id="selector-order-3"
+                                class="selector__input"
+                                value="random"
+                            />
+                            <label
+                                for="selector-order-3"
+                                class="selector__indicator"
+                                data-translate="__MSG_ORDER_RANDOM__"
+                                >random</label
                             >
                         </div>
                     </div>
@@ -724,9 +722,7 @@
             <form name="tagsForm" method="post">
                 <input type="hidden" name="tagsItemId" />
                 <div class="modal__content">
-                    <h3 class="modal__title" data-translate="__MSG_EDIT_TAGS__">
-                        Edit tags
-                    </h3>
+                    <h3 class="modal__title" data-translate="__MSG_EDIT_TAGS__">Edit tags</h3>
 
                     <div class="textfield">
                         <label class="textfield__label" for="js-tagsInput" data-translate="__MSG_TAGS_INFO__"
@@ -737,9 +733,7 @@
                 </div>
                 <div class="modal__footer">
                     <div class="btn-group">
-                        <button type="submit" class="btn" data-translate="__MSG_SAVE__">
-                            Save
-                        </button>
+                        <button type="submit" class="btn" data-translate="__MSG_SAVE__">Save</button>
                     </div>
                 </div>
             </form>

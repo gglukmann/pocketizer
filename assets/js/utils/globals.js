@@ -30,6 +30,7 @@ export const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];
 export const ORDER = {
     DESCENDING: 'desc',
     ASCENDING: 'asc',
+    RANDOM: 'random',
 };
 
 export const VIEW_TYPES = {
