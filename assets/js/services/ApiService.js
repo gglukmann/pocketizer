@@ -23,7 +23,7 @@ class ApiService {
      * @function get
      * @return {Promise} - Response from pocket api.
      */
-    async get() {
+    get() {
         this._fetchData.body = {
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
@@ -68,14 +68,16 @@ class ApiService {
 
         this._fetchData.body = JSON.stringify(this._fetchData.body);
 
-        return await helpers.makeFetch(globals.API.url_get, this._fetchData).catch((error) => {
+        try {
+            return helpers.makeFetch(globals.API.url_get, this._fetchData);
+        } catch (error) {
             console.log(error);
             helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
 
             if (error.response.status === 401) {
                 pocket.logout();
             }
-        });
+        }
     }
 
     /**
@@ -85,21 +87,23 @@ class ApiService {
      * @param {Array} actions - Array of current action data.
      * @return {Promise} - Response from pocket api.
      */
-    async send(actions) {
+    send(actions) {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
             actions: actions,
         });
 
-        return await helpers.makeFetch(globals.API.url_send, this._fetchData).catch((error) => {
+        try {
+            return helpers.makeFetch(globals.API.url_send, this._fetchData);
+        } catch (error) {
             console.error(error);
             helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
 
             if (error.response.status === 401) {
                 pocket.logout();
             }
-        });
+        }
     }
 
     /**
@@ -109,21 +113,23 @@ class ApiService {
      * @param {Object} data - New item object.
      * @return {Promise} - Response from pocket api.
      */
-    async add(data) {
+    add(data) {
         this._fetchData.body = JSON.stringify({
             access_token: authService.getToken(),
             consumer_key: __consumer_key,
             url: data.url,
         });
 
-        return await helpers.makeFetch(globals.API.url_add, this._fetchData).catch((error) => {
+        try {
+            return helpers.makeFetch(globals.API.url_add, this._fetchData);
+        } catch (error) {
             console.error(error);
             helpers.showMessage(chrome.i18n.getMessage('ERROR_ADDING'), false);
 
             if (error.response.status === 401) {
                 pocket.logout();
             }
-        });
+        }
     }
 }
 

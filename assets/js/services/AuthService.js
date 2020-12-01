@@ -94,12 +94,12 @@ class AuthService {
             code: requestToken,
         });
 
-        return helpers.makeFetch(globals.API.url_authorize, this._fetchData).then((response) => {
-            this.setToken(response.access_token);
-            helpers.setToStorage('username', response.username);
+        const response = helpers.makeFetch(globals.API.url_authorize, this._fetchData);
 
-            return response;
-        });
+        this.setToken(response.access_token);
+        helpers.setToStorage('username', response.username);
+
+        return response;
     }
 
     /**

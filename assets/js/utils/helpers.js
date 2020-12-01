@@ -96,7 +96,7 @@ export async function makeFetch(url, options) {
         }
         return await response.json();
     } catch (e) {
-        console.log(e);
+        console.error(e);
         throw { response: e.response };
     }
 }

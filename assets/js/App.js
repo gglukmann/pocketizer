@@ -111,10 +111,9 @@ class App {
      * @function getContent
      * @return {void}
      */
-    getContent() {
-        apiService.get().then((response) => {
-            this.handleApiGetResponse(response);
-        });
+    async getContent() {
+        const response = await apiService.get();
+        this.handleApiGetResponse(response);
     }
 
     /**
@@ -503,7 +502,7 @@ class App {
      * @param  {String}  tags - Tags to replace.
      * @return {void}
      */
-    changeItemState(e, state, id, isFavourited = false, tags) {
+    async changeItemState(e, state, id, isFavourited = false, tags) {
         let action;
 
         if (state === 'read') {
@@ -540,17 +539,16 @@ class App {
             actions[0].tags = tags;
         }
 
-        apiService
-            .send(actions)
-            .then((response) => {
-                if (response.status === 1) {
-                    this.handleActionResponse(e, state, id, isFavourited, response, tags);
-                }
-            })
-            .catch((error) => {
-                console.log(error);
-                helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
-            });
+        try {
+            const response = await apiService.send(actions);
+
+            if (response.status === 1) {
+                this.handleActionResponse(e, state, id, isFavourited, response, tags);
+            }
+        } catch (error) {
+            console.log(error);
+            helpers.showMessage(chrome.i18n.getMessage('ACTION'), false);
+        }
     }
 
     /**
@@ -802,20 +800,20 @@ class App {
      * @function startLogin
      * @return {void}
      */
-    startLogin() {
-        authService.authenticate().then((response) => {
-            if (response.status !== 'authenticated') {
-                helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
-                document.querySelector('#js-login').disabled = false;
+    async startLogin() {
+        const response = authService.authenticate();
 
-                this.logout();
-                return;
-            }
-
+        if (response.status !== 'authenticated') {
+            helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
             document.querySelector('#js-login').disabled = false;
-            helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
-            this.loggedIn();
-        });
+
+            this.logout();
+            return;
+        }
+
+        document.querySelector('#js-login').disabled = false;
+        helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'));
+        this.loggedIn();
     }
 
     /**

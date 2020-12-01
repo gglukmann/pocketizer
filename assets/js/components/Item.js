@@ -265,39 +265,42 @@ class Item {
      * @param {Object} data - Link in object.
      * @return {void}
      */
-    add(data) {
-        apiService.add(data).then((response) => {
-            modal.close();
+    async add(data) {
+        const response = await apiService.add(data);
 
-            let array = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
-            array = helpers.prependArray(array, response.item);
-            helpers.setToStorage('listFromLocalStorage', JSON.stringify(array));
+        modal.close();
 
-            helpers.setToStorage('listCount', (parseInt(helpers.getFromStorage('listCount'), 10) + 1).toString());
-            if (pocket.getActivePage() === globals.PAGES.LIST) {
-                document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
+        let array = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
+        array = helpers.prependArray(array, response.item);
+        helpers.setToStorage('listFromLocalStorage', JSON.stringify(array));
+
+        helpers.setToStorage('listCount', (parseInt(helpers.getFromStorage('listCount'), 10) + 1).toString());
+        if (pocket.getActivePage() === globals.PAGES.LIST) {
+            document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
+        }
+
+        helpers.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
+
+        if (pocket.getActivePage() === globals.PAGES.LIST) {
+            const createdItem = this.create(response.item);
+            let doPrepend = false;
+
+            if (pocket.order === globals.ORDER.ASCENDING) {
+                doPrepend = true;
             }
 
-            helpers.showMessage(chrome.i18n.getMessage('CREATING_ITEM'));
-
-            if (pocket.getActivePage() === globals.PAGES.LIST) {
-                const createdItem = this.create(response.item);
-                let doPrepend = false;
-
-                if (pocket.orderItemsAsc) {
-                    doPrepend = true;
-                }
-
-                // array has new item but it is not in dom yet
-                // #js-list has .sentinel too
-                // that's why array.length and #js-list.childElementCount can be equal
-                if (!pocket.orderItemsAsc && array.length !== document.querySelector('#js-list').childElementCount) {
-                    return;
-                }
-
-                this.render(createdItem, globals.PAGES.LIST, doPrepend);
+            // array has new item but it is not in dom yet
+            // #js-list has .sentinel too
+            // that's why array.length and #js-list.childElementCount can be equal
+            if (
+                pocket.order !== globals.ORDER.ASCENDING &&
+                array.length !== document.querySelector('#js-list').childElementCount
+            ) {
+                return;
             }
-        });
+
+            this.render(createdItem, globals.PAGES.LIST, doPrepend);
+        }
     }
 
     /**

@@ -80,15 +80,14 @@ class Lazyload {
      * @param {Object} image - Image to preload.
      * @return {*}
      */
-    preloadImage(image) {
+    async preloadImage(image) {
         const src = image.dataset.src;
         if (!src) {
             return;
         }
 
-        return this.fetchImage(src).then(() => {
-            this.applyImage(image, src);
-        });
+        await this.fetchImage(src);
+        return this.applyImage(image, src);
     }
 
     /**
