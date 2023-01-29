@@ -10,7 +10,6 @@ class Item {
      */
     constructor() {
         this.timeout = false;
-        this.pageResize = this.handlePageResize.bind(this);
         this.submitTags = this.handleSaveTagsClick.bind(this);
     }
 
@@ -31,7 +30,6 @@ class Item {
      * @return {void}
      */
     bindEvents() {
-        window.addEventListener('resize', this.pageResize, false);
         document.tagsForm.addEventListener('submit', this.submitTags, false);
     }
 
@@ -42,22 +40,7 @@ class Item {
      * @return {void}
      */
     removeEvents() {
-        window.removeEventListener('resize', this.pageResize, false);
         document.tagsForm.removeEventListener('submit', this.submitTags, false);
-    }
-
-    /**
-     * Handle page resizing.
-     *
-     * @function handlePageResize
-     * @return {void}
-     */
-    handlePageResize() {
-        if (!this.timeout) {
-            window.requestAnimationFrame(this.calcBackgroundHeights.bind(this));
-
-            this.timeout = true;
-        }
     }
 
     /**
@@ -68,14 +51,12 @@ class Item {
      */
     create(element) {
         const itemElement = helpers.createNode('li');
-        const contentElement = helpers.createNode('div');
-        const fakeLinkElement = helpers.createNode('a');
+        const contentElement = helpers.createNode('a');
         const favouriteElement = helpers.createNode('a');
-        const titleElement = helpers.createNode('div');
+        const titleElement = helpers.createNode('h3');
         const timeAndTagsWrapperElement = helpers.createNode('div');
         const tagLinkElement = helpers.createNode('a');
         const timeElement = helpers.createNode('div');
-        const excerptElement = helpers.createNode('div');
         const linkElement = helpers.createNode('a');
         const readButtonElement = helpers.createNode('a');
         const deleteButtonElement = helpers.createNode('a');
@@ -87,11 +68,6 @@ class Item {
         } else {
             link = element.given_url;
         }
-
-        // fake link
-        fakeLinkElement.setAttribute('href', link);
-        fakeLinkElement.setAttribute('class', 'item__link-fake js-link');
-        fakeLinkElement.setAttribute('data-id', element.item_id);
 
         // favourite
         favouriteElement.setAttribute('data-favourite', element.favorite === '1' ? 'true' : 'false');
@@ -117,7 +93,7 @@ class Item {
 
         const titleTextNode = helpers.createTextNode(title);
 
-        titleElement.setAttribute('class', 'item__title js-itemTitle');
+        titleElement.setAttribute('class', 'item__title');
         helpers.append(titleElement, titleTextNode);
 
         // time and tags wrapper
@@ -158,17 +134,21 @@ class Item {
         helpers.append(timeAndTagsWrapperElement, timeElement);
         helpers.append(timeAndTagsWrapperElement, tagLinkElement);
 
-        // excerpt or background image
-        excerptElement.setAttribute('class', 'item__excerpt js-itemExcerpt');
-
+        // excerpt or image
+        let excerptElement = helpers.createNode('div');
         if ((element.has_image === '1' || element.has_image === '2') && element.image) {
-            excerptElement.className += ' item__excerpt--background js-lazyload';
-            excerptElement.dataset.src = element.image.src;
-        } else {
-            if (element.excerpt) {
-                let excerptNode = helpers.createTextNode(element.excerpt);
-                helpers.append(excerptElement, excerptNode);
-            }
+            excerptElement = helpers.createNode('figure');
+            excerptElement.setAttribute('class', 'item__excerpt item__excerpt--image-wrapper');
+            const imageElement = helpers.createNode('img');
+            imageElement.setAttribute('class', 'item__excerpt-image');
+            imageElement.setAttribute('src', element.image.src);
+            imageElement.setAttribute('loading', 'lazy');
+            imageElement.setAttribute('alt', title);
+            helpers.append(excerptElement, imageElement);
+        } else if (element.excerpt) {
+            excerptElement.setAttribute('class', 'item__excerpt');
+            let excerptNode = helpers.createTextNode(element.excerpt);
+            helpers.append(excerptElement, excerptNode);
         }
 
         // mark as read/unread link
@@ -220,21 +200,29 @@ class Item {
         linkElement.setAttribute('title', link);
         helpers.append(linkElement, linkNode);
 
-        // item and item__content
-        itemElement.setAttribute('class', 'item');
-        contentElement.setAttribute('class', 'item__content');
+        // item
+        contentElement.setAttribute('href', link);
+        contentElement.setAttribute('data-id', element.item_id);
+        contentElement.setAttribute('class', 'item js-link');
         helpers.append(itemElement, contentElement);
 
-        // append everything to item__content
-        helpers.append(contentElement, fakeLinkElement);
-        helpers.append(contentElement, favouriteElement);
-        helpers.append(contentElement, titleElement);
+        // footer
+        const footerElement = helpers.createNode('div');
+        footerElement.setAttribute('class', 'item__footer');
+
+        const titleWrapperElement = helpers.createNode('div');
+        helpers.append(titleWrapperElement, titleElement);
+
+        // append everything to item
+        helpers.append(contentElement, titleWrapperElement);
         helpers.append(contentElement, timeAndTagsWrapperElement);
         helpers.append(contentElement, excerptElement);
-        helpers.append(contentElement, linkElement);
-        helpers.append(contentElement, pocketLinkElement);
-        helpers.append(contentElement, readButtonElement);
-        helpers.append(contentElement, deleteButtonElement);
+        helpers.append(footerElement, pocketLinkElement);
+        helpers.append(footerElement, deleteButtonElement);
+        helpers.append(footerElement, linkElement);
+        helpers.append(footerElement, readButtonElement);
+        helpers.append(contentElement, footerElement);
+        helpers.append(contentElement, favouriteElement);
 
         return itemElement;
     }
@@ -454,36 +442,6 @@ class Item {
         if (!search.hasSearched()) {
             pocket.getContent();
         }
-    }
-
-    /**
-     * Calculate items images heights.
-     *
-     * @function calcBackgroundHeights
-     * @return {void}
-     */
-    calcBackgroundHeights(array) {
-        const items = typeof array === 'object' ? array : [...document.querySelectorAll('.item')];
-
-        for (const item of items) {
-            let titleHeight = 0;
-            for (const child of [...item.children[0].children]) {
-                if (child.classList.contains('js-itemTitle')) {
-                    titleHeight = child.offsetHeight;
-                }
-
-                if (child.classList.contains('js-itemExcerpt')) {
-                    if (document.querySelector('main').classList.contains('container--narrow')) {
-                        child.style.height = 'auto';
-                    } else {
-                        // 300 is item height, 20 is item__time, 52 is item__content padding bottom
-                        child.style.height = 300 - (titleHeight + 20 + 52) + 'px';
-                    }
-                }
-            }
-        }
-
-        this.timeout = false;
     }
 
     /**

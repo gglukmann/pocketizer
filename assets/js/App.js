@@ -1,6 +1,6 @@
 import * as helpers from './utils/helpers.js';
 import * as globals from './utils/globals.js';
-import { settings, tags, item, lazyload, header, search, modal, selector } from './components/index.js';
+import { settings, tags, item, header, search, modal, selector } from './components/index.js';
 import { apiService, authService } from './services/index.js';
 
 class App {
@@ -264,11 +264,9 @@ class App {
             helpers.hide(document.querySelector('#js-empty-list-message'));
             helpers.show(document.querySelector('#js-filterButtons'), true);
 
-            const domItemsArray = this.createItems(array);
+            this.createItems(array);
             this.createSentinel();
             this.createItemsObserver();
-            lazyload.load();
-            item.calcBackgroundHeights(domItemsArray);
         }
     }
 
@@ -299,7 +297,7 @@ class App {
      */
     createSentinel() {
         const list = document.querySelector('#js-list');
-        let element = helpers.createNode('div');
+        let element = helpers.createNode('li');
 
         element.setAttribute('id', 'js-sentinel');
         element.setAttribute('class', 'sentinel');
@@ -349,9 +347,7 @@ class App {
             helpers.showMessage(chrome.i18n.getMessage('LOADING'));
         }
 
-        const domItemsArray = this.createItems(array);
-        lazyload.load();
-        item.calcBackgroundHeights(domItemsArray);
+        this.createItems(array);
     }
     /**
      * Order items according to order from settings
@@ -433,9 +429,6 @@ class App {
 
             const viewType = mainSelector.classList.contains('container--narrow') ? 'list' : 'grid';
             settings.showRightViewTypeButton(viewType, e);
-
-            lazyload.load();
-            item.calcBackgroundHeights();
         } else if (e.target.classList.contains('js-link')) {
             const canSetAsArchived = settings.getArchiveAfterOpen() && this.getActivePage() === globals.PAGES.LIST;
 

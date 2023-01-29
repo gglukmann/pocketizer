@@ -1,7 +1,7 @@
 import * as helpers from '../utils/helpers.js';
 import * as globals from '../utils/globals.js';
 import pocket from '../App.js';
-import { item, lazyload } from './index.js';
+import { item } from './index.js';
 
 class Search {
     /**
@@ -237,9 +237,6 @@ class Search {
             helpers.show(searchCountElement, true);
             searchCountElement.innerText = count;
         }
-
-        lazyload.load();
-        item.calcBackgroundHeights();
     }
 
     /**
