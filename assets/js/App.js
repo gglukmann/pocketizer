@@ -566,7 +566,7 @@ class App {
                     case 'delete':
                         array.splice(i, 1);
 
-                        const itemNode = e.target.parentNode.parentNode;
+                        const itemNode = e.target.parentNode.parentNode.parentNode;
                         helpers.addClass(itemNode, 'move-up');
                         setTimeout(() => {
                             itemNode.remove();

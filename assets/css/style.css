@@ -2,6 +2,8 @@
     --page-width: 75rem;
     --grid-gutter: 2rem;
     --base-font-size: 1rem;
+    --font-size-medium: 0.875rem;
+    --font-size-small: 0.75rem;
     --base-line-height: 1.4;
 
     --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, 'Helvetica Neue',
@@ -149,7 +151,7 @@ a > svg {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     z-index: 120;
 }
 
@@ -237,7 +239,7 @@ a > svg {
 }
 
 .header__username {
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     color: var(--text-light);
 }
 
@@ -465,7 +467,7 @@ a > svg {
 }
 
 /* ITEM */
-.item.move-up {
+li.move-up {
     transform: translateY(-100%);
     opacity: 0;
     transition: transform 0.5s, opacity 0.5s;
@@ -542,12 +544,12 @@ a > svg {
     justify-content: space-between;
     align-items: center;
     color: var(--text-light);
-    font-size: 0.75rem;
+    font-size: var(--font-size-small);
 }
 
 .item__tags {
     color: var(--text-light);
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     line-height: 1;
     padding: 0.25rem;
     z-index: 10;
@@ -565,7 +567,7 @@ a > svg {
 .item__excerpt {
     position: relative;
     display: none;
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     color: var(--black);
     overflow: hidden;
 }
@@ -625,7 +627,7 @@ a > svg {
 
 .item__link {
     color: var(--text-light);
-    font-size: 0.75rem;
+    font-size: var(--font-size-small);
     text-decoration: none;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -761,7 +763,7 @@ a > svg {
 }
 
 .btn--small {
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     font-weight: normal;
     line-height: 1.2;
 }
@@ -935,7 +937,7 @@ a > svg {
 
 .textfield__label {
     display: block;
-    font-size: 0.75rem;
+    font-size: var(--font-size-small);
     margin-bottom: 0.3125rem;
     white-space: nowrap;
     overflow: hidden;
@@ -1001,7 +1003,7 @@ a > svg {
 /* Extends .textfield__input */
 .search__textfield {
     position: relative;
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     margin-bottom: 0;
 }
 
@@ -1089,7 +1091,7 @@ a > svg {
 }
 
 .selector__label {
-    font-size: 0.75rem;
+    font-size: var(--font-size-small);
     padding: 0;
     margin-bottom: 0.5rem;
 }
@@ -1114,7 +1116,7 @@ a > svg {
     display: block;
     color: var(--text-color);
     cursor: pointer;
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     padding: 0.3125rem 0.625rem;
     border: 1px solid var(--black);
     background: var(--white);
@@ -1155,7 +1157,7 @@ a > svg {
     left: 0;
     right: 0;
     bottom: -1.25rem;
-    font-size: 0.75rem;
+    font-size: var(--font-size-small);
 }
 
 .selector__message--success {
@@ -1171,7 +1173,7 @@ a > svg {
     position: relative;
     display: flex;
     align-items: center;
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     margin-top: 0.5rem;
 }
 
@@ -1214,7 +1216,7 @@ a > svg {
 }
 
 .tags__link {
-    font-size: 0.875rem;
+    font-size: var(--font-size-medium);
     line-height: 1.2;
 }
 
