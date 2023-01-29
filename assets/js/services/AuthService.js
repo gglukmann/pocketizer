@@ -66,22 +66,21 @@ class AuthService {
      * @param {String} requestToken - Request token from Pocket.
      * @return {Promise}
      */
-    launchChromeWebAuthFlow(requestToken) {
+    async launchChromeWebAuthFlow(requestToken) {
         const options = {
             url: `${globals.API.url_auth}?request_token=${requestToken}&redirect_uri=${globals.API.redirect_url}`,
             interactive: true,
         };
 
-        return new Promise((resolve, reject) => {
-            chrome.identity.launchWebAuthFlow(options, () => {
-                if (chrome.runtime.lastError) {
-                    helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
-                    reject(chrome.runtime.lastError.message);
-                }
+        try {
+            await chrome.identity.launchWebAuthFlow(options);
 
-                resolve(requestToken);
-            });
-        });
+            return requestToken;
+        } catch (error) {
+            helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
+
+            return chrome.runtime.lastError.message;
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 {
     "name": "__MSG_EXTENSION_NAME__",
     "version": "1.12.0",
-    "manifest_version": 2,
+    "manifest_version": 3,
     "default_locale": "en",
     "description": "__MSG_EXTENSION_DESCRIPTION__",
     "author": "Gert Glükmann @glukmann",
@@ -14,7 +14,7 @@
         "128": "assets/images/icon128.png",
         "256": "assets/images/icon256.png"
     },
-    "browser_action": {
+    "action": {
         "default_icon": {
             "16": "assets/images/icon16.png",
             "32": "assets/images/icon32.png"
@@ -23,23 +23,9 @@
     "chrome_url_overrides": {
         "newtab": "index.html"
     },
-    "content_scripts": [
-        {
-            "js": ["assets/js/extension/content.js"],
-            "matches": ["*://*/*"]
-        }
-    ],
     "background": {
-        "scripts": ["assets/js/extension/background.js"]
+        "service_worker": "assets/js/extension/background.js"
     },
-    "permissions": [
-        "identity",
-        "https://*.getpocket.com/*",
-        "https://getpocket.com/"
-    ],
-    "applications": {
-        "gecko": {
-            "strict_min_version": "54.0"
-        }
-    }
+    "permissions": ["identity"],
+    "host_permissions": ["<all_urls>"]
 }
