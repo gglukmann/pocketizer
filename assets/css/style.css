@@ -1173,7 +1173,7 @@ li.move-up {
     position: relative;
     display: flex;
     align-items: center;
-    font-size: var(--font-size-medium);
+    font-size: var(--font-size-small);
     margin-top: 0.5rem;
 }
 
@@ -1216,8 +1216,7 @@ li.move-up {
 }
 
 .tags__link {
-    font-size: var(--font-size-medium);
-    line-height: 1.2;
+    font-size: var(--font-size-small);
 }
 
 .tags__list--column .tags__link {
@@ -1250,11 +1249,7 @@ li.move-up {
 }
 
 .tags__more-link {
-    color: var(--text-light);
-}
-
-.tags__more-link:hover {
-    color: var(--text-color);
+    font-size: var(--font-size-small);
 }
 
 /* AUTOCOMPLETE */

@@ -80,20 +80,11 @@ class Item {
         favouriteElement.setAttribute('data-id', element.item_id);
 
         // title
-        let title;
-        if (element.title) {
-            title = element.title;
-        } else if (element.resolved_title && element.resolved_title !== '') {
-            title = element.resolved_title;
-        } else if (element.resolved_url && element.resolved_url !== '') {
-            title = element.resolved_url;
-        } else if (!element.resolved_title && !element.resolved_url) {
-            title = element.given_url;
-        }
-
+        const title = element.title || element.resolved_title || element.resolved_url || element.given_url || '';
         const titleTextNode = helpers.createTextNode(title);
 
         titleElement.setAttribute('class', 'item__title');
+        titleElement.setAttribute('title', title);
         helpers.append(titleElement, titleTextNode);
 
         // time and tags wrapper
