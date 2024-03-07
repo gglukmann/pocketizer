@@ -82,7 +82,7 @@ class Settings {
      * @param {String} theme - Theme to set.
      * @return {void}
      */
-    setTheme(theme = globals.THEMES.LIGHT) {
+    setTheme(theme = globals.THEMES.SYSTEM_PREFERENCE) {
         helpers.setToStorage('theme', theme);
     }
 
