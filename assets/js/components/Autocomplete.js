@@ -27,31 +27,31 @@ class Autocomplete {
         document.body.removeEventListener('keydown', this.autocompleteKeydown, false);
     }
 
-    handleAutocompleteKeydown(e) {
-        if (e.target.id === 'js-tagsInput' && this.isOpen() && e.keyCode === 27) {
+    handleAutocompleteKeydown(event) {
+        if (event.target.id === 'js-tagsInput' && this.isOpen() && event.keyCode === 27) {
             return this.hide();
         }
     }
 
-    handleClickAutocomplete(e) {
+    handleClickAutocomplete(event) {
         if (
-            !e.target.classList.contains(`${this.componentClass}__list`) &&
-            !e.target.classList.contains(`js-${this.componentClass}Link`)
+            !event.target.classList.contains(`${this.componentClass}__list`) &&
+            !event.target.classList.contains(`js-${this.componentClass}Link`)
         ) {
             this.hide();
-        } else if (e.target.classList.contains(`js-${this.componentClass}Link`)) {
-            this.setValue(e);
+        } else if (event.target.classList.contains(`js-${this.componentClass}Link`)) {
+            this.setValue(event);
             this.hide();
             this.input.focus();
         }
     }
 
-    handleSearchClick(e) {
-        if (e.keyCode === 27 || e.keyCode === 13) {
+    handleSearchClick(event) {
+        if (event.keyCode === 27 || event.keyCode === 13) {
             return;
         }
 
-        const inputCurrentArray = e.target.value.split(',');
+        const inputCurrentArray = event.target.value.split(',');
         this.searchableString = inputCurrentArray.pop();
         const foundArray = [];
 
@@ -130,7 +130,7 @@ class Autocomplete {
         helpers.append(this.autocompleteList, listElement);
     }
 
-    setValue(e) {
+    setValue(event) {
         const currentInputValueArray = this.input.value.split(',');
         const lastInputValue = currentInputValueArray.pop();
         if (lastInputValue === this.searchableString) {
@@ -138,7 +138,7 @@ class Autocomplete {
             this.searchableString = '';
         }
 
-        const value = decodeURI(e.target.hash.substr(1));
+        const value = decodeURI(event.target.hash.substr(1));
         this.input.value += currentInputValueArray.length === 0 ? value : `,${value}`;
     }
 

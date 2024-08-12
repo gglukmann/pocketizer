@@ -39,25 +39,25 @@ class Tags {
      * Handle all clicks within tag component.
      *
      * @function handleTagClicks
-     * @param e {Event} - Click event.
+     * @param event {Event} - Click event.
      * @return {void}
      */
-    handleTagClicks(e) {
-        if (e.target.classList.contains('js-tagsLink')) {
-            e.preventDefault();
+    handleTagClicks(event) {
+        if (event.target.classList.contains('js-tagsLink')) {
+            event.preventDefault();
 
-            search.search(decodeURI(e.target.hash));
+            search.search(decodeURI(event.target.hash));
             search.show();
-        } else if (e.target.id === 'js-tagsAllLink') {
-            e.preventDefault();
+        } else if (event.target.id === 'js-tagsAllLink') {
+            event.preventDefault();
             search.reset(true);
         }
 
-        if (e.target.id === 'js-tagsMoreLink') {
-            e.preventDefault();
+        if (event.target.id === 'js-tagsMoreLink') {
+            event.preventDefault();
 
             this.toggleTooltip();
-        } else if (e.target.id !== 'js-tagsMoreLink') {
+        } else if (event.target.id !== 'js-tagsMoreLink') {
             this.closeTooltip();
         }
     }

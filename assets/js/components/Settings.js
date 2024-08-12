@@ -295,12 +295,12 @@ class Settings {
      *
      * @function rotateOrderButton
      * @param {String} order - Order.
-     * @param {Event} e - Event from button click.
+     * @param {Event} event - Event from button click.
      * @return {void}
      */
-    rotateOrderButton(order, e) {
+    rotateOrderButton(order, event) {
         const orderButton = document.querySelector('#js-orderButton');
-        const target = e?.target ?? orderButton;
+        const target = event?.target ?? orderButton;
 
         switch (order) {
             case globals.ORDER.ASCENDING:
@@ -383,12 +383,12 @@ class Settings {
      *
      * @function showRightViewTypeButton
      * @param {String} viewType - View type.
-     * @param {Event} e - Event from button click.
+     * @param {Event} event - Event from button click.
      * @return {void}
      */
-    showRightViewTypeButton(viewType, e) {
+    showRightViewTypeButton(viewType, event) {
         const viewTypeButton = document.querySelector('#js-viewTypeButton');
-        const target = e && e.target ? e.target : viewTypeButton;
+        const target = event && event.target ? event.target : viewTypeButton;
 
         if (viewType === globals.VIEW_TYPES.LIST) {
             helpers.addClass(target, 'is-view-type-list');
@@ -424,13 +424,13 @@ class Settings {
      * Handle selector change in settings.
      *
      * @function handleSelectorChange
-     * @param {Event} e - Selector change event.
+     * @param {Event} event - Selector change event.
      * @return {void}
      */
-    handleSelectorChange(e) {
-        switch (e.detail.name) {
+    handleSelectorChange(event) {
+        switch (event.detail.name) {
             case 'selector-theme':
-                const value = e.detail.value.toString();
+                const value = event.detail.value.toString();
 
                 if (Object.values(globals.THEMES).includes(value)) {
                     if (value === globals.THEMES.SYSTEM_PREFERENCE) {
@@ -444,13 +444,13 @@ class Settings {
                                 helpers.addClass(document.body, 'theme-system-preference-dark');
                                 this.setTheme(value);
 
-                                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                                selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                             } else {
                                 helpers.removeClass(document.body, this.getTheme());
                                 helpers.removeClass(document.body, 'theme-system-preference-dark');
                                 this.setTheme(value);
 
-                                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                                selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                             }
                         }
                     } else {
@@ -459,54 +459,54 @@ class Settings {
                         helpers.addClass(document.body, value);
                         this.setTheme(value);
 
-                        selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                        selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                     }
                 }
                 break;
             case 'selector-page':
-                const page = e.detail.value.toString();
+                const page = event.detail.value.toString();
 
                 if (Object.values(globals.PAGES).includes(page)) {
                     this.setDefaultPage(page);
 
-                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                    selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
             case 'selector-order':
-                const order = e.detail.value.toString();
+                const order = event.detail.value.toString();
 
                 if (Object.values(globals.ORDER).includes(order)) {
                     this.setOrder(order);
-                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                    selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
             case 'selector-update-interval':
-                const interval = e.detail.value.toString();
+                const interval = event.detail.value.toString();
 
                 if (globals.UPDATE_INTERVALS.includes(interval)) {
                     this.setUpdateInterval(interval);
-                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                    selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
             case 'selector-archive-after-open':
-                const archiveAfterOpen = e.detail.value.toString();
+                const archiveAfterOpen = event.detail.value.toString();
 
                 this.setArchiveAfterOpen(archiveAfterOpen);
-                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 break;
             case 'selector-view-type':
-                const viewType = e.detail.value.toString();
+                const viewType = event.detail.value.toString();
 
                 if (Object.values(globals.VIEW_TYPES).includes(viewType)) {
                     this.setViewType(viewType);
-                    selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                    selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 }
                 break;
             case 'selector-ask-delete-confirmation':
-                const askDeleteConfirmation = e.detail.value.toString();
+                const askDeleteConfirmation = event.detail.value.toString();
 
                 this.setAskDeleteConfirmation(askDeleteConfirmation);
-                selector.showMessage(e, true, `${chrome.i18n.getMessage('SAVED')}!`);
+                selector.showMessage(event, true, `${chrome.i18n.getMessage('SAVED')}!`);
                 break;
             default:
         }
@@ -536,14 +536,14 @@ class Settings {
      * Handle submitting new item adding form.
      *
      * @function handleSubmitNewItem
-     * @param {Event} e - Submit event.
+     * @param {Event} event - Submit event.
      * @return {void}
      */
-    handleSubmitNewItem(e) {
-        const form = e.target;
+    handleSubmitNewItem(event) {
+        const form = event.target;
 
         if (form.checkValidity()) {
-            e.preventDefault();
+            event.preventDefault();
             helpers.showMessage(`${chrome.i18n.getMessage('CREATING_ITEM')}...`, true, false, false);
 
             if (pocket.getActivePage() === globals.PAGES.LIST) {
@@ -568,17 +568,16 @@ class Settings {
      * @return {Boolean} - If is time to update.
      */
     isTimeToUpdate() {
-        let isTime = false;
         const timeDifference = helpers.calcTimeDifference(
             helpers.getCurrentUNIX(),
             helpers.getFromStorage(`${this.getDefaultPage()}Since`) || 0
         );
 
         if (timeDifference >= this.getUpdateInterval()) {
-            isTime = true;
+            return true;
         }
 
-        return isTime;
+        return false;
     }
 
     /**

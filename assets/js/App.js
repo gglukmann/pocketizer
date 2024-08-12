@@ -1,16 +1,13 @@
 import * as helpers from './utils/helpers.js';
 import * as globals from './utils/globals.js';
+import * as connection from './utils/connection.js';
 import { settings, tags, item, header, search, modal, selector } from './components/index.js';
 import { apiService, authService } from './services/index.js';
 
 class App {
-    /**
-     * @constructor
-     */
     constructor() {
         this.active_page = globals.PAGES.LIST;
         this.items_shown = 0;
-        this.load_count = globals.LOAD_COUNT;
 
         this.scroll = {
             lastKnownScrollY: 0,
@@ -33,7 +30,7 @@ class App {
      * @return {void}
      */
     init() {
-        this.handleInternetConnection();
+        connection.handleInternetConnection();
         helpers.localizeHtml();
         settings.loadTheme(); // this is here for faster load time
         settings.loadViewType();
@@ -68,44 +65,6 @@ class App {
     }
 
     /**
-     * Check internet connection and handle everything when offline.
-     *
-     * @function handleInternetConnection
-     * @return {void}
-     */
-    handleInternetConnection() {
-        this.toggleOfflineTheme();
-
-        window.addEventListener('offline', this.toggleOfflineTheme, false);
-        window.addEventListener('online', this.toggleOfflineTheme, false);
-
-        document.querySelector('#js-offlineRefresh').addEventListener('click', (e) => {
-            helpers.addClass(e.target, 'is-syncing');
-            window.location.reload();
-        });
-    }
-
-    /**
-     * Toggle all props for offline theme.
-     *
-     * @function toggleOfflineTheme
-     * @return {void}
-     */
-    toggleOfflineTheme() {
-        const isOnline = helpers.checkInternetConnection();
-
-        if (isOnline) {
-            helpers.removeClass(document.body, 'theme-offline');
-            helpers.hide(document.querySelector('#js-offlineStatus'));
-            document.querySelector('#js-login').disabled = false;
-        } else {
-            helpers.addClass(document.body, 'theme-offline');
-            helpers.show(document.querySelector('#js-offlineStatus'), true);
-            document.querySelector('#js-login').disabled = true;
-        }
-    }
-
-    /**
      * Gets content from localStorage and from Pocket API to see if there are newer links.
      *
      * @function getContent
@@ -117,7 +76,7 @@ class App {
     }
 
     /**
-     * Sort get response, add to localstorage and render page again.
+     * Sort get response, add to localStorage and render page again.
      *
      * @function handleApiGetResponse
      * @param  {Object} response - response from fetch.
@@ -125,7 +84,7 @@ class App {
      */
     handleApiGetResponse(response) {
         let array = [];
-        let items = response.list;
+        const items = response.list;
         let isFirstLoad = false;
 
         switch (this.getActivePage()) {
@@ -207,7 +166,6 @@ class App {
                     // delete from unread or archive list
                     case '2':
                         let listArray = JSON.parse(helpers.getFromStorage('listFromLocalStorage'));
-
                         listArray = listArray.filter((item) => item.item_id !== newItem.item_id);
 
                         helpers.setToStorage('listFromLocalStorage', JSON.stringify(listArray));
@@ -243,9 +201,9 @@ class App {
      * @return {void}
      */
     render() {
-        let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
+        const array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
 
-        this.items_shown = this.load_count;
+        this.items_shown = globals.LOAD_COUNT;
 
         document.querySelector('#js-count').innerText = helpers.getFromStorage(`${this.getActivePage()}Count`);
         helpers.clearChildren(document.querySelector('#js-list'));
@@ -258,13 +216,12 @@ class App {
         } else {
             tags.createTags(array);
 
-            array = this.getOrderedItemsArray(array);
-            array = array.filter((_, index) => index < this.load_count);
+            const items = this.getOrderedItemsArray(array).filter((_, index) => index < globals.LOAD_COUNT);
 
             helpers.hide(document.querySelector('#js-empty-list-message'));
             helpers.show(document.querySelector('#js-filterButtons'), true);
 
-            this.createItems(array);
+            this.createItems(items);
             this.createSentinel();
             this.createItemsObserver();
         }
@@ -278,15 +235,10 @@ class App {
      * @return {Array[]}
      */
     createItems(array) {
-        const newArray = [];
-
-        for (const key in array) {
-            let newItem = item.create(array[key]);
-            newItem = item.render(newItem);
-            newArray.push(newItem);
-        }
-
-        return newArray;
+        return array.map((element) => {
+            const itemElement = item.create(element);
+            return item.render(itemElement);
+        });
     }
 
     /**
@@ -297,7 +249,7 @@ class App {
      */
     createSentinel() {
         const list = document.querySelector('#js-list');
-        let element = helpers.createNode('li');
+        const element = helpers.createNode('li');
 
         element.setAttribute('id', 'js-sentinel');
         element.setAttribute('class', 'sentinel');
@@ -336,10 +288,11 @@ class App {
     infiniteScroll() {
         helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
         let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
-        array = this.getOrderedItemsArray(array);
-        array = array.filter((_, index) => index >= this.items_shown && index < this.items_shown + this.load_count);
+        array = this.getOrderedItemsArray(array).filter(
+            (_, index) => index >= this.items_shown && index < this.items_shown + globals.LOAD_COUNT
+        );
 
-        this.items_shown += this.load_count;
+        this.items_shown += globals.LOAD_COUNT;
 
         if (array.length === 0) {
             helpers.showMessage(chrome.i18n.getMessage('EVERYTHING_LOADED'), true, false, true);
@@ -349,6 +302,7 @@ class App {
 
         this.createItems(array);
     }
+
     /**
      * Order items according to order from settings
      *
@@ -357,15 +311,13 @@ class App {
      * @memberof App
      */
     getOrderedItemsArray(array) {
-        let arr = [...array];
-
         switch (this.order) {
             case globals.ORDER.DESCENDING:
-                return arr.reverse();
+                return array.reverse();
             case globals.ORDER.RANDOM:
-                return helpers.shuffleArray(arr);
+                return helpers.shuffleArray(array);
             default:
-                return arr;
+                return array;
         }
     }
 
@@ -407,33 +359,33 @@ class App {
      * Handle item clicks.
      *
      * @function handleItemClicks
-     * @param {Event} e - Event from click.
+     * @param {Event} event - Event from click.
      * @return {void}
      */
-    handleItemClicks(e) {
-        if (e.target.classList.contains('js-toggleFavouriteButton')) {
-            item.favourite(e);
-        } else if (e.target.classList.contains('js-toggleReadButton')) {
-            item.archive(e);
-        } else if (e.target.classList.contains('js-deleteButton')) {
-            item.delete(e);
-        } else if (e.target.classList.contains('js-tagsButton')) {
-            item.addTags(e);
-        } else if (e.target.id === 'js-orderButton') {
+    handleItemClicks(event) {
+        if (event.target.classList.contains('js-toggleFavouriteButton')) {
+            item.favourite(event);
+        } else if (event.target.classList.contains('js-toggleReadButton')) {
+            item.archive(event);
+        } else if (event.target.classList.contains('js-deleteButton')) {
+            item.delete(event);
+        } else if (event.target.classList.contains('js-tagsButton')) {
+            item.addTags(event);
+        } else if (event.target.id === 'js-orderButton') {
             this.order = this.order === globals.ORDER.ASCENDING ? globals.ORDER.DESCENDING : globals.ORDER.ASCENDING;
             this.render();
-            settings.rotateOrderButton(this.order, e);
-        } else if (e.target.id === 'js-viewTypeButton') {
+            settings.rotateOrderButton(this.order, event);
+        } else if (event.target.id === 'js-viewTypeButton') {
             const mainSelector = document.querySelector('main');
             helpers.toggleClass(mainSelector, 'container--narrow');
 
             const viewType = mainSelector.classList.contains('container--narrow') ? 'list' : 'grid';
-            settings.showRightViewTypeButton(viewType, e);
-        } else if (e.target.classList.contains('js-link')) {
+            settings.showRightViewTypeButton(viewType, event);
+        } else if (event.target.classList.contains('js-link')) {
             const canSetAsArchived = settings.getArchiveAfterOpen() && this.getActivePage() === globals.PAGES.LIST;
 
             if (canSetAsArchived) {
-                item.archive(e);
+                item.archive(event);
             }
         }
     }
@@ -442,12 +394,12 @@ class App {
      * Handle keyboard clicks.
      *
      * @function handleKeyDowns
-     * @param {Event} e - Event from keyup.
+     * @param {Event} event - Event from keyup.
      * @return {void}
      */
-    handleKeyDowns(e) {
+    handleKeyDowns(event) {
         // alt + f - opens search
-        if (e.keyCode === 70 && e.altKey) {
+        if (event.keyCode === 70 && event.altKey) {
             search.show();
         }
     }
@@ -488,14 +440,14 @@ class App {
      * Changes item state.
      *
      * @function changeItemState
-     * @param  {Event}  e - Event.
+     * @param  {Event}  event - Event.
      * @param  {String}  state - Current state.
      * @param  {Number}  id - Item id.
      * @param  {Boolean} isFavourited - If should be favourited.
      * @param  {String}  tags - Tags to replace.
      * @return {void}
      */
-    async changeItemState(e, state, id, isFavourited = false, tags) {
+    async changeItemState(event, state, id, isFavourited = false, tags) {
         let action;
 
         if (state === 'read') {
@@ -536,7 +488,7 @@ class App {
             const response = await apiService.send(actions);
 
             if (response.status === 1) {
-                this.handleActionResponse(e, state, id, isFavourited, response, tags);
+                this.handleActionResponse(event, state, id, isFavourited, response, tags);
             }
         } catch (error) {
             console.log(error);
@@ -548,7 +500,7 @@ class App {
      * Handles item state change after Pocket api success.
      *
      * @function handleActionResponse
-     * @param {Event} e - Event.
+     * @param {Event} event - Event.
      * @param {String} state - Current state.
      * @param {Number} id - Item id.
      * @param {Boolean} isFavourited - If should be favourited.
@@ -556,7 +508,7 @@ class App {
      * @param {String} tags - Tags, if they are added.
      * @return {void}
      */
-    handleActionResponse(e, state, id, isFavourited, response, tags) {
+    handleActionResponse(event, state, id, isFavourited, response, tags) {
         let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
 
         for (const i in array) {
@@ -566,7 +518,7 @@ class App {
                     case 'delete':
                         array.splice(i, 1);
 
-                        const itemNode = e.target.parentNode.parentNode.parentNode;
+                        const itemNode = event.target.parentNode.parentNode.parentNode;
                         helpers.addClass(itemNode, 'move-up');
                         setTimeout(() => {
                             itemNode.remove();
@@ -585,11 +537,12 @@ class App {
                         array[i].favorite = isFavourited === true ? 0 : 1;
 
                         isFavourited = !isFavourited;
-                        e.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite = isFavourited;
+                        event.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite =
+                            isFavourited;
                         break;
                     case 'tags':
                         if (tags.length) {
-                            e.target.dataset.tags = tags;
+                            event.target.dataset.tags = tags;
                         }
                         break;
                 }
@@ -622,13 +575,13 @@ class App {
      * @return {void}
      */
     changePage(page, isPageLoad) {
-        page = page ? page : globals.PAGES.LIST;
+        const newPage = page || globals.PAGES.LIST;
 
-        if (!Object.values(globals.PAGES).includes(page)) {
+        if (!Object.values(globals.PAGES).includes(newPage)) {
             return;
         }
 
-        header.changeMenuActiveState(page);
+        header.changeMenuActiveState(newPage);
 
         this.items_shown = 0;
         helpers.clearChildren(document.querySelector('#js-list'));
@@ -638,7 +591,7 @@ class App {
         helpers.show(document.querySelector('#js-searchButton'), true);
         helpers.show(document.querySelector('#js-fullSync'), true);
 
-        switch (page) {
+        switch (newPage) {
             case globals.PAGES.LIST:
                 helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
                 this.setActivePage(globals.PAGES.LIST);
@@ -663,10 +616,7 @@ class App {
                     this.render();
                 }
 
-                if (isPageLoad && settings.isTimeToUpdate()) {
-                    helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
-                    this.getContent();
-                } else if (!isPageLoad) {
+                if (settings.isTimeToUpdate()) {
                     helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
                     this.getContent();
                 }
@@ -717,7 +667,7 @@ class App {
     }
 
     /**
-     * Show right content after loging in.
+     * Show right content after logging in.
      *
      * @function loggedIn
      * @return {void}
@@ -834,7 +784,6 @@ class App {
         tags.destroy();
 
         this.toggleLoggedInContent(false);
-        helpers.removeClass(document.body, Object.values(globals.THEMES));
 
         helpers.showMessage(chrome.i18n.getMessage('LOGGING_OUT'));
     }

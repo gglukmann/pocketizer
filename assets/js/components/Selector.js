@@ -42,12 +42,12 @@ class Selector {
      * Handle selector click.
      *
      * @function handleSelectClick
-     * @param {Event} e - Change event.
+     * @param {Event} event - Change event.
      * @return {void}
      */
-    handleSelectorClick(e) {
-        if (e.target.classList.contains('selector__input') || e.target.type === 'checkbox') {
-            this.selectInput(e);
+    handleSelectorClick(event) {
+        if (event.target.classList.contains('selector__input') || event.target.type === 'checkbox') {
+            this.selectInput(event);
         }
     }
 
@@ -55,10 +55,11 @@ class Selector {
      * Select selector and change theme class on body.
      *
      * @function selectInput
+     * @param {Event} event - Change event.
      * @return {void}
      */
-    selectInput(e) {
-        const eventSelector = new CustomEvent('select.selector', { detail: e.target });
+    selectInput(event) {
+        const eventSelector = new CustomEvent('select.selector', { detail: event.target });
         document.dispatchEvent(eventSelector);
     }
 
@@ -86,15 +87,15 @@ class Selector {
      * Show message at the bottom of selector.
      *
      * @function showMessage
-     * @param {Event} e - Selector checkbox change event.
+     * @param {Event} event - Selector checkbox change event.
      * @param {Boolean} isSuccess - Is success or error.
      * @param {String} message - Message to show.
-     * @param {Number | *} timeout - Timeout for how long to show message.
+     * @param {Number | *} timeout - Timeout for how long to show message.
      * @return {void}
      */
-    showMessage(e, isSuccess, message, timeout = 2000) {
+    showMessage(event, isSuccess, message, timeout = 2000) {
         const messageNode = this.createMessageNode(isSuccess, message);
-        const component = e.detail.closest('.selector');
+        const component = event.detail.closest('.selector');
 
         for (const child of component.children) {
             if (child.classList.contains('selector__message')) {

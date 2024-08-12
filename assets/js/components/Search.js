@@ -1,7 +1,7 @@
 import * as helpers from '../utils/helpers.js';
 import * as globals from '../utils/globals.js';
 import pocket from '../App.js';
-import { item } from './index.js';
+import item from './Item.js';
 
 class Search {
     /**
@@ -74,12 +74,12 @@ class Search {
      * Handle search keyup event.
      *
      * @function handleMakeSearchClick
-     * @param {Event} e - Keyup event.
+     * @param {Event} event - Keyup event.
      * @return {void}
      */
-    handleMakeSearchClick(e) {
-        if (e.target.value.length >= 3) {
-            this.search(e.target.value);
+    handleMakeSearchClick(event) {
+        if (event.target.value.length >= 3) {
+            this.search(event.target.value);
         }
     }
 
@@ -87,11 +87,11 @@ class Search {
      * Handle close search click.
      *
      * @function handleCloseSearchClick
-     * @param {Event} e - Click event.
+     * @param {Event} event - Click event.
      * @return {void}
      */
-    handleCloseSearchClick(e) {
-        e.preventDefault();
+    handleCloseSearchClick(event) {
+        event.preventDefault();
 
         this.reset(true);
     }

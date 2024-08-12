@@ -34,7 +34,7 @@ export function showMessage(message, isSuccess = true, hasSuffix = true, hasEndi
  * @return {void}
  */
 export function replaceI18n(obj, tag, attribute = false) {
-    let msg = tag.replace(/__MSG_(\w+)__/g, (match, v1) => {
+    const msg = tag.replace(/__MSG_(\w+)__/g, (match, v1) => {
         return v1 ? chrome.i18n.getMessage(v1) : '';
     });
 
@@ -57,10 +57,10 @@ export function replaceI18n(obj, tag, attribute = false) {
 export function localizeHtml() {
     const data = document.querySelectorAll('[data-translate]');
 
-    for (let i in data) {
+    for (const i in data) {
         if (data.hasOwnProperty(i)) {
-            let obj = data[i];
-            let tag = obj.dataset.translate.toString();
+            const obj = data[i];
+            const tag = obj.dataset.translate.toString();
 
             this.replaceI18n(obj, tag);
         }
@@ -69,11 +69,11 @@ export function localizeHtml() {
     // Localize whitelisted attributes by replacing all __MSG_***__ tags
     const whiteListAttributes = ['title', 'placeholder'];
 
-    for (let whiteListedAttribute of whiteListAttributes) {
-        let attributes = [...document.querySelectorAll('[' + whiteListedAttribute + ']')];
+    for (const whiteListedAttribute of whiteListAttributes) {
+        const attributes = [...document.querySelectorAll('[' + whiteListedAttribute + ']')];
 
-        for (let attr of attributes) {
-            let tag = attr.getAttribute(whiteListedAttribute);
+        for (const attr of attributes) {
+            const tag = attr.getAttribute(whiteListedAttribute);
 
             this.replaceI18n(attr, tag, whiteListedAttribute);
         }
@@ -95,9 +95,9 @@ export async function makeFetch(url, options) {
             throw { response };
         }
         return await response.json();
-    } catch (e) {
-        console.error(e);
-        throw { response: e.response };
+    } catch (event) {
+        console.error(event);
+        throw { response: event.response };
     }
 }
 
@@ -170,10 +170,10 @@ export function prependArray(array, value) {
  * @return {String} - dd.mm.yyyy.
  */
 export function timeConverter(UNIX) {
-    let d = new Date(UNIX * 1000);
-    let year = d.getFullYear();
-    let month = ('0' + (d.getMonth() + 1)).slice(-2);
-    let date = ('0' + d.getDate()).slice(-2);
+    const d = new Date(UNIX * 1000);
+    const year = d.getFullYear();
+    const month = ('0' + (d.getMonth() + 1)).slice(-2);
+    const date = ('0' + d.getDate()).slice(-2);
     return date + '.' + month + '.' + year;
 }
 
@@ -387,7 +387,7 @@ export function getFutureDate(days) {
  * @returns {Array} - Shuffled array
  */
 export function shuffleArray(array) {
-    let arr = [...array];
+    const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [arr[i], arr[j]] = [arr[j], arr[i]];

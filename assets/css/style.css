@@ -386,6 +386,11 @@ a > svg {
     color: var(--text-color);
 }
 
+.theme-dark .message__text--text-color,
+.theme-system-preference-dark .message__text--text-color {
+    color: var(--text-light);
+}
+
 .theme-offline .message__text {
     color: var(--text-light);
 }

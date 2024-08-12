@@ -49,21 +49,21 @@ class Modal {
      * Handle open modal click event.
      *
      * @function handleOpenModalClick
-     * @param {Event} e - Click event.
+     * @param {Event} event - Click event.
      * @return {void}
      */
-    handleOpenModalClick(e) {
-        if (e.target.dataset.modalPreventClose && e.target.dataset.modalPreventClose === 'true') {
+    handleOpenModalClick(event) {
+        if (event.target.dataset.modalPreventClose && event.target.dataset.modalPreventClose === 'true') {
             this.preventClose = true;
         }
 
-        if (e.target.dataset.modalTarget && e.target.dataset.modalTarget !== '') {
-            e.preventDefault();
+        if (event.target.dataset.modalTarget && event.target.dataset.modalTarget !== '') {
+            event.preventDefault();
 
-            this.open(e.target.dataset.modalTarget);
+            this.open(event.target.dataset.modalTarget);
         }
 
-        if (e.target.dataset.modalAction && e.target.dataset.modalAction === 'close') {
+        if (event.target.dataset.modalAction && event.target.dataset.modalAction === 'close') {
             this.close();
         }
     }
@@ -72,16 +72,16 @@ class Modal {
      * Handle keydown event.
      *
      * @function handleModalKeydown
-     * @param {Event} e - Keydown event.
+     * @param {Event} event - Keydown event.
      * @return {void}
      */
-    handleModalKeydown(e) {
+    handleModalKeydown(event) {
         if (
             !this.preventClose &&
-            (e.target.id !== 'js-tagsInput' ||
-                e.target.parentNode.querySelector('.autocomplete') === null ||
-                !e.target.parentNode.querySelector('.autocomplete').classList.contains('is-open')) &&
-            e.keyCode === 27
+            (event.target.id !== 'js-tagsInput' ||
+                event.target.parentNode.querySelector('.autocomplete') === null ||
+                !event.target.parentNode.querySelector('.autocomplete').classList.contains('is-open')) &&
+            event.keyCode === 27
         ) {
             this.close();
         }
@@ -142,12 +142,12 @@ class Modal {
      * Handle container click.
      *
      * @function handleContainerClick
-     * @param {Event} e - Click event.
+     * @param {Event} event - Click event.
      * @return {void}
      */
-    handleContainerClick(e) {
-        if (e.target === e.currentTarget) {
-            e.preventDefault();
+    handleContainerClick(event) {
+        if (event.target === event.currentTarget) {
+            event.preventDefault();
             this.close();
         }
     }

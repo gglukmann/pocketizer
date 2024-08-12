@@ -286,48 +286,47 @@ class Item {
      * Toggle favourite state.
      *
      * @function favourite
-     * @param {Event} e - Click event.
+     * @param {Event} event - Click event.
      * @return {void}
      */
-    favourite(e) {
-        e.preventDefault();
-        const id = e.target.dataset.id;
-        let isFavourited = e.target.dataset.favourite;
-        isFavourited = isFavourited === 'true'; // convert to boolean
+    favourite(event) {
+        event.preventDefault();
+        const id = event.target.dataset.id;
+        const isFavourited = event.target.dataset.favourite === 'true';
 
-        pocket.changeItemState(e, 'favourite', id, isFavourited);
+        pocket.changeItemState(event, 'favourite', id, isFavourited);
     }
 
     /**
      * Toggle item between archive and list.
      *
      * @function archive
-     * @param {Event} e - Click event.
+     * @param {Event} event - Click event.
      * @return {void}
      */
-    archive(e) {
+    archive(event) {
         if (!settings.getArchiveAfterOpen()) {
-            e.preventDefault();
+            event.preventDefault();
         }
 
-        const id = e.target.dataset.id;
-        pocket.changeItemState(e, 'read', id);
+        const id = event.target.dataset.id;
+        pocket.changeItemState(event, 'read', id);
     }
 
     /**
      * Open modal and delete item.
      *
      * @function delete
-     * @param {Event} e - Click event.
+     * @param {Event} event - Click event.
      * @return {void}
      */
-    delete(e) {
-        e.preventDefault();
+    delete(event) {
+        event.preventDefault();
 
         if (settings.getAskDeleteConfirmation() === 'enabled') {
             modal.open('#js-deleteModal');
 
-            const newEvent = this.handleDeleteClick.bind(this, e);
+            const newEvent = this.handleDeleteClick.bind(this, event);
 
             document.querySelector('#js-deleteSubmit').addEventListener('click', newEvent, false);
 
@@ -339,7 +338,7 @@ class Item {
                 { once: true }
             );
         } else {
-            this.handleDeleteClick(e);
+            this.handleDeleteClick(event);
         }
     }
 
@@ -347,33 +346,33 @@ class Item {
      * Handle delete button click.
      *
      * @function handleDeleteClick
-     * @param {Event} e - Delete button from item event.
+     * @param {Event} event- Delete button from item event.
      * @return {void}
      */
-    handleDeleteClick(e) {
-        const id = e.target.dataset.id;
-        pocket.changeItemState(e, 'delete', id);
+    handleDeleteClick(event) {
+        const id = event.target.dataset.id;
+        pocket.changeItemState(event, 'delete', id);
     }
 
     /**
      * Open modal and create click event to submit button.
      *
      * @function addTags
-     * @param {Event} e - Click event.
+     * @param {Event} event - Click event.
      * @return {void}
      */
-    addTags(e) {
-        e.preventDefault();
+    addTags(event) {
+        event.preventDefault();
         modal.open('#js-tagsModal');
 
         const tagsFormElements = document.tagsForm.elements;
         const tagsItemIdInput = tagsFormElements.namedItem('tagsItemId');
         const tagsInput = tagsFormElements.namedItem('tags');
 
-        tagsItemIdInput.value = e.target.dataset.id;
+        tagsItemIdInput.value = event.target.dataset.id;
 
-        if (e.target.dataset.tags) {
-            tagsInput.value = e.target.dataset.tags;
+        if (event.target.dataset.tags) {
+            tagsInput.value = event.target.dataset.tags;
         }
         tagsInput.focus();
 
@@ -391,14 +390,14 @@ class Item {
      * Handle tags submit button click.
      *
      * @function handleSaveTagsClick
-     * @param {Event} e - Tags button from item event.
+     * @param {Event} event - Tags button from item event.
      * @return {void}
      */
-    handleSaveTagsClick(e) {
-        const form = e.target;
+    handleSaveTagsClick(event) {
+        const form = event.target;
 
         if (form.checkValidity()) {
-            e.preventDefault();
+            event.preventDefault();
 
             const id = form.elements.namedItem('tagsItemId').value;
             const allTags = form.elements.namedItem('tags').value;
@@ -416,7 +415,7 @@ class Item {
 
             const newTagsString = newTags.join(',');
 
-            pocket.changeItemState(e, 'tags', id, false, newTagsString);
+            pocket.changeItemState(event, 'tags', id, false, newTagsString);
             tags.renderTags();
             this.addTagsToItem();
             modal.close();

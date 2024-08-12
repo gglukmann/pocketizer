@@ -109,13 +109,13 @@ class Header {
      * Handle menu clicks.
      *
      * @function handleMenuClicks
-     * @param {Event} e - Event from click.
+     * @param {Event} event - Event from click.
      * @return {void}
      */
-    handleMenuClicks(e) {
-        if (e.target.classList.contains('js-changeMenu')) {
-            e.preventDefault();
-            let page = e.target.dataset.page;
+    handleMenuClicks(event) {
+        if (event.target.classList.contains('js-changeMenu')) {
+            event.preventDefault();
+            const page = event.target.dataset.page;
 
             pocket.changePage(page);
         }
@@ -135,13 +135,13 @@ class Header {
      * Handle full sync button click.
      *
      * @function handleFullSyncClick
-     * @param {Event} e - Click event.
+     * @param {Event} event - Click event.
      * @return {void}
      */
-    handleFullSyncClick(e) {
+    handleFullSyncClick(event) {
         helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
 
-        const target = e.target;
+        const target = event.target;
         const syncClass = 'is-syncing';
 
         helpers.addClass(target, syncClass);

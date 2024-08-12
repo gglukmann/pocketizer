@@ -35,10 +35,10 @@ class AuthService {
                 status: 'authenticated',
                 user: username,
             };
-        } catch (e) {
+        } catch (event) {
             helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
             document.querySelector('#js-login').disabled = false;
-            throw new Error(e);
+            throw new Error(event);
         }
     }
 
@@ -103,7 +103,7 @@ class AuthService {
      * Get token from localStorage.
      *
      * @function getToken
-     * @return {String} Token.
+     * @return {String, Boolean} Token or false.
      */
     getToken() {
         return helpers.getFromStorage('token') || false;
