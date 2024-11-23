@@ -18,17 +18,53 @@ class ApiService {
     }
 
     /**
-     * Get data from pocket api.
+     * Paginate data.
      *
-     * @function get
+     * @function paginate
+     * @param {Object} offset - Offset object.
      * @return {Promise} - Response from pocket api.
      */
-    get() {
-        this._fetchData.body = {
-            access_token: authService.getToken(),
-            consumer_key: __consumer_key,
-            detailType: 'complete',
+    paginate({ offset = 0 }) {
+        const body = {
+            count: globals.LOAD_COUNT,
+            total: '1',
+            sort: 'newest',
+            offset,
         };
+        switch (pocket.getActivePage()) {
+            case globals.PAGES.LIST:
+                body.state = 'unread';
+                break;
+            case globals.PAGES.ARCHIVE:
+                body.state = 'archive';
+                break;
+        }
+        return this.get(body);
+    }
+
+    /**
+     * Sync data.
+     *
+     * @function sync
+     * @return {Promise} - Response from pocket api.
+     */
+    sync() {
+        const body = {};
+
+        if (pocket.fullSync) {
+            body.since = null;
+
+            switch (pocket.getActivePage()) {
+                case globals.PAGES.LIST:
+                    body.state = 'unread';
+                    break;
+                case globals.PAGES.ARCHIVE:
+                    body.state = 'archive';
+                    break;
+            }
+
+            return this.get(body);
+        }
 
         let state;
 
@@ -37,41 +73,44 @@ class ApiService {
                 const listSince = helpers.getFromStorage('listSince');
 
                 if (listSince) {
-                    this._fetchData.body.since = listSince;
+                    body.since = listSince;
                 } else {
                     state = 'unread';
                 }
                 break;
             case globals.PAGES.ARCHIVE:
                 if (pocket.isArchiveLoaded()) {
-                    this._fetchData.body.since = helpers.getFromStorage('archiveSince');
+                    body.since = helpers.getFromStorage('archiveSince');
                 } else {
                     state = 'archive';
                 }
                 break;
         }
 
-        this._fetchData.body.state = this._fetchData.body.since ? 'all' : state;
+        body.state = body.since ? 'all' : state;
 
-        if (pocket.fullSync) {
-            this._fetchData.body.since = null;
+        return this.get(body);
+    }
 
-            switch (pocket.getActivePage()) {
-                case globals.PAGES.LIST:
-                    this._fetchData.body.state = 'unread';
-                    break;
-                case globals.PAGES.ARCHIVE:
-                    this._fetchData.body.state = 'archive';
-                    break;
-            }
-        }
-
-        this._fetchData.body = JSON.stringify(this._fetchData.body);
+    /**
+     * Get data from pocket api.
+     *
+     * @function get
+     * @param {Object} body - body object for fetch
+     * @return {Promise} - Response from pocket api.
+     */
+    get(body) {
+        this._fetchData.body = JSON.stringify({
+            access_token: authService.getToken(),
+            consumer_key: __consumer_key,
+            detailType: 'complete',
+            ...body,
+        });
 
         try {
             return helpers.makeFetch(globals.API.url_get, this._fetchData);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
 
             if (error.response.status === 401) {

@@ -11,7 +11,7 @@ export const API = {
     url_add: API_URL + API_VERSION + '/add',
 };
 
-export const LOAD_COUNT = 18;
+export const LOAD_COUNT = 30;
 
 export const PAGES = {
     LIST: 'list',
