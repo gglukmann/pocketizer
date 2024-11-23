@@ -79,7 +79,7 @@ class AuthService {
         } catch (error) {
             helpers.showMessage(chrome.i18n.getMessage('AUTHENTICATION'), false);
 
-            return chrome.runtime.lastError.message;
+            return chrome.runtime?.lastError?.message;
         }
     }
 

@@ -573,11 +573,7 @@ class Settings {
             helpers.getFromStorage(`${this.getDefaultPage()}Since`) || 0
         );
 
-        if (timeDifference >= this.getUpdateInterval()) {
-            return true;
-        }
-
-        return false;
+        return timeDifference >= this.getUpdateInterval();
     }
 
     /**
