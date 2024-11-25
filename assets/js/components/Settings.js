@@ -114,7 +114,7 @@ class Settings {
      * @return {ORDER | null}
      */
     getOrder() {
-        return helpers.getFromStorage('order');
+        return helpers.getFromStorage('order') || globals.ORDER.ASCENDING;
     }
 
     /**

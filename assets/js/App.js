@@ -341,6 +341,7 @@ class App {
 
         const array = helpers.transformObjectToArray(response.list).sort((x, y) => x.sort_id - y.sort_id);
         this.createItems(array);
+        tags.createTags(array);
 
         this.moveSentinel();
     }
