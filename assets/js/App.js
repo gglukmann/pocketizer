@@ -185,10 +185,7 @@ class App {
         }
 
         this.changeListCount(response.total);
-
-        if (this.order !== globals.ORDER.RANDOM) {
-            this.render();
-        }
+        this.render();
         helpers.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
     }
 
@@ -369,8 +366,6 @@ class App {
         switch (this.order) {
             case globals.ORDER.DESCENDING:
                 return array.reverse();
-            case globals.ORDER.RANDOM:
-                return helpers.shuffleArray(array);
             default:
                 return array;
         }

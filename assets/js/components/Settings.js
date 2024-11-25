@@ -308,7 +308,6 @@ class Settings {
                 helpers.removeClass(target, 'is-rotated');
                 orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_OLDEST_FIRST'));
                 break;
-            case globals.ORDER.RANDOM:
             case globals.ORDER.DESCENDING:
                 helpers.addClass(target, 'is-rotated');
                 orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_NEWEST_FIRST'));
