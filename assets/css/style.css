@@ -143,11 +143,18 @@ a > svg {
     width: 1.2em;
 }
 
+.icon--searching {
+    animation: rotate 2s infinite linear;
+}
+
 .status {
     position: fixed;
     top: 0.5rem;
     left: 50%;
     transform: translate(-50%, 0);
+    background: var(--black);
+    color: var(--white);
+    padding: 0.25rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -155,8 +162,18 @@ a > svg {
     z-index: 120;
 }
 
+.status:empty {
+    padding: 0;
+}
+
+.theme-dark .status,
+.theme-system-preference-dark .status {
+    background: var(--yellow);
+    color: var(--black);
+}
+
 @media (min-width: 53.125rem) {
-    .header.is-scrolled .status {
+    .status {
         top: 4.375rem;
     }
 }

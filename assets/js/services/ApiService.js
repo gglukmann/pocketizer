@@ -15,63 +15,156 @@ class ApiService {
                 'Content-Type': 'application/json; charset=UTF8',
             },
         };
+        this.controller;
     }
 
     /**
-     * Get data from pocket api.
+     * Paginate data.
      *
-     * @function get
+     * @function paginate
+     * @param {Object} offset - Offset object.
      * @return {Promise} - Response from pocket api.
      */
-    get() {
-        this._fetchData.body = {
-            access_token: authService.getToken(),
-            consumer_key: __consumer_key,
-            detailType: 'complete',
+    paginate({ offset = 0 }) {
+        const body = {
+            count: globals.LOAD_COUNT,
+            total: '1',
+            sort: pocket.order === globals.ORDER.ASCENDING ? 'newest' : 'oldest',
+            offset,
+        };
+        switch (pocket.getActivePage()) {
+            case globals.PAGES.LIST:
+                body.state = 'unread';
+                break;
+            case globals.PAGES.ARCHIVE:
+                body.state = 'archive';
+                break;
+        }
+        return this.get(body);
+    }
+
+    /**
+     * Change order.
+     *
+     * @function changeOrder
+     * @return {Promise} - Response from pocket api.
+     */
+    changeOrder() {
+        const body = {
+            count: globals.LOAD_COUNT,
+            total: '1',
+            sort: pocket.order === globals.ORDER.ASCENDING ? 'newest' : 'oldest',
+        };
+        switch (pocket.getActivePage()) {
+            case globals.PAGES.LIST:
+                body.state = 'unread';
+                break;
+            case globals.PAGES.ARCHIVE:
+                body.state = 'archive';
+                break;
+        }
+        return this.get(body);
+    }
+
+    /**
+     * Sync data.
+     *
+     * @function sync
+     * @return {Promise} - Response from pocket api.
+     */
+    sync() {
+        const body = {
+            sort: pocket.order === globals.ORDER.ASCENDING ? 'newest' : 'oldest',
         };
 
-        let state;
+        if (pocket.fullSync || body.sort === 'oldest') {
+            switch (pocket.getActivePage()) {
+                case globals.PAGES.LIST:
+                    body.state = 'unread';
+                    break;
+                case globals.PAGES.ARCHIVE:
+                    body.state = 'archive';
+                    break;
+            }
+
+            return this.get(body);
+        }
 
         switch (pocket.getActivePage()) {
             case globals.PAGES.LIST:
                 const listSince = helpers.getFromStorage('listSince');
 
                 if (listSince) {
-                    this._fetchData.body.since = listSince;
+                    body.since = listSince;
+                    body.state = 'all';
                 } else {
-                    state = 'unread';
+                    body.state = 'unread';
                 }
                 break;
             case globals.PAGES.ARCHIVE:
                 if (pocket.isArchiveLoaded()) {
-                    this._fetchData.body.since = helpers.getFromStorage('archiveSince');
+                    body.since = helpers.getFromStorage('archiveSince');
+                    body.state = 'all';
                 } else {
-                    state = 'archive';
+                    body.state = 'archive';
                 }
                 break;
         }
 
-        this._fetchData.body.state = this._fetchData.body.since ? 'all' : state;
+        return this.get(body);
+    }
 
-        if (pocket.fullSync) {
-            this._fetchData.body.since = null;
+    /**
+     * Search data.
+     *
+     * @function search
+     * @param {Object} search - Search object.
+     * @param {string} search.search - Search string.
+     * @param {string} search.tag - Tag string.
+     * @return {Promise} - Response from pocket api.
+     */
+    search({ search, tag }) {
+        this.controller.abort();
 
-            switch (pocket.getActivePage()) {
-                case globals.PAGES.LIST:
-                    this._fetchData.body.state = 'unread';
-                    break;
-                case globals.PAGES.ARCHIVE:
-                    this._fetchData.body.state = 'archive';
-                    break;
-            }
+        const body = {
+            search,
+            tag,
+        };
+
+        switch (pocket.getActivePage()) {
+            case globals.PAGES.LIST:
+                body.state = 'unread';
+                break;
+            case globals.PAGES.ARCHIVE:
+                body.state = 'archive';
+                break;
         }
 
-        this._fetchData.body = JSON.stringify(this._fetchData.body);
+        return this.get(body);
+    }
+
+    /**
+     * Get data from pocket api.
+     *
+     * @function get
+     * @param {Object} body - body object for fetch
+     * @return {Promise} - Response from pocket api.
+     */
+    get(body) {
+        this._fetchData.body = JSON.stringify({
+            access_token: authService.getToken(),
+            consumer_key: __consumer_key,
+            detailType: 'complete',
+            ...body,
+        });
+
+        this.controller = new AbortController();
+        this._fetchData.signal = this.controller.signal;
 
         try {
             return helpers.makeFetch(globals.API.url_get, this._fetchData);
         } catch (error) {
-            console.log(error);
+            console.error(error);
             helpers.showMessage(chrome.i18n.getMessage('ERROR_GETTING_CONTENT'), false);
 
             if (error.response.status === 401) {

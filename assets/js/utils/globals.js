@@ -11,7 +11,7 @@ export const API = {
     url_add: API_URL + API_VERSION + '/add',
 };
 
-export const LOAD_COUNT = 18;
+export const LOAD_COUNT = 30;
 
 export const PAGES = {
     LIST: 'list',
@@ -30,7 +30,6 @@ export const UPDATE_INTERVALS = ['0', '1800', '3600', '18000', '86400'];
 export const ORDER = {
     DESCENDING: 'desc',
     ASCENDING: 'asc',
-    RANDOM: 'random',
 };
 
 export const VIEW_TYPES = {

@@ -100,10 +100,10 @@ class Settings {
      * Set items order.
      *
      * @function setOrder
-     * @param {String} order - Order to set.
+     * @param {ORDER} order - Order to set.
      * @return {void}
      */
-    setOrder(order = globals.ORDER.DESCENDING) {
+    setOrder(order = globals.ORDER.ASCENDING) {
         helpers.setToStorage('order', order);
     }
 
@@ -111,10 +111,10 @@ class Settings {
      * Get items order to load on extension load.
      *
      * @function getOrder
-     * @return {String | null}
+     * @return {ORDER | null}
      */
     getOrder() {
-        return helpers.getFromStorage('order');
+        return helpers.getFromStorage('order') || globals.ORDER.ASCENDING;
     }
 
     /**
@@ -294,7 +294,7 @@ class Settings {
      * Add class and change text in order by button.
      *
      * @function rotateOrderButton
-     * @param {String} order - Order.
+     * @param {ORDER} order - Order.
      * @param {Event} event - Event from button click.
      * @return {void}
      */
@@ -308,7 +308,6 @@ class Settings {
                 helpers.removeClass(target, 'is-rotated');
                 orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_OLDEST_FIRST'));
                 break;
-            case globals.ORDER.RANDOM:
             case globals.ORDER.DESCENDING:
                 helpers.addClass(target, 'is-rotated');
                 orderButton.setAttribute('title', chrome.i18n.getMessage('SHOW_ITEMS_NEWEST_FIRST'));

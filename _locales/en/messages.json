@@ -226,9 +226,6 @@
     "OLDEST_FIRST": {
         "message": "Oldest first"
     },
-    "ORDER_RANDOM": {
-        "message": "Random"
-    },
     "CHOOSE_ORDER": {
         "message": "Choose default order of My List items"
     },

@@ -14,6 +14,7 @@ class App {
             ticking: false,
         };
 
+        this.loading = false;
         this.fullSync = false;
         this.order = settings.getOrder();
 
@@ -71,7 +72,7 @@ class App {
      * @return {void}
      */
     async getContent() {
-        const response = await apiService.get();
+        const response = await apiService.sync();
         this.handleApiGetResponse(response);
     }
 
@@ -83,8 +84,7 @@ class App {
      * @return {void}
      */
     handleApiGetResponse(response) {
-        let array = [];
-        const items = response.list;
+        let array = helpers.transformObjectToArray(response.list);
         let isFirstLoad = false;
 
         switch (this.getActivePage()) {
@@ -100,15 +100,10 @@ class App {
                 break;
         }
 
-        for (const key in items) {
-            array.push(items[key]);
-        }
-
         if (isFirstLoad || this.fullSync) {
             array.sort((x, y) => x.sort_id - y.sort_id);
 
             helpers.setToStorage(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
-            helpers.setToStorage(`${this.getActivePage()}Count`, array.length.toString());
             helpers.setToStorage(`${this.getActivePage()}Since`, response.since);
 
             tags.createTags(array, true);
@@ -143,7 +138,7 @@ class App {
                         tags.createTags(newArray);
 
                         helpers.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
-                        helpers.setToStorage('listCount', newArray.length.toString());
+
                         break;
                     // add to archive list
                     case '1':
@@ -152,7 +147,6 @@ class App {
                         newArray = newArray.filter((item) => item.item_id !== newItem.item_id);
 
                         helpers.setToStorage('listFromLocalStorage', JSON.stringify(newArray));
-                        helpers.setToStorage('listCount', newArray.length);
 
                         // only add to localStorage archive list if archive is loaded
                         if (this.isArchiveLoaded()) {
@@ -160,7 +154,6 @@ class App {
                             newArray = helpers.prependArray(newArray, newItem);
 
                             helpers.setToStorage('archiveFromLocalStorage', JSON.stringify(newArray));
-                            helpers.setToStorage('archiveCount', newArray.length);
                         }
                         break;
                     // delete from unread or archive list
@@ -169,14 +162,12 @@ class App {
                         listArray = listArray.filter((item) => item.item_id !== newItem.item_id);
 
                         helpers.setToStorage('listFromLocalStorage', JSON.stringify(listArray));
-                        helpers.setToStorage('listCount', listArray.length);
 
                         if (this.isArchiveLoaded()) {
                             let archiveArray = JSON.parse(helpers.getFromStorage('archiveFromLocalStorage'));
                             archiveArray = archiveArray.filter((item) => item.item_id !== newItem.item_id);
 
                             helpers.setToStorage('archiveFromLocalStorage', JSON.stringify(archiveArray));
-                            helpers.setToStorage('archiveCount', archiveArray.length);
                         }
                         break;
                 }
@@ -188,10 +179,34 @@ class App {
             }
         }
 
-        if (this.order !== globals.ORDER.RANDOM) {
-            this.render();
-        }
+        this.changeListCount(response.total);
+        this.render();
         helpers.showMessage(chrome.i18n.getMessage('SYNCHRONIZING'));
+    }
+
+    /**
+     * Change list count.
+     *
+     * @function changeListCount
+     * @param {Number} total - Total number of items.
+     * @return {void}
+     */
+    changeListCount(total) {
+        const cachedTotal = helpers.getFromStorage(`${this.getActivePage()}Count`);
+
+        if (!total && !cachedTotal) {
+            helpers.hide(document.querySelector('#js-count-wrapper'));
+            return;
+        }
+
+        helpers.show(document.querySelector('#js-count-wrapper'), true);
+
+        if (total && total !== cachedTotal) {
+            helpers.setToStorage(`${this.getActivePage()}Count`, total);
+            document.querySelector('#js-count').innerText = total;
+        } else {
+            document.querySelector('#js-count').innerText = cachedTotal;
+        }
     }
 
     /**
@@ -216,7 +231,7 @@ class App {
         } else {
             tags.createTags(array);
 
-            const items = this.getOrderedItemsArray(array).filter((_, index) => index < globals.LOAD_COUNT);
+            const items = array.filter((_, index) => index < globals.LOAD_COUNT);
 
             helpers.hide(document.querySelector('#js-empty-list-message'));
             helpers.show(document.querySelector('#js-filterButtons'), true);
@@ -258,6 +273,18 @@ class App {
     }
 
     /**
+     * Move sentinel to the end of the list.
+     *
+     * @function moveSentinel
+     * @return {void}
+     */
+    moveSentinel() {
+        const sentinel = document.querySelector('#js-sentinel');
+        const list = document.querySelector('#js-list');
+        helpers.append(list, sentinel);
+    }
+
+    /**
      * Create IntersectionObserver to load more items on scroll.
      *
      * @function createItemsObserver
@@ -265,18 +292,21 @@ class App {
      */
     createItemsObserver() {
         const sentinel = document.querySelector('#js-sentinel');
-        const list = document.querySelector('#js-list');
 
-        const io = new IntersectionObserver((entries) => {
-            if (entries[0].intersectionRatio <= 0) {
-                return;
+        const options = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 1.0,
+        };
+        const callback = (entries) => {
+            if (entries[0].isIntersecting && entries[0].intersectionRatio === 1 && !this.loading) {
+                this.infiniteScroll();
             }
+        };
 
-            this.infiniteScroll();
-            helpers.append(list, sentinel);
-        });
+        const observer = new IntersectionObserver(callback, options);
 
-        io.observe(sentinel);
+        observer.observe(sentinel);
     }
 
     /**
@@ -285,40 +315,35 @@ class App {
      * @function infiniteScroll
      * @return {void}
      */
-    infiniteScroll() {
+    async infiniteScroll() {
+        this.loading = true;
         helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
-        let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
-        array = this.getOrderedItemsArray(array).filter(
-            (_, index) => index >= this.items_shown && index < this.items_shown + globals.LOAD_COUNT
-        );
 
-        this.items_shown += globals.LOAD_COUNT;
+        const response = await apiService.paginate({ offset: this.items_shown });
+        this.handlePaginationResponse(response);
 
-        if (array.length === 0) {
-            helpers.showMessage(chrome.i18n.getMessage('EVERYTHING_LOADED'), true, false, true);
-        } else {
-            helpers.showMessage(chrome.i18n.getMessage('LOADING'));
-        }
-
-        this.createItems(array);
+        helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}`);
+        this.loading = false;
     }
 
     /**
-     * Order items according to order from settings
+     * Handle pagination response.
      *
-     * @param {Array} array - Array to order
-     * @returns {Array} Ordered array
-     * @memberof App
+     * @function handlePaginationResponse
+     * @param {Object} response - Response from pagination.
+     * @return {void}
      */
-    getOrderedItemsArray(array) {
-        switch (this.order) {
-            case globals.ORDER.DESCENDING:
-                return array.reverse();
-            case globals.ORDER.RANDOM:
-                return helpers.shuffleArray(array);
-            default:
-                return array;
-        }
+    handlePaginationResponse(response) {
+        this.changeListCount(response.total);
+
+        // Change shown items count; used for next query offset
+        this.items_shown += globals.LOAD_COUNT;
+
+        const array = helpers.transformObjectToArray(response.list).sort((x, y) => x.sort_id - y.sort_id);
+        this.createItems(array);
+        tags.createTags(array);
+
+        this.moveSentinel();
     }
 
     /**
@@ -362,7 +387,7 @@ class App {
      * @param {Event} event - Event from click.
      * @return {void}
      */
-    handleItemClicks(event) {
+    async handleItemClicks(event) {
         if (event.target.classList.contains('js-toggleFavouriteButton')) {
             item.favourite(event);
         } else if (event.target.classList.contains('js-toggleReadButton')) {
@@ -372,9 +397,12 @@ class App {
         } else if (event.target.classList.contains('js-tagsButton')) {
             item.addTags(event);
         } else if (event.target.id === 'js-orderButton') {
+            helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
             this.order = this.order === globals.ORDER.ASCENDING ? globals.ORDER.DESCENDING : globals.ORDER.ASCENDING;
-            this.render();
+            settings.setOrder(this.order);
             settings.rotateOrderButton(this.order, event);
+            const response = await apiService.changeOrder();
+            this.handleApiGetResponse(response);
         } else if (event.target.id === 'js-viewTypeButton') {
             const mainSelector = document.querySelector('main');
             helpers.toggleClass(mainSelector, 'container--narrow');
@@ -599,8 +627,6 @@ class App {
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
-                this.order = settings.getOrder() || globals.ORDER.ASCENDING;
-
                 this.render();
                 this.getContent();
                 break;
@@ -609,8 +635,6 @@ class App {
 
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
-
-                this.order = globals.ORDER.ASCENDING;
 
                 if (this.isArchiveLoaded()) {
                     this.render();

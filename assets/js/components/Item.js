@@ -271,6 +271,7 @@ class Item {
             // array has new item but it is not in dom yet
             // #js-list has .sentinel too
             // that's why array.length and #js-list.childElementCount can be equal
+            // and don't show it in rendered items
             if (
                 pocket.order !== globals.ORDER.ASCENDING &&
                 array.length !== document.querySelector('#js-list').childElementCount
