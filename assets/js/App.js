@@ -84,8 +84,7 @@ class App {
      * @return {void}
      */
     handleApiGetResponse(response) {
-        let array = [];
-        const items = response.list;
+        let array = helpers.transformObjectToArray(response.list);
         let isFirstLoad = false;
 
         switch (this.getActivePage()) {
@@ -99,10 +98,6 @@ class App {
                     isFirstLoad = true;
                 }
                 break;
-        }
-
-        for (const key in items) {
-            array.push(items[key]);
         }
 
         if (isFirstLoad || this.fullSync) {
@@ -344,12 +339,7 @@ class App {
         // Change shown items count; used for next query offset
         this.items_shown += globals.LOAD_COUNT;
 
-        const items = response.list;
-        let array = [];
-        for (const key in items) {
-            array.push(items[key]);
-        }
-        array.sort((x, y) => x.sort_id - y.sort_id);
+        const array = helpers.transformObjectToArray(response.list).sort((x, y) => x.sort_id - y.sort_id);
         this.createItems(array);
 
         this.moveSentinel();

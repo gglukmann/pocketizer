@@ -394,3 +394,18 @@ export function shuffleArray(array) {
     }
     return arr;
 }
+
+/**
+ * Transform object to array.
+ *
+ * @function transformArray
+ * @param {Object} items - Object to transform.
+ * @return {Array} - Array from object.
+ */
+export function transformObjectToArray(items) {
+    let array = [];
+    for (const key in items) {
+        array.push(items[key]);
+    }
+    return array;
+}

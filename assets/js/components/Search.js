@@ -2,6 +2,7 @@ import * as helpers from '../utils/helpers.js';
 import * as globals from '../utils/globals.js';
 import pocket from '../App.js';
 import item from './Item.js';
+import apiService from '../services/ApiService.js';
 
 class Search {
     /**
@@ -140,12 +141,18 @@ class Search {
      * @param {String} value - Value to search.
      * @return {void}
      */
-    search(value) {
+    async search(value) {
         if (value.length === 0) {
             this.reset();
             return;
         }
 
+        const searchIcon = document.querySelector('#js-searchIcon');
+        const searchingIcon = document.querySelector('#js-searchingIcon');
+        helpers.hide(searchIcon);
+        helpers.show(searchingIcon);
+
+        const searchCountElement = document.querySelector('#js-searchCount');
         const isTag = value.startsWith('#') || value.startsWith('tag:');
 
         this.state.hasSearched = true;
@@ -155,6 +162,9 @@ class Search {
         document.querySelector('#js-searchValue').innerText = value;
         helpers.clearChildren(document.querySelector('#js-list'));
 
+        let count = 0;
+        searchCountElement.innerText = count;
+
         if (isTag) {
             document.querySelector('#js-searchInput').value = value;
 
@@ -163,14 +173,10 @@ class Search {
             } else if (value.startsWith('tag:')) {
                 value = value.substr(4);
             }
-        }
 
-        value = value.toLowerCase();
+            const response = await apiService.search({ tag: value });
+            const array = helpers.transformObjectToArray(response.list);
 
-        let array = JSON.parse(helpers.getFromStorage(`${pocket.getActivePage()}FromLocalStorage`));
-        let count = 0;
-
-        if (isTag) {
             for (const arrayItem of array) {
                 if (value !== 'untagged' && arrayItem.tags) {
                     for (const tag in arrayItem.tags) {
@@ -189,36 +195,21 @@ class Search {
                 }
             }
         } else {
+            const response = await apiService.search({ search: value });
+            const array = helpers.transformObjectToArray(response.list);
+
             for (const arrayItem of array) {
-                let searchableTitle = '';
-                let searchableUrl = '';
+                const newItem = item.create(arrayItem);
+                item.render(newItem);
 
-                if (arrayItem.resolved_title && arrayItem.resolved_title !== '') {
-                    searchableTitle = arrayItem.resolved_title;
-                } else if (arrayItem.given_title && arrayItem.given_title !== '') {
-                    searchableTitle = arrayItem.given_title;
-                }
-
-                if (arrayItem.resolved_url && arrayItem.resolved_url !== '') {
-                    searchableUrl = arrayItem.resolved_url;
-                } else {
-                    searchableUrl = arrayItem.given_url;
-                }
-
-                if (
-                    searchableTitle.toLowerCase().indexOf(value) > -1 ||
-                    searchableUrl.toLowerCase().indexOf(value) > -1
-                ) {
-                    const newItem = item.create(arrayItem);
-                    item.render(newItem);
-
-                    count++;
-                }
+                count++;
             }
         }
 
+        helpers.show(searchIcon);
+        helpers.hide(searchingIcon);
+
         const resultsStringElement = document.querySelector('#js-resultsString');
-        const searchCountElement = document.querySelector('#js-searchCount');
         const resultsStringPrefix = document.querySelector('#js-resultsStringPrefix');
         const tagString = isTag ? ` ${chrome.i18n.getMessage('TAG')}` : '';
         const currentListString =

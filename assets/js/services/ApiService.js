@@ -15,6 +15,7 @@ class ApiService {
                 'Content-Type': 'application/json; charset=UTF8',
             },
         };
+        this.controller;
     }
 
     /**
@@ -114,6 +115,35 @@ class ApiService {
     }
 
     /**
+     * Search data.
+     *
+     * @function search
+     * @param {Object} search - Search object.
+     * @param {string} search.search - Search string.
+     * @param {string} search.tag - Tag string.
+     * @return {Promise} - Response from pocket api.
+     */
+    search({ search, tag }) {
+        this.controller.abort();
+
+        const body = {
+            search,
+            tag,
+        };
+
+        switch (pocket.getActivePage()) {
+            case globals.PAGES.LIST:
+                body.state = 'unread';
+                break;
+            case globals.PAGES.ARCHIVE:
+                body.state = 'archive';
+                break;
+        }
+
+        return this.get(body);
+    }
+
+    /**
      * Get data from pocket api.
      *
      * @function get
@@ -127,6 +157,9 @@ class ApiService {
             detailType: 'complete',
             ...body,
         });
+
+        this.controller = new AbortController();
+        this._fetchData.signal = this.controller.signal;
 
         try {
             return helpers.makeFetch(globals.API.url_get, this._fetchData);

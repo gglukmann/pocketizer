@@ -143,6 +143,10 @@ a > svg {
     width: 1.2em;
 }
 
+.icon--searching {
+    animation: rotate 2s infinite linear;
+}
+
 .status {
     position: fixed;
     top: 0.5rem;
