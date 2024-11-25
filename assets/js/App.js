@@ -761,13 +761,9 @@ class App {
         settings.init();
         tags.init();
 
-        const cachedTotal = helpers.getFromStorage(`${this.getActivePage()}Count`);
-
         if (
-            ((!settings.getDefaultPage() || settings.getDefaultPage() === globals.PAGES.LIST) &&
-                settings.isTimeToUpdate() &&
-                this.order === globals.ORDER.ASCENDING) ||
-            (this.order === globals.ORDER.DESCENDING && cachedTotal < globals.LOAD_COUNT)
+            (!settings.getDefaultPage() || settings.getDefaultPage() === globals.PAGES.LIST) &&
+            settings.isTimeToUpdate()
         ) {
             helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
             this.getContent();
