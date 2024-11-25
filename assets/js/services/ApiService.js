@@ -28,8 +28,31 @@ class ApiService {
         const body = {
             count: globals.LOAD_COUNT,
             total: '1',
-            sort: 'newest',
+            sort: pocket.order === globals.ORDER.ASCENDING ? 'newest' : 'oldest',
             offset,
+        };
+        switch (pocket.getActivePage()) {
+            case globals.PAGES.LIST:
+                body.state = 'unread';
+                break;
+            case globals.PAGES.ARCHIVE:
+                body.state = 'archive';
+                break;
+        }
+        return this.get(body);
+    }
+
+    /**
+     * Change order.
+     *
+     * @function changeOrder
+     * @return {Promise} - Response from pocket api.
+     */
+    changeOrder() {
+        const body = {
+            count: globals.LOAD_COUNT,
+            total: '1',
+            sort: pocket.order === globals.ORDER.ASCENDING ? 'newest' : 'oldest',
         };
         switch (pocket.getActivePage()) {
             case globals.PAGES.LIST:
@@ -49,11 +72,11 @@ class ApiService {
      * @return {Promise} - Response from pocket api.
      */
     sync() {
-        const body = {};
+        const body = {
+            sort: pocket.order === globals.ORDER.ASCENDING ? 'newest' : 'oldest',
+        };
 
-        if (pocket.fullSync) {
-            body.since = null;
-
+        if (pocket.fullSync || body.sort === 'oldest') {
             switch (pocket.getActivePage()) {
                 case globals.PAGES.LIST:
                     body.state = 'unread';
@@ -66,28 +89,26 @@ class ApiService {
             return this.get(body);
         }
 
-        let state;
-
         switch (pocket.getActivePage()) {
             case globals.PAGES.LIST:
                 const listSince = helpers.getFromStorage('listSince');
 
                 if (listSince) {
                     body.since = listSince;
+                    body.state = 'all';
                 } else {
-                    state = 'unread';
+                    body.state = 'unread';
                 }
                 break;
             case globals.PAGES.ARCHIVE:
                 if (pocket.isArchiveLoaded()) {
                     body.since = helpers.getFromStorage('archiveSince');
+                    body.state = 'all';
                 } else {
-                    state = 'archive';
+                    body.state = 'archive';
                 }
                 break;
         }
-
-        body.state = body.since ? 'all' : state;
 
         return this.get(body);
     }

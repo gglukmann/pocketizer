@@ -236,7 +236,7 @@ class App {
         } else {
             tags.createTags(array);
 
-            const items = this.getOrderedItemsArray(array).filter((_, index) => index < globals.LOAD_COUNT);
+            const items = array.filter((_, index) => index < globals.LOAD_COUNT);
 
             helpers.hide(document.querySelector('#js-empty-list-message'));
             helpers.show(document.querySelector('#js-filterButtons'), true);
@@ -356,22 +356,6 @@ class App {
     }
 
     /**
-     * Order items according to order from settings
-     *
-     * @param {Array} array - Array to order
-     * @returns {Array} Ordered array
-     * @memberof App
-     */
-    getOrderedItemsArray(array) {
-        switch (this.order) {
-            case globals.ORDER.DESCENDING:
-                return array.reverse();
-            default:
-                return array;
-        }
-    }
-
-    /**
      * Is Archive list loaded.
      *
      * @function isArchiveLoaded
@@ -412,7 +396,7 @@ class App {
      * @param {Event} event - Event from click.
      * @return {void}
      */
-    handleItemClicks(event) {
+    async handleItemClicks(event) {
         if (event.target.classList.contains('js-toggleFavouriteButton')) {
             item.favourite(event);
         } else if (event.target.classList.contains('js-toggleReadButton')) {
@@ -422,9 +406,12 @@ class App {
         } else if (event.target.classList.contains('js-tagsButton')) {
             item.addTags(event);
         } else if (event.target.id === 'js-orderButton') {
+            helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
             this.order = this.order === globals.ORDER.ASCENDING ? globals.ORDER.DESCENDING : globals.ORDER.ASCENDING;
-            this.render();
+            settings.setOrder(this.order);
             settings.rotateOrderButton(this.order, event);
+            const response = await apiService.changeOrder();
+            this.handleApiGetResponse(response);
         } else if (event.target.id === 'js-viewTypeButton') {
             const mainSelector = document.querySelector('main');
             helpers.toggleClass(mainSelector, 'container--narrow');
@@ -649,8 +636,6 @@ class App {
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('listCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('MY_LIST');
 
-                this.order = settings.getOrder() || globals.ORDER.ASCENDING;
-
                 this.render();
                 this.getContent();
                 break;
@@ -659,8 +644,6 @@ class App {
 
                 document.querySelector('#js-count').innerText = helpers.getFromStorage('archiveCount');
                 document.querySelector('#js-title').innerText = chrome.i18n.getMessage('ARCHIVE');
-
-                this.order = globals.ORDER.ASCENDING;
 
                 if (this.isArchiveLoaded()) {
                     this.render();
@@ -778,9 +761,13 @@ class App {
         settings.init();
         tags.init();
 
+        const cachedTotal = helpers.getFromStorage(`${this.getActivePage()}Count`);
+
         if (
-            (!settings.getDefaultPage() || settings.getDefaultPage() === globals.PAGES.LIST) &&
-            settings.isTimeToUpdate()
+            ((!settings.getDefaultPage() || settings.getDefaultPage() === globals.PAGES.LIST) &&
+                settings.isTimeToUpdate() &&
+                this.order === globals.ORDER.ASCENDING) ||
+            (this.order === globals.ORDER.DESCENDING && cachedTotal < globals.LOAD_COUNT)
         ) {
             helpers.showMessage(`${chrome.i18n.getMessage('SYNCHRONIZING')}...`, true, false, false);
             this.getContent();
