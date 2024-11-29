@@ -579,6 +579,11 @@ class App {
                     }
                 } else if (state === 'delete') {
                     helpers.showMessage(chrome.i18n.getMessage('DELETING'));
+
+                    if (search.hasSearched()) {
+                        const newSearchCount = parseInt(document.querySelector('#js-searchCount').innerText, 10) - 1;
+                        search.showSearchCount(newSearchCount);
+                    }
                 }
                 break;
             case 'favourite':
