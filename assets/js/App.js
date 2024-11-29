@@ -22,6 +22,8 @@ class App {
         this.loggedOutClicks = this.handleLoginClick.bind(this);
         this.logoutButtonClick = this.logout.bind(this);
         this.keyDowns = this.handleKeyDowns.bind(this);
+
+        this.handleInfiniteScroll = this.infiniteScroll.bind(this);
     }
 
     /**
@@ -238,7 +240,7 @@ class App {
 
             this.createItems(items);
             this.createSentinel();
-            this.createSentinelObserver();
+            this.createSentinelObserver(this.handleInfiniteScroll);
         }
     }
 
@@ -273,6 +275,17 @@ class App {
     }
 
     /**
+     * Remove sentinel.
+     *
+     * @function removeSentinel
+     * @return {void}
+     */
+    removeSentinel() {
+        const sentinel = document.querySelector('#js-sentinel');
+        sentinel.remove();
+    }
+
+    /**
      * Move sentinel to the end of the list.
      *
      * @function moveSentinel
@@ -290,7 +303,7 @@ class App {
      * @function createSentinelObserver
      * @return {void}
      */
-    createSentinelObserver() {
+    createSentinelObserver(cb) {
         const sentinel = document.querySelector('#js-sentinel');
 
         const options = {
@@ -300,7 +313,7 @@ class App {
         };
         const callback = (entries) => {
             if (entries[0].isIntersecting && entries[0].intersectionRatio === 1 && !this.loading) {
-                this.infiniteScroll();
+                cb();
             }
         };
 
@@ -346,7 +359,11 @@ class App {
         this.createItems(array);
         tags.createTags(array);
 
-        this.moveSentinel();
+        if (response.total > this.items_shown) {
+            this.moveSentinel();
+        } else {
+            this.removeSentinel();
+        }
     }
 
     /**

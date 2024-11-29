@@ -1,8 +1,8 @@
 import __consumer_key from '../../../env.js';
-import { authService } from './index.js';
 import pocket from '../App.js';
-import * as helpers from '../utils/helpers.js';
 import * as globals from '../utils/globals.js';
+import * as helpers from '../utils/helpers.js';
+import { authService } from './index.js';
 
 class ApiService {
     /**
@@ -25,12 +25,15 @@ class ApiService {
      * @param {Object} offset - Offset object.
      * @return {Promise} - Response from pocket api.
      */
-    paginate({ offset = 0 }) {
+    paginate({ offset = 0, ...options }) {
+        this.controller.abort();
+
         const body = {
             count: globals.LOAD_COUNT,
             total: '1',
             sort: pocket.order === globals.ORDER.ASCENDING ? 'newest' : 'oldest',
             offset,
+            ...options,
         };
         switch (pocket.getActivePage()) {
             case globals.PAGES.LIST:
@@ -108,35 +111,6 @@ class ApiService {
                 } else {
                     body.state = 'archive';
                 }
-                break;
-        }
-
-        return this.get(body);
-    }
-
-    /**
-     * Search data.
-     *
-     * @function search
-     * @param {Object} search - Search object.
-     * @param {string} search.search - Search string.
-     * @param {string} search.tag - Tag string.
-     * @return {Promise} - Response from pocket api.
-     */
-    search({ search, tag }) {
-        this.controller.abort();
-
-        const body = {
-            search,
-            tag,
-        };
-
-        switch (pocket.getActivePage()) {
-            case globals.PAGES.LIST:
-                body.state = 'unread';
-                break;
-            case globals.PAGES.ARCHIVE:
-                body.state = 'archive';
                 break;
         }
 

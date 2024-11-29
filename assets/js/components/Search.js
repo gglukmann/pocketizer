@@ -2,7 +2,6 @@ import pocket from '../App.js';
 import apiService from '../services/ApiService.js';
 import * as globals from '../utils/globals.js';
 import * as helpers from '../utils/helpers.js';
-import item from './Item.js';
 
 class Search {
     /**
@@ -10,12 +9,15 @@ class Search {
      */
     constructor() {
         this.state = {
+            value: {},
             hasSearched: false,
         };
+        this.itemsShown = 0;
 
         this.makeSearchClick = this.handleMakeSearchClick.bind(this);
         this.closeSearchClick = this.handleCloseSearchClick.bind(this);
         this.debouncedSearch = helpers.debounce(this.search, 300);
+        this.handleInfiniteScroll = this.infiniteScroll.bind(this);
     }
 
     /**
@@ -131,6 +133,8 @@ class Search {
 
         if (doHide) {
             this.state.hasSearched = false;
+            this.state.value = {};
+            this.itemsShown = 0;
             this.hide(true);
         }
     }
@@ -148,6 +152,8 @@ class Search {
             return;
         }
 
+        this.state.hasSearched = true;
+
         const searchIcon = document.querySelector('#js-searchIcon');
         const searchingIcon = document.querySelector('#js-searchingIcon');
         helpers.hide(searchIcon);
@@ -161,14 +167,11 @@ class Search {
         const searchCountElement = document.querySelector('#js-searchCount');
         const isTag = value.startsWith('#') || value.startsWith('tag:');
 
-        this.state.hasSearched = true;
-
         helpers.hide(document.querySelector('#js-filterButtons'));
         document.querySelector('#js-searchValue').innerText = value;
         helpers.clearChildren(document.querySelector('#js-list'));
 
-        let count = 0;
-        searchCountElement.innerText = count;
+        searchCountElement.innerText = 0;
 
         if (isTag) {
             document.querySelector('#js-searchInput').value = value;
@@ -179,37 +182,24 @@ class Search {
                 value = value.substr(4);
             }
 
-            const response = await apiService.search({ tag: value });
+            this.state.value = { tag: value };
+            const response = await apiService.paginate({ offset: this.itemsShown, tag: value });
+            searchCountElement.innerText = response.total;
             const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
 
-            for (const arrayItem of array) {
-                if (value !== 'untagged' && arrayItem.tags) {
-                    for (const tag in arrayItem.tags) {
-                        if (tag.toLowerCase() === value) {
-                            const newItem = item.create(arrayItem);
-                            item.render(newItem);
-
-                            count++;
-                        }
-                    }
-                } else if (value === 'untagged' && !arrayItem.tags) {
-                    const newItem = item.create(arrayItem);
-                    item.render(newItem);
-
-                    count++;
-                }
-            }
+            pocket.createItems(array);
         } else {
-            const response = await apiService.search({ search: value });
+            this.state.value = { search: value };
+            const response = await apiService.paginate({ offset: this.itemsShown, search: value });
+            searchCountElement.innerText = response.total;
             const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
 
-            for (const arrayItem of array) {
-                const newItem = item.create(arrayItem);
-                item.render(newItem);
-
-                count++;
-            }
+            pocket.createItems(array);
         }
+
+        this.itemsShown = globals.LOAD_COUNT;
+        pocket.createSentinel();
+        pocket.createSentinelObserver(this.handleInfiniteScroll);
 
         helpers.show(searchIcon);
         helpers.hide(searchingIcon);
@@ -223,17 +213,37 @@ class Search {
             pocket.getActivePage() === globals.PAGES.LIST
                 ? ` ${chrome.i18n.getMessage('MY_LIST')}`
                 : ` ${chrome.i18n.getMessage('ARCHIVE')}`;
-        if (count === 0) {
-            resultsStringElement.innerText = chrome.i18n.getMessage('NO_RESULTS_MESSAGE') + tagString;
-            resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
-            helpers.hide(searchCountElement);
+
+        resultsStringElement.innerText = chrome.i18n.getMessage('RESULTS_MESSAGE') + tagString;
+        resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
+        helpers.show(searchCountElement, true);
+    }
+
+    async infiniteScroll() {
+        pocket.loading = true;
+        const loader = document.querySelector('#js-loader');
+        helpers.show(loader, true);
+        helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
+
+        const response = await apiService.paginate({ offset: this.itemsShown, ...this.state.value });
+        this.handlePaginationResponse(response);
+
+        helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}`);
+        helpers.hide(loader);
+        pocket.loading = false;
+    }
+
+    handlePaginationResponse(response) {
+        // Change shown items count; used for next query offset
+        this.itemsShown += globals.LOAD_COUNT;
+
+        const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
+        pocket.createItems(array);
+
+        if (response.total > this.itemsShown) {
+            pocket.moveSentinel();
         } else {
-            resultsStringElement.innerText =
-                (count === 1 ? chrome.i18n.getMessage('RESULT_MESSAGE') : chrome.i18n.getMessage('RESULTS_MESSAGE')) +
-                tagString;
-            resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
-            helpers.show(searchCountElement, true);
-            searchCountElement.innerText = count;
+            pocket.removeSentinel();
         }
     }
 
@@ -245,6 +255,8 @@ class Search {
      */
     destroy() {
         this.state.hasSearched = false;
+        this.state.value = {};
+        this.itemsShown = 0;
         this.hide(true);
         this.removeEvents();
     }
