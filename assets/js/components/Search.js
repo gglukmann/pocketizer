@@ -1,8 +1,8 @@
-import * as helpers from '../utils/helpers.js';
-import * as globals from '../utils/globals.js';
 import pocket from '../App.js';
-import item from './Item.js';
 import apiService from '../services/ApiService.js';
+import * as globals from '../utils/globals.js';
+import * as helpers from '../utils/helpers.js';
+import item from './Item.js';
 
 class Search {
     /**
@@ -175,7 +175,7 @@ class Search {
             }
 
             const response = await apiService.search({ tag: value });
-            const array = helpers.transformObjectToArray(response.list);
+            const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
 
             for (const arrayItem of array) {
                 if (value !== 'untagged' && arrayItem.tags) {
@@ -196,7 +196,7 @@ class Search {
             }
         } else {
             const response = await apiService.search({ search: value });
-            const array = helpers.transformObjectToArray(response.list);
+            const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
 
             for (const arrayItem of array) {
                 const newItem = item.create(arrayItem);

@@ -409,3 +409,16 @@ export function transformObjectToArray(items) {
     }
     return array;
 }
+
+/**
+ * Sort array by sort_id.
+ *
+ * @function sortBySortId
+ * @param {Array} array - Array to sort.
+ * @return {Array} - Sorted array.
+ */
+export function sortBySortId(array) {
+    return array.sort((a, b) => {
+        return a.sort_id - b.sort_id;
+    });
+}

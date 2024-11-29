@@ -339,7 +339,7 @@ class App {
         // Change shown items count; used for next query offset
         this.items_shown += globals.LOAD_COUNT;
 
-        const array = helpers.transformObjectToArray(response.list).sort((x, y) => x.sort_id - y.sort_id);
+        const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
         this.createItems(array);
         tags.createTags(array);
 
