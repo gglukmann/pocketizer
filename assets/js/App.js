@@ -1,8 +1,8 @@
-import * as helpers from './utils/helpers.js';
-import * as globals from './utils/globals.js';
-import * as connection from './utils/connection.js';
-import { settings, tags, item, header, search, modal, selector } from './components/index.js';
+import { header, item, modal, search, selector, settings, tags } from './components/index.js';
 import { apiService, authService } from './services/index.js';
+import * as connection from './utils/connection.js';
+import * as globals from './utils/globals.js';
+import * as helpers from './utils/helpers.js';
 
 class App {
     constructor() {
@@ -238,7 +238,7 @@ class App {
 
             this.createItems(items);
             this.createSentinel();
-            this.createItemsObserver();
+            this.createSentinelObserver();
         }
     }
 
@@ -287,10 +287,10 @@ class App {
     /**
      * Create IntersectionObserver to load more items on scroll.
      *
-     * @function createItemsObserver
+     * @function createSentinelObserver
      * @return {void}
      */
-    createItemsObserver() {
+    createSentinelObserver() {
         const sentinel = document.querySelector('#js-sentinel');
 
         const options = {
@@ -516,7 +516,7 @@ class App {
             const response = await apiService.send(actions);
 
             if (response.status === 1) {
-                this.handleActionResponse(event, state, id, isFavourited, response, tags);
+                this.handleActionResponse(event, state, isFavourited, tags);
             }
         } catch (error) {
             console.log(error);
@@ -530,68 +530,48 @@ class App {
      * @function handleActionResponse
      * @param {Event} event - Event.
      * @param {String} state - Current state.
-     * @param {Number} id - Item id.
      * @param {Boolean} isFavourited - If should be favourited.
-     * @param {Object} response - Response from Pocket api.
      * @param {String} tags - Tags, if they are added.
      * @return {void}
      */
-    handleActionResponse(event, state, id, isFavourited, response, tags) {
-        let array = JSON.parse(helpers.getFromStorage(`${this.getActivePage()}FromLocalStorage`));
+    handleActionResponse(event, state, isFavourited, tags) {
+        switch (state) {
+            case 'read':
+            case 'delete':
+                const itemNode = event.target.parentNode.parentNode.parentNode;
+                helpers.addClass(itemNode, 'move-up');
+                setTimeout(() => {
+                    itemNode.remove();
+                }, 500);
 
-        for (const i in array) {
-            if (array[i].item_id === id) {
-                switch (state) {
-                    case 'read':
-                    case 'delete':
-                        array.splice(i, 1);
+                const newCount = parseInt(helpers.getFromStorage(`${this.getActivePage()}Count`), 10) - 1;
+                helpers.setToStorage(`${this.getActivePage()}Count`, newCount);
+                document.querySelector('#js-count').innerText = newCount;
 
-                        const itemNode = event.target.parentNode.parentNode.parentNode;
-                        helpers.addClass(itemNode, 'move-up');
-                        setTimeout(() => {
-                            itemNode.remove();
-                        }, 500);
-
-                        helpers.setToStorage(
-                            `${this.getActivePage()}Count`,
-                            parseInt(helpers.getFromStorage(`${this.getActivePage()}Count`), 10) - 1
-                        );
-
-                        document.querySelector('#js-count').innerText = helpers.getFromStorage(
-                            `${this.getActivePage()}Count`
-                        );
-                        break;
-                    case 'favourite':
-                        array[i].favorite = isFavourited === true ? 0 : 1;
-
-                        isFavourited = !isFavourited;
-                        event.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite =
-                            isFavourited;
-                        break;
-                    case 'tags':
-                        if (tags.length) {
-                            event.target.dataset.tags = tags;
-                        }
-                        break;
+                if (state === 'read') {
+                    switch (this.getActivePage()) {
+                        case globals.PAGES.LIST:
+                            helpers.showMessage(chrome.i18n.getMessage('ARCHIVING'));
+                            break;
+                        case globals.PAGES.ARCHIVE:
+                            helpers.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
+                            break;
+                    }
+                } else if (state === 'delete') {
+                    helpers.showMessage(chrome.i18n.getMessage('DELETING'));
                 }
-            }
-        }
-
-        helpers.setToStorage(`${this.getActivePage()}FromLocalStorage`, JSON.stringify(array));
-
-        if (state === 'read') {
-            switch (this.getActivePage()) {
-                case globals.PAGES.LIST:
-                    helpers.showMessage(chrome.i18n.getMessage('ARCHIVING'));
-                    break;
-                case globals.PAGES.ARCHIVE:
-                    helpers.showMessage(chrome.i18n.getMessage('UNARCHIVING'));
-                    break;
-            }
-        } else if (state === 'favourite' || state === 'tags') {
-            helpers.showMessage(chrome.i18n.getMessage('PROCESSING'));
-        } else if (state === 'delete') {
-            helpers.showMessage(chrome.i18n.getMessage('DELETING'));
+                break;
+            case 'favourite':
+                isFavourited = !isFavourited;
+                event.target.parentNode.querySelector('.js-toggleFavouriteButton').dataset.favourite = isFavourited;
+                helpers.showMessage(chrome.i18n.getMessage('PROCESSING'));
+                break;
+            case 'tags':
+                if (tags.length) {
+                    event.target.dataset.tags = tags;
+                }
+                helpers.showMessage(chrome.i18n.getMessage('PROCESSING'));
+                break;
         }
     }
 
