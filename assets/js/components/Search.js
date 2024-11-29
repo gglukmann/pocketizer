@@ -208,12 +208,14 @@ class Search {
      * @return {void}
      */
     async handleSearchQuery() {
+        this.itemsShown = 0;
         const response = await apiService.paginate({ offset: this.itemsShown, ...this.state.value });
         this.showSearchCount(response.total);
         const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
         pocket.createItems(array);
 
         this.itemsShown = globals.LOAD_COUNT;
+
         if (response.total > this.itemsShown) {
             pocket.createSentinel();
             pocket.createSentinelObserver(this.handleInfiniteScroll);
