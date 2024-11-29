@@ -15,6 +15,7 @@ class Search {
 
         this.makeSearchClick = this.handleMakeSearchClick.bind(this);
         this.closeSearchClick = this.handleCloseSearchClick.bind(this);
+        this.debouncedSearch = helpers.debounce(this.search, 300);
     }
 
     /**
@@ -80,7 +81,7 @@ class Search {
      */
     handleMakeSearchClick(event) {
         if (event.target.value.length >= 3) {
-            this.search(event.target.value);
+            this.debouncedSearch(event.target.value);
         }
     }
 

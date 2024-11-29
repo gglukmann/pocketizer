@@ -422,3 +422,23 @@ export function sortBySortId(array) {
         return a.sort_id - b.sort_id;
     });
 }
+
+/**
+ * Debounce function.
+ *
+ * @function debounce
+ * @param {Function} func - Function to debounce.
+ * @param {Number} timeout - Timeout for debounce.
+ * @return {Function} - Debounced function.
+ */
+export function debounce(func, delay) {
+    let timeoutId;
+
+    return function (...args) {
+        const context = this;
+        clearTimeout(timeoutId);
+        timeoutId = setTimeout(() => {
+            func.apply(context, args);
+        }, delay);
+    };
+}
