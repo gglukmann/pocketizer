@@ -292,7 +292,7 @@ export function hide(element) {
 /**
  * Show element.
  *
- * @function hide
+ * @function show
  * @param {Element|HTMLElement} element - Element to show.
  * @param {Boolean} doRemove - If remove style to show element.
  * @param {String} display - CSS display property.

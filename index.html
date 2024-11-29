@@ -110,7 +110,11 @@
                                     d="M31.119 31.119c-1.134 1.134-2.973 1.134-4.106 0l-4.459-4.459c-2.419 1.604-5.213 2.406-8.007 2.406-3.716 0-7.431-1.418-10.266-4.252-5.668-5.671-5.668-14.861 0-20.531 2.835-2.835 6.551-4.253 10.266-4.253s7.431 1.418 10.267 4.253c4.966 4.967 5.581 12.634 1.846 18.272l4.459 4.459c1.134 1.132 1.134 2.972-0.001 4.105zM14.547 3.66c-2.909 0-5.643 1.133-7.7 3.19-4.244 4.245-4.244 11.153 0 15.398 2.056 2.056 4.791 3.189 7.7 3.189s5.643-1.133 7.7-3.19c4.244-4.245 4.244-11.153-0.001-15.398-2.056-2.056-4.791-3.189-7.7-3.189z"
                                 ></path>
                             </svg>
-                            <svg viewBox="0 0 64 64" class="icon icon--bigger icon--searching hidden" id="js-searchingIcon">
+                            <svg
+                                viewBox="0 0 64 64"
+                                class="icon icon--bigger icon--searching hidden"
+                                id="js-searchingIcon"
+                            >
                                 <path
                                     d="M31.5,15c8.5,0,15.2,4.6,16.7,14H40l12,12l12-12h-7.7C54.6,15.3,44.3,7,31.5,7c-8.1,0-15.9,4-20.7,10.6l6.5,4.7
                         C20.6,17.8,26,15,31.5,15z"
@@ -302,6 +306,24 @@
                 </div>
             </div>
             <ol id="js-list" class="list"></ol>
+            <div class="loader" id="js-loader" style="display: none">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 38 38" class="loader__icon">
+                    <g fill="none" fill-rule="evenodd" stroke-width="2" transform="translate(1 1)">
+                        <circle cx="18" cy="18" r="18" stroke-opacity=".5" />
+                        <path d="M36 18c0-9.94-8.06-18-18-18">
+                            <animateTransform
+                                attributeName="transform"
+                                dur="1s"
+                                from="0 18 18"
+                                repeatCount="indefinite"
+                                to="360 18 18"
+                                type="rotate"
+                            />
+                        </path>
+                    </g>
+                </svg>
+                <div class="loader__text"><span data-translate="__MSG_LOADING__">LOADING</span><span>...</span></div>
+            </div>
         </main>
 
         <div class="modal" id="js-addModal">

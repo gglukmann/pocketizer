@@ -46,7 +46,7 @@ class Search {
      * @return {void}
      */
     bindEvents() {
-        document.querySelector('#js-searchInput').addEventListener('keyup', this.makeSearchClick, false);
+        document.querySelector('#js-searchInput').addEventListener('input', this.makeSearchClick, false);
         document.querySelector('#js-emptySearch').addEventListener('click', this.closeSearchClick, false);
     }
 
@@ -57,7 +57,7 @@ class Search {
      * @return {void}
      */
     removeEvents() {
-        document.querySelector('#js-searchInput').removeEventListener('keyup', this.makeSearchClick, false);
+        document.querySelector('#js-searchInput').removeEventListener('input', this.makeSearchClick, false);
         document.querySelector('#js-emptySearch').removeEventListener('click', this.closeSearchClick, false);
     }
 
@@ -151,6 +151,11 @@ class Search {
         const searchingIcon = document.querySelector('#js-searchingIcon');
         helpers.hide(searchIcon);
         helpers.show(searchingIcon);
+        const loader = document.querySelector('#js-loader');
+        helpers.show(loader, true);
+
+        const resultsMessage = document.querySelector('#js-results-message');
+        helpers.hide(resultsMessage);
 
         const searchCountElement = document.querySelector('#js-searchCount');
         const isTag = value.startsWith('#') || value.startsWith('tag:');
@@ -158,7 +163,6 @@ class Search {
         this.state.hasSearched = true;
 
         helpers.hide(document.querySelector('#js-filterButtons'));
-        helpers.show(document.querySelector('#js-results-message'));
         document.querySelector('#js-searchValue').innerText = value;
         helpers.clearChildren(document.querySelector('#js-list'));
 
@@ -208,7 +212,9 @@ class Search {
 
         helpers.show(searchIcon);
         helpers.hide(searchingIcon);
+        helpers.hide(loader);
 
+        helpers.show(resultsMessage);
         const resultsStringElement = document.querySelector('#js-resultsString');
         const resultsStringPrefix = document.querySelector('#js-resultsStringPrefix');
         const tagString = isTag ? ` ${chrome.i18n.getMessage('TAG')}` : '';

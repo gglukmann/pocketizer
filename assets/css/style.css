@@ -1373,6 +1373,25 @@ li.move-up {
     display: block;
 }
 
+/* LOADER */
+.loader {
+    padding-top: 1rem;
+    padding-bottom: 2rem;
+    text-align: center;
+}
+
+.loader__icon {
+    height: 3rem;
+    width: 3rem;
+    stroke: var(--color-primary);
+}
+
+.loader__text {
+    color: var(--text-light);
+    font-weight: 500;
+    padding-top: 0.5rem;
+}
+
 /* HELPERS */
 .hidden {
     display: none;

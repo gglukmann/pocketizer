@@ -317,12 +317,15 @@ class App {
      */
     async infiniteScroll() {
         this.loading = true;
+        const loader = document.querySelector('#js-loader');
+        helpers.show(loader, true);
         helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}...`, true, false, false);
 
         const response = await apiService.paginate({ offset: this.items_shown });
         this.handlePaginationResponse(response);
 
         helpers.showMessage(`${chrome.i18n.getMessage('LOADING')}`);
+        helpers.hide(loader);
         this.loading = false;
     }
 

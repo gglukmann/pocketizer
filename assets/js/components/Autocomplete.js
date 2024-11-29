@@ -17,13 +17,13 @@ class Autocomplete {
 
     bindEvents() {
         document.body.addEventListener('click', this.clickAutocomplete, false);
-        this.input.addEventListener('keyup', this.makeSearchClick, false);
+        this.input.addEventListener('input', this.makeSearchClick, false);
         document.body.addEventListener('keydown', this.autocompleteKeydown, false);
     }
 
     removeEvents() {
         document.body.removeEventListener('click', this.clickAutocomplete, false);
-        this.input.removeEventListener('keyup', this.makeSearchClick, false);
+        this.input.removeEventListener('input', this.makeSearchClick, false);
         document.body.removeEventListener('keydown', this.autocompleteKeydown, false);
     }
 
