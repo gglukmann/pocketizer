@@ -208,7 +208,6 @@ class Search {
      * @return {void}
      */
     async handleSearchQuery() {
-        this.itemsShown = 0;
         const response = await apiService.paginate({ offset: this.itemsShown, ...this.state.value });
         this.showSearchCount(response.total);
         const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
@@ -243,6 +242,7 @@ class Search {
         this.state.hasSearched = true;
         this.state.value = {};
         this.showLoaders();
+        this.itemsShown = 0;
         this.showSearchCount(0);
 
         document.querySelector('#js-searchValue').innerText = value;
