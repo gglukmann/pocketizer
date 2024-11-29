@@ -140,6 +140,87 @@ class Search {
     }
 
     /**
+     * Show loaders in DOM.
+     *
+     * @function showLoaders
+     * @return {void}
+     */
+    showLoaders() {
+        const searchIcon = document.querySelector('#js-searchIcon');
+        const searchingIcon = document.querySelector('#js-searchingIcon');
+        const loader = document.querySelector('#js-loader');
+        helpers.hide(searchIcon);
+        helpers.show(searchingIcon);
+        helpers.show(loader, true);
+    }
+
+    /**
+     * Hide loaders from DOM.
+     *
+     * @function hideLoaders
+     * @return {void}
+     */
+    hideLoaders() {
+        const searchIcon = document.querySelector('#js-searchIcon');
+        const searchingIcon = document.querySelector('#js-searchingIcon');
+        const loader = document.querySelector('#js-loader');
+        helpers.show(searchIcon);
+        helpers.hide(searchingIcon);
+        helpers.hide(loader);
+    }
+
+    /**
+     * Show search count.
+     *
+     * @function showSearchCount
+     * @param {Number} count - Count of items.
+     * @return {void}
+     */
+    showSearchCount(count = 0) {
+        const searchCountElement = document.querySelector('#js-searchCount');
+        searchCountElement.innerText = count;
+    }
+
+    /**
+     * Add results to DOM.
+     *
+     * @function addResultsToDOM
+     * @param {Boolean} isTag - Is tag search.
+     * @return {void}
+     */
+    addResultsToDOM(isTag) {
+        const resultsStringElement = document.querySelector('#js-resultsString');
+        const resultsStringPrefix = document.querySelector('#js-resultsStringPrefix');
+        const tagString = isTag ? ` ${chrome.i18n.getMessage('TAG')}` : '';
+        const currentListString =
+            pocket.getActivePage() === globals.PAGES.LIST
+                ? ` ${chrome.i18n.getMessage('MY_LIST')}`
+                : ` ${chrome.i18n.getMessage('ARCHIVE')}`;
+
+        resultsStringElement.innerText = chrome.i18n.getMessage('RESULTS_MESSAGE') + tagString;
+        resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
+    }
+
+    /**
+     * Handle search query.
+     *
+     * @function handleSearchQuery
+     * @return {void}
+     */
+    async handleSearchQuery() {
+        const response = await apiService.paginate({ offset: this.itemsShown, ...this.state.value });
+        this.showSearchCount(response.total);
+        const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
+        pocket.createItems(array);
+
+        this.itemsShown = globals.LOAD_COUNT;
+        if (response.total > this.itemsShown) {
+            pocket.createSentinel();
+            pocket.createSentinelObserver(this.handleInfiniteScroll);
+        }
+    }
+
+    /**
      * Search from localStorage array.
      *
      * @function search
@@ -152,27 +233,19 @@ class Search {
             return;
         }
 
-        this.state.hasSearched = true;
-
-        const searchIcon = document.querySelector('#js-searchIcon');
-        const searchingIcon = document.querySelector('#js-searchingIcon');
-        helpers.hide(searchIcon);
-        helpers.show(searchingIcon);
-        const loader = document.querySelector('#js-loader');
-        helpers.show(loader, true);
-
         const resultsMessage = document.querySelector('#js-results-message');
         helpers.hide(resultsMessage);
-
-        const searchCountElement = document.querySelector('#js-searchCount');
-        const isTag = value.startsWith('#') || value.startsWith('tag:');
-
-        helpers.hide(document.querySelector('#js-filterButtons'));
-        document.querySelector('#js-searchValue').innerText = value;
         helpers.clearChildren(document.querySelector('#js-list'));
+        helpers.hide(document.querySelector('#js-filterButtons'));
 
-        searchCountElement.innerText = 0;
+        this.state.hasSearched = true;
+        this.state.value = {};
+        this.showLoaders();
+        this.showSearchCount(0);
 
+        document.querySelector('#js-searchValue').innerText = value;
+
+        const isTag = value.startsWith('#') || value.startsWith('tag:');
         if (isTag) {
             document.querySelector('#js-searchInput').value = value;
 
@@ -183,42 +256,23 @@ class Search {
             }
 
             this.state.value = { tag: value };
-            const response = await apiService.paginate({ offset: this.itemsShown, tag: value });
-            searchCountElement.innerText = response.total;
-            const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
-
-            pocket.createItems(array);
         } else {
             this.state.value = { search: value };
-            const response = await apiService.paginate({ offset: this.itemsShown, search: value });
-            searchCountElement.innerText = response.total;
-            const array = helpers.sortBySortId(helpers.transformObjectToArray(response.list));
-
-            pocket.createItems(array);
         }
 
-        this.itemsShown = globals.LOAD_COUNT;
-        pocket.createSentinel();
-        pocket.createSentinelObserver(this.handleInfiniteScroll);
+        await this.handleSearchQuery();
 
-        helpers.show(searchIcon);
-        helpers.hide(searchingIcon);
-        helpers.hide(loader);
-
+        this.hideLoaders();
+        this.addResultsToDOM(isTag);
         helpers.show(resultsMessage);
-        const resultsStringElement = document.querySelector('#js-resultsString');
-        const resultsStringPrefix = document.querySelector('#js-resultsStringPrefix');
-        const tagString = isTag ? ` ${chrome.i18n.getMessage('TAG')}` : '';
-        const currentListString =
-            pocket.getActivePage() === globals.PAGES.LIST
-                ? ` ${chrome.i18n.getMessage('MY_LIST')}`
-                : ` ${chrome.i18n.getMessage('ARCHIVE')}`;
-
-        resultsStringElement.innerText = chrome.i18n.getMessage('RESULTS_MESSAGE') + tagString;
-        resultsStringPrefix.innerText = chrome.i18n.getMessage('IN') + currentListString;
-        helpers.show(searchCountElement, true);
     }
 
+    /**
+     * Handle infinite scroll.
+     *
+     * @function handleInfiniteScroll
+     * @return {void}
+     */
     async infiniteScroll() {
         pocket.loading = true;
         const loader = document.querySelector('#js-loader');
@@ -233,6 +287,13 @@ class Search {
         pocket.loading = false;
     }
 
+    /**
+     * Handle pagination response.
+     *
+     * @function handlePaginationResponse
+     * @param {Object} response - Pagination response.
+     * @return {void}
+     */
     handlePaginationResponse(response) {
         // Change shown items count; used for next query offset
         this.itemsShown += globals.LOAD_COUNT;
