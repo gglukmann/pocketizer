@@ -412,6 +412,13 @@ a > svg {
     color: var(--text-light);
 }
 
+.message__info {
+    font-weight: bold;
+    color: var(--red);
+    width: 50%;
+    margin: 1rem auto;
+}
+
 /* SECTION-TITLE */
 .section-title {
     padding: 0 calc(var(--grid-gutter) / 2);

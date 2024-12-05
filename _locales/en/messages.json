@@ -76,6 +76,9 @@
     "LOG_IN_WITH_POCKET": {
         "message": "Log in with Pocket"
     },
+    "LOG_IN_INFO": {
+        "message": "Log into getpocket.com first and then into extension."
+    },
     "LOGGING_OUT": {
         "message": "Logging out"
     },
