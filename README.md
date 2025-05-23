@@ -1,3 +1,5 @@
+## ⚠️ Pocket is shutting down from July 8, 2025. [Announcement](https://support.mozilla.org/en-US/kb/future-of-pocket).
+
 <p align="center">
   <a href="https://gglukmann.github.io/pocketizer">
     <img alt="https://gglukmann.github.io/pocketizer" src="https://gglukmann.github.io/pocketizer/icon64.png" width="64" />
